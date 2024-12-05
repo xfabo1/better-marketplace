@@ -10,5 +10,4 @@ public class BetterMarketplaceApplication {
 	public static void main(String[] args) {
 		run(BetterMarketplaceApplication.class, args);
 	}
-
 }

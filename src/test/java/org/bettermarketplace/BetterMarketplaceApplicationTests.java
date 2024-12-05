@@ -9,5 +9,4 @@ class BetterMarketplaceApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

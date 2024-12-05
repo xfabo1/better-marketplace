@@ -1,0 +1,5 @@
+findItemById(id) ::= <<
+  SELECT id, name
+  FROM items
+  where id = :id
+>>
