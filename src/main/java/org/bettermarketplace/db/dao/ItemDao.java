@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import org.bettermarketplace.db.entity.Item;
 import org.jdbi.v3.sqlobject.customizer.Bind;
-import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.stringtemplate4.UseStringTemplateSqlLocator;
 
-@UseClasspathSqlLocator
+@UseStringTemplateSqlLocator
 public interface ItemDao {
 
 	@SqlQuery

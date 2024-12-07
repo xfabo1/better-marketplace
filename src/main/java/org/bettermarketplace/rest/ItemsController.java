@@ -2,21 +2,23 @@ package org.bettermarketplace.rest;
 
 import org.bettermarketplace.db.entity.Item;
 import org.bettermarketplace.service.ItemService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/v1/items")
 public class ItemsController {
 
 	private final ItemService itemService;
 
+	@Autowired
+	public ItemsController(ItemService itemService) {
+		this.itemService = itemService;
+	}
 	@GetMapping("/{id}")
 	public ResponseEntity<Item> getItemById(@PathVariable("id") String id) {
 		return ResponseEntity.of(itemService.findItemById(id));
