@@ -19,6 +19,7 @@ public class ItemsController {
 	public ItemsController(ItemService itemService) {
 		this.itemService = itemService;
 	}
+
 	@GetMapping("/{id}")
 	public ResponseEntity<Item> getItemById(@PathVariable("id") String id) {
 		return ResponseEntity.of(itemService.findItemById(id));

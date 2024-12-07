@@ -1,11 +1,10 @@
 spring:
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
   application:
     name: better-marketplace
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
-  h2:
-    console:
-      enabled: true
+    url: jdbc:postgresql://localhost:5432/marketplace
+    driver-class-name: org.postgresql.Driver
+    username: marketplace
+    password: changeit
