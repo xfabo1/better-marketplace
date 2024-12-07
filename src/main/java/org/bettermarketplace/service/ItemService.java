@@ -18,4 +18,8 @@ public class ItemService {
 	public Optional<Item> findItemById(String id) {
 		return itemDao.findItemById(id);
 	}
+
+	public void createItem(Item item) {
+		itemDao.insertItem(item);
+	}
 }
