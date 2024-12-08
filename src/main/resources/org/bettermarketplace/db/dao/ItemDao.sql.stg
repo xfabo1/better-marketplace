@@ -1,5 +1,3 @@
-group ItemDao;
-
 findItemById(id) ::= <<
   SELECT id, name
   FROM items
