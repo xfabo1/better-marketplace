@@ -1,0 +1,17 @@
+group ItemDao;
+
+findItemById(id) ::= <<
+  SELECT id, name
+  FROM items
+  where id = :id
+>>
+
+insertItem(item) ::= <<
+  INSERT INTO items VALUES(:item.id, :item.name)
+>>
+
+updateItem(id, updatedItem) ::= <<
+  UPDATE items
+  SET name = :updatedItem.name
+  WHERE id = :id
+>>
