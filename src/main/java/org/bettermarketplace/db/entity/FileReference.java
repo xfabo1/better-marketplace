@@ -1,4 +1,4 @@
-package org.bettermarketplace.files.entity;
+package org.bettermarketplace.db.entity;
 
 import lombok.Data;
 

@@ -1,7 +1,7 @@
-package org.bettermarketplace.files.repository;
+package org.bettermarketplace.db;
 
-import org.bettermarketplace.files.dao.FileReferenceDao;
-import org.bettermarketplace.files.entity.FileReference;
+import org.bettermarketplace.db.dao.FileReferenceDao;
+import org.bettermarketplace.db.entity.FileReference;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -16,7 +16,9 @@ public class FileRepository {
     }
 
     public FileReference saveAndReturn(FileReference fileReference) {
-        return fileReferenceDao.insertFile(fileReference);
+        var id = fileReferenceDao.insertFile(fileReference);
+        fileReference.setId(id);
+        return fileReference;
     }
 
     public void update(FileReference fileReference) {

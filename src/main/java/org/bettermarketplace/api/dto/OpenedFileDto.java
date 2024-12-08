@@ -1,8 +1,8 @@
-package org.bettermarketplace.files.api;
+package org.bettermarketplace.api.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.bettermarketplace.files.entity.FileReference;
+import org.bettermarketplace.db.entity.FileReference;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

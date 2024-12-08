@@ -1,7 +1,9 @@
-package org.bettermarketplace.files.api;
+package org.bettermarketplace.api;
 
-import org.bettermarketplace.files.entity.FileReference;
-import org.bettermarketplace.files.service.FileService;
+import org.bettermarketplace.api.dto.OpenedFileDto;
+import org.bettermarketplace.api.dto.RenameFileDto;
+import org.bettermarketplace.db.entity.FileReference;
+import org.bettermarketplace.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

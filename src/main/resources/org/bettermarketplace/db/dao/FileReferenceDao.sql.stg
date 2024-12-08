@@ -1,17 +1,15 @@
-group FileReferenceDao;
-
-insertFile(file) ::= <<
-INSERT INTO file_reference VALUES (:file.name, :file.type)
+insertFile(fileReference) ::= <<
+  INSERT INTO file_reference(name,type) VALUES (:fileReference.name, :fileReference.type)
 >>
 
 selectFile(id) ::= <<
-SELECT file.*
-FROM file_reference
-WHERE id = :id
+  SELECT file.*
+  FROM file_reference
+  WHERE id = :id
 >>
 
-updateFile(file) ::= <<
-UPDATE file_reference
-SET name = :file.name
-WHERE id = :file.id
+updateFile(fileReference) ::= <<
+  UPDATE file_reference
+  SET name = :fileReference.name
+  WHERE id = :fileReference.id
 >>

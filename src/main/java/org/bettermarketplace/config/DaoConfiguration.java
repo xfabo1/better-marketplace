@@ -1,7 +1,7 @@
 package org.bettermarketplace.config;
 
 import org.bettermarketplace.db.dao.ItemDao;
-import org.bettermarketplace.files.dao.FileReferenceDao;
+import org.bettermarketplace.db.dao.FileReferenceDao;
 import org.jdbi.v3.core.Jdbi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

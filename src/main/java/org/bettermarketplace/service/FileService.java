@@ -1,14 +1,4 @@
-package org.bettermarketplace.files.service;
-
-import org.bettermarketplace.files.api.OpenedFileDto;
-import org.bettermarketplace.files.api.RenameFileDto;
-import org.bettermarketplace.files.entity.FileReference;
-import org.bettermarketplace.files.repository.FileRepository;
-import org.jdbi.v3.sqlobject.transaction.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+package org.bettermarketplace.service;
 
 import java.io.IOError;
 import java.io.IOException;
@@ -19,6 +9,16 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.bettermarketplace.api.dto.OpenedFileDto;
+import org.bettermarketplace.api.dto.RenameFileDto;
+import org.bettermarketplace.db.FileRepository;
+import org.bettermarketplace.db.entity.FileReference;
+import org.jdbi.v3.sqlobject.transaction.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileService {
@@ -66,7 +66,6 @@ public class FileService {
         ).collect(Collectors.toList());
     }
 
-    @Transaction
     private OpenedFileDto createReference(MultipartFile file) {
         FileReference fileReference = new FileReference();
         fileReference.setName(file.getOriginalFilename());

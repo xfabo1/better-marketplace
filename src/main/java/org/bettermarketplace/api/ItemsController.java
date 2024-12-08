@@ -1,4 +1,4 @@
-package org.bettermarketplace.rest;
+package org.bettermarketplace.api;
 
 import org.bettermarketplace.db.entity.Item;
 import org.bettermarketplace.service.ItemService;

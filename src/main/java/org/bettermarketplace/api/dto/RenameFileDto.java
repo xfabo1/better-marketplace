@@ -1,4 +1,4 @@
-package org.bettermarketplace.files.api;
+package org.bettermarketplace.api.dto;
 
 public record RenameFileDto(String name) {
 }
