@@ -8,15 +8,15 @@
         <tagDatabase tag="0"/>
     </changeSet>
 
-    <changeSet id="01-01-initial-migration-tables" author="xkollar3">
+    <changeSet id="01-02-initial-migration-tables" author="xkollar3">
         <createTable tableName="user">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" primaryKeyName="user_pk"/>
             </column>
-            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+            <column name="created" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated" type="timestamp" defaultValue="current_timestamp()">
+            <column name="updated" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
             <column name="name" type="varchar(255)">
@@ -30,10 +30,10 @@
             <column name="id" type="bigint">
                 <constraints primaryKeyName="state_pk" primaryKey="true"/>
             </column>
-            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+            <column name="created" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated" type="timestamp" defaultValue="current_timestamp()">
+            <column name="updated" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
             <column name="name" type="varchar(255)">
@@ -44,10 +44,10 @@
             <column name="id" type="bigint">
                 <constraints primaryKeyName="city_pk" primaryKey="true"/>
             </column>
-            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+            <column name="created" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated" type="timestamp" defaultValue="current_timestamp()">
+            <column name="updated" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
             <column name="state_id" type="bigint">
@@ -61,10 +61,10 @@
             <column name="id" type="bigint">
                 <constraints primaryKeyName="urban_district_pk" primaryKey="true"/>
             </column>
-            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+            <column name="created" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated" type="timestamp" defaultValue="current_timestamp()">
+            <column name="updated" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
             <column name="city_id" type="bigint">
@@ -84,7 +84,7 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" primaryKeyName="review_pk"/>
             </column>
-            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+            <column name="created" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
             <column name="comment" type="varchar(5000)"/>
@@ -98,17 +98,20 @@
                 <constraints nullable="false" referencedTableName="user" referencedColumnNames="id" foreignKeyName="review_reviewee_user_id"/>
             </column>
         </createTable>
-        <createTable tableName="file">
-            <column name="id" type="bigint">
+        <createTable tableName="file_reference">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKeyName="file_id" primaryKey="true"/>
             </column>
-            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+            <column name="created" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated" type="timestamp" defaultValue="current_timestamp()">
+            <column name="updated" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
-            <column name="path" type="varchar(255)">
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -116,10 +119,10 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" primaryKeyName="item_pk"/>
             </column>
-            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+            <column name="created" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated" type="timestamp" defaultValue="current_timestamp()">
+            <column name="updated" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
             <column name="user_id" type="bigint">
@@ -144,7 +147,7 @@
                 <constraints nullable="false" referencedColumnNames="id" referencedTableName="item" foreignKeyName="item_photo_item_id"/>
             </column>
             <column name="file_id" type="bigint">
-                <constraints nullable="false" referencedColumnNames="id" referencedTableName="file" foreignKeyName="item_photo_file_id"/>
+                <constraints nullable="false" referencedColumnNames="id" referencedTableName="file_reference" foreignKeyName="item_photo_file_id"/>
             </column>
         </createTable>
         <createTable tableName="review_photo">
@@ -152,7 +155,7 @@
                 <constraints nullable="false" referencedColumnNames="id" referencedTableName="review" foreignKeyName="review_photo_review_id"/>
             </column>
             <column name="file_id" type="bigint">
-                <constraints nullable="false" referencedColumnNames="id" referencedTableName="file" foreignKeyName="review_photo_file_id"/>
+                <constraints nullable="false" referencedColumnNames="id" referencedTableName="file_reference" foreignKeyName="review_photo_file_id"/>
             </column>
         </createTable>
     </changeSet>

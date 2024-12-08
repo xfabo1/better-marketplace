@@ -1,3 +1,5 @@
+group ItemDao;
+
 findItemById(id) ::= <<
   SELECT id, name
   FROM items
@@ -5,7 +7,7 @@ findItemById(id) ::= <<
 >>
 
 insertItem(item) ::= <<
-  INSERT INTO items VALUES(:item.id, :item.name)
+  INSERT INTO items VALUES(:item.id, :item.name) RETURNING *;
 >>
 
 updateItem(id, updatedItem) ::= <<
