@@ -13,6 +13,12 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" primaryKeyName="user_pk"/>
             </column>
+            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
+            </column>
             <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
@@ -24,6 +30,12 @@
             <column name="id" type="bigint">
                 <constraints primaryKeyName="state_pk" primaryKey="true"/>
             </column>
+            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
+            </column>
             <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
@@ -31,6 +43,12 @@
         <createTable tableName="city">
             <column name="id" type="bigint">
                 <constraints primaryKeyName="city_pk" primaryKey="true"/>
+            </column>
+            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
             </column>
             <column name="state_id" type="bigint">
                 <constraints nullable="false" referencedColumnNames="id" referencedTableName="state" foreignKeyName="city_state_id"/>
@@ -42,6 +60,12 @@
         <createTable tableName="urban_district">
             <column name="id" type="bigint">
                 <constraints primaryKeyName="urban_district_pk" primaryKey="true"/>
+            </column>
+            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
             </column>
             <column name="city_id" type="bigint">
                 <constraints nullable="false" referencedTableName="city" referencedColumnNames="id" foreignKeyName="urban_district_city_id"/>
@@ -60,6 +84,9 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" primaryKeyName="review_pk"/>
             </column>
+            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
+            </column>
             <column name="comment" type="varchar(5000)"/>
             <column name="rating" type="float">
                 <constraints nullable="false"/>
@@ -75,6 +102,12 @@
             <column name="id" type="bigint">
                 <constraints primaryKeyName="file_id" primaryKey="true"/>
             </column>
+            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
+            </column>
             <column name="path" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
@@ -82,6 +115,12 @@
         <createTable tableName="item">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" primaryKeyName="item_pk"/>
+            </column>
+            <column name="created" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="timestamp" defaultValue="current_timestamp()">
+                <constraints nullable="false"/>
             </column>
             <column name="user_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="item_user_pk" referencedTableName="user" referencedColumnNames="id"/>
@@ -117,5 +156,6 @@
             </column>
         </createTable>
     </changeSet>
+
 <!--    TODO: unique constraints/indices-->
 </databaseChangeLog>
