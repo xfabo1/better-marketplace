@@ -9,6 +9,42 @@
     </changeSet>
 
     <changeSet id="01-02-initial-migration-tables" author="xkollar3">
+        <createTable tableName="state">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="state_pk"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="city">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="city_id"/>
+            </column>
+            <column name="state_id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" foreignKeyName="city_state_pk" referencedColumnNames="id"
+                             referencedTableName="state"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="urban_district">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true" primaryKeyName="urban_district_pk"/>
+            </column>
+            <column name="city_id" type="bigint">
+                <constraints unique="true" nullable="false" referencedColumnNames="id" foreignKeyName="urban_district_city_pk"
+                             referencedTableName="city"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="latitude" type="float">
+                <constraints nullable="false"/>
+            </column>
+            <column name="longitude" type="float">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
         <createTable tableName="user">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" primaryKeyName="user_pk"/>
@@ -23,60 +59,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="surname" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <createTable tableName="state">
-            <column name="id" type="bigint">
-                <constraints primaryKeyName="state_pk" primaryKey="true"/>
-            </column>
-            <column name="created" type="timestamp" defaultValue="now()">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated" type="timestamp" defaultValue="now()">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <createTable tableName="city">
-            <column name="id" type="bigint">
-                <constraints primaryKeyName="city_pk" primaryKey="true"/>
-            </column>
-            <column name="created" type="timestamp" defaultValue="now()">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated" type="timestamp" defaultValue="now()">
-                <constraints nullable="false"/>
-            </column>
-            <column name="state_id" type="bigint">
-                <constraints nullable="false" referencedColumnNames="id" referencedTableName="state" foreignKeyName="city_state_id"/>
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <createTable tableName="urban_district">
-            <column name="id" type="bigint">
-                <constraints primaryKeyName="urban_district_pk" primaryKey="true"/>
-            </column>
-            <column name="created" type="timestamp" defaultValue="now()">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated" type="timestamp" defaultValue="now()">
-                <constraints nullable="false"/>
-            </column>
-            <column name="city_id" type="bigint">
-                <constraints nullable="false" referencedTableName="city" referencedColumnNames="id" foreignKeyName="urban_district_city_id"/>
-            </column>
-            <column name="postal_code" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="location" type="geography">
-                <constraints nullable="false"/>
-            </column>
-            <column name="approximate_radius" type="int">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -138,7 +120,7 @@
             <column name="currency" type="varchar(10)">
                 <constraints nullable="false"/>
             </column>
-            <column name="urban_district_id" type="bigint">
+            <column name="urban_district_id" type="varchar(255)">
                 <constraints nullable="false" foreignKeyName="item_urban_district_id" referencedTableName="urban_district" referencedColumnNames="id"/>
             </column>
         </createTable>
@@ -156,49 +138,6 @@
             </column>
             <column name="file_id" type="bigint">
                 <constraints nullable="false" referencedColumnNames="id" referencedTableName="file_reference" foreignKeyName="review_photo_file_id"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="01-03-initial-migration-tag" author="xfabo1">
-        <createTable tableName="urban_district">
-            <column name="id" type="varchar(255)">
-                <constraints primaryKey="true" primaryKeyName="urban_district_pk"/>
-            </column>
-            <column name="city_id" type="bigint">
-                <constraints unique="true" nullable="false" referencedColumnNames="id" foreignKeyName="urban_district_city_pk"
-                             referencedTableName="city"/>
-            </column>
-            <column name="name" type="varchar(255)"/>
-            <column name="latitude" type="float">
-                <constraints nullable="false"/>
-            </column>
-            <column name="longitude">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet id="01-04-initial-migration-tag" author="xfabo1">
-        <createTable tableName="city">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" primaryKeyName="city_id"/>
-            </column>
-            <column name="state_id" type="bigint" autoIncrement="true">
-                <constraints nullable="false" unique="true" foreignKeyName="city_state_pk" referencedColumnNames="id"
-                             referencedTableName="state"/>
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet id="01-05-initial-migration-tag" author="xfabo1">
-        <createTable tableName="state">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" primaryKeyName="state_pk"/>
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
