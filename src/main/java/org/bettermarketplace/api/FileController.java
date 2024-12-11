@@ -2,7 +2,7 @@ package org.bettermarketplace.api;
 
 import org.bettermarketplace.api.dto.OpenedFileDto;
 import org.bettermarketplace.api.dto.RenameFileDto;
-import org.bettermarketplace.db.entity.FileReference;
+import org.bettermarketplace.db.entity.FileReferenceDbo;
 import org.bettermarketplace.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +39,7 @@ public class FileController {
 
     @PatchMapping("/{id}/rename")
     public ResponseEntity<Void> rename(@PathVariable("id") Long id, @RequestBody RenameFileDto renameFileDto) {
-        FileReference file = fileService.rename(id, renameFileDto);
+        FileReferenceDbo file = fileService.rename(id, renameFileDto);
         if (file == null) {
             return ResponseEntity.notFound().build();
         } else {

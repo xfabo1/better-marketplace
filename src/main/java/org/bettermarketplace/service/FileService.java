@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 import org.bettermarketplace.api.dto.OpenedFileDto;
 import org.bettermarketplace.api.dto.RenameFileDto;
 import org.bettermarketplace.db.dao.FileReferenceDao;
-import org.bettermarketplace.db.entity.FileReference;
+import org.bettermarketplace.db.entity.FileReferenceDbo;
+import org.bettermarketplace.model.FileReference;
 import org.jdbi.v3.sqlobject.transaction.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,21 +33,21 @@ public class FileService {
         this.directory = Path.of(directory);
     }
 
-    public FileReference rename(Long id, RenameFileDto renameFileDto) {
-        Optional<FileReference> file = fileReferenceDao.selectFile(id);
+    public FileReferenceDbo rename(Long id, RenameFileDto renameFileDto) {
+        Optional<FileReferenceDbo> file = fileReferenceDao.selectFile(id);
 
         if (file.isEmpty()) {
             return null;
         }
 
-        FileReference fileReference = file.get();
-        fileReference.setName(renameFileDto.name());
-        fileReferenceDao.update(fileReference);
-        return fileReference;
+        FileReferenceDbo fileReferenceDbo = file.get();
+        FileReferenceDbo updatedFileReference = FileReferenceDbo.from(fileReferenceDbo, renameFileDto);
+        fileReferenceDao.update(updatedFileReference);
+        return updatedFileReference;
     }
 
     public OpenedFileDto openFile(Long id) {
-        Optional<FileReference> file = fileReferenceDao.selectFile(id);
+        Optional<FileReferenceDbo> file = fileReferenceDao.selectFile(id);
 
         if (file.isEmpty()) {
             return null;
@@ -69,15 +70,15 @@ public class FileService {
         fileReference.setName(file.getOriginalFilename());
         fileReference.setType(file.getContentType());
 
-        var id = fileReferenceDao.insertFile(fileReference);
-        fileReference.setId(id);
+        Long id = fileReferenceDao.insertFile(fileReference);
+        FileReferenceDbo fileReferenceDbo = FileReferenceDbo.from(id, fileReference);
 
-        return createFileOnFs(file, fileReference);
+        return createFileOnFs(file, fileReferenceDbo);
     }
 
-    private OpenedFileDto createFileOnFs(MultipartFile file, FileReference fileReference) {
+    private OpenedFileDto createFileOnFs(MultipartFile file, FileReferenceDbo fileReference) {
         try (InputStream inputStream = file.getInputStream()) {
-            Files.copy(inputStream, createPath(fileReference.getId()), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(inputStream, createPath(fileReference.id()), StandardCopyOption.REPLACE_EXISTING);
             return OpenedFileDto.from(fileReference, inputStream.readAllBytes());
         } catch (IOException e) {
             throw new IOError(e);
