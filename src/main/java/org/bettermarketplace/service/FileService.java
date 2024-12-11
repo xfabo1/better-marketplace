@@ -42,7 +42,7 @@ public class FileService {
 
         FileReferenceDbo fileReferenceDbo = file.get();
         FileReferenceDbo updatedFileReference = FileReferenceDbo.from(fileReferenceDbo, renameFileDto);
-        fileReferenceDao.update(updatedFileReference);
+        fileReferenceDao.updateFile(updatedFileReference);
         return updatedFileReference;
     }
 
