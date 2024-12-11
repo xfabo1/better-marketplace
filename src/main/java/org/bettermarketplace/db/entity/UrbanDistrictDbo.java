@@ -1,5 +1,11 @@
 package org.bettermarketplace.db.entity;
 
-public record UrbanDistrictDbo(String id, Long city_id, String name, float latitude, float longitude) {
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
+
+public record UrbanDistrictDbo(String id,
+							   @ColumnName("city_id") Long cityId,
+							   String name,
+							   float latitude,
+							   float longitude) {
 }
 
