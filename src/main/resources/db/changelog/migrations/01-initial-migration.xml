@@ -160,5 +160,47 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="01-03-initial-migration-tag" author="xfabo1">
+        <createTable tableName="urban_district">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true" primaryKeyName="urban_district_pk"/>
+            </column>
+            <column name="city_id" type="bigint">
+                <constraints unique="true" nullable="false" referencedColumnNames="id" foreignKeyName="urban_district_city_pk"
+                             referencedTableName="city"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="latitude" type="float">
+                <constraints nullable="false"/>
+            </column>
+            <column name="longitude">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="01-04-initial-migration-tag" author="xfabo1">
+        <createTable tableName="city">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="city_id"/>
+            </column>
+            <column name="state_id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" foreignKeyName="city_state_pk" referencedColumnNames="id"
+                             referencedTableName="state"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="01-05-initial-migration-tag" author="xfabo1">
+        <createTable tableName="state">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="state_pk"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 <!--    TODO: unique constraints/indices-->
 </databaseChangeLog>
