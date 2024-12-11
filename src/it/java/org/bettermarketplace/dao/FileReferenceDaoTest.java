@@ -2,8 +2,8 @@ package org.bettermarketplace.dao;
 
 import org.bettermarketplace.configuration.PostgisTest;
 import org.bettermarketplace.db.dao.FileReferenceDao;
-import org.bettermarketplace.db.entity.FileReference;
-import org.junit.Test;
+import org.bettermarketplace.model.FileReference;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FileReferenceDaoTest extends PostgisTest {
@@ -16,6 +16,6 @@ public class FileReferenceDaoTest extends PostgisTest {
         FileReference fileReference = new FileReference();
         fileReference.setName("test");
         fileReference.setType("jpeg");
-        fileReferenceDao.insertFile(fileReference);
+        var id = fileReferenceDao.insertFile(fileReference);
     }
 }

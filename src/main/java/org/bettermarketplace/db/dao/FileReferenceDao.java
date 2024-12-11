@@ -1,6 +1,7 @@
 package org.bettermarketplace.db.dao;
 
-import org.bettermarketplace.db.entity.FileReference;
+import org.bettermarketplace.db.entity.FileReferenceDbo;
+import org.bettermarketplace.model.FileReference;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -12,7 +13,7 @@ import org.jdbi.v3.stringtemplate4.UseStringTemplateSqlLocator;
 import java.util.Optional;
 
 @UseStringTemplateSqlLocator
-@RegisterBeanMapper(FileReference.class)
+@RegisterBeanMapper(FileReferenceDbo.class)
 public interface FileReferenceDao {
 
     @SqlUpdate
@@ -20,8 +21,8 @@ public interface FileReferenceDao {
     Long insertFile(@BindBean("fileReference") FileReference fileReference);
 
     @SqlQuery
-    Optional<FileReference> selectFile(@Bind("id") Long id);
+    Optional<FileReferenceDbo> selectFile(@Bind("id") Long id);
 
     @SqlUpdate
-    void update(@BindBean("fileReference") FileReference fileReference);
+    void update(@BindBean("fileReference") FileReferenceDbo fileReference);
 }
