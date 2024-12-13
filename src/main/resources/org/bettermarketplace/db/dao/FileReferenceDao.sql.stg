@@ -1,5 +1,5 @@
-insertFile() ::= <<
-  INSERT INTO file_reference(name,type) VALUES (:name, :type)
+insertFile(fileReference) ::= <<
+  INSERT INTO file_reference(name,type) VALUES (:fileReference.name, :fileReference.type)
 >>
 
 selectFile(id) ::= <<
@@ -8,8 +8,8 @@ selectFile(id) ::= <<
   WHERE id = :id
 >>
 
-updateFile() ::= <<
+updateFile(fileReference) ::= <<
   UPDATE file_reference
-  SET name = :name
-  WHERE id = :id
+  SET name = :fileReference.name
+  WHERE id = :fileReference.id
 >>

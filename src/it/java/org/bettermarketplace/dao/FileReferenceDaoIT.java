@@ -9,16 +9,17 @@ import org.bettermarketplace.model.FileReference;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class FileReferenceDaoTest extends PostgisTest {
+public class FileReferenceDaoIT extends PostgisTest {
 
     @Autowired
     private FileReferenceDao fileReferenceDao;
 
     @Test
     public void insertEntity_validEntity_entityPresentInDatabase() {
-        var fileReference = new FileReference();
-        fileReference.setName("test");
-        fileReference.setType("jpeg");
+        var fileReference = FileReference.builder()
+                .name("test")
+                .type("jpeg")
+                .build();
 
 		var id = fileReferenceDao.insertFile(fileReference);
 		var fileReferenceDbo = fileReferenceDao.selectFile(id);
@@ -31,9 +32,10 @@ public class FileReferenceDaoTest extends PostgisTest {
 
     @Test
     public void updateFileEntity_validEntity_entityUpdated() {
-        var fileReference = new FileReference();
-        fileReference.setName("test");
-        fileReference.setType("jpeg");
+        var fileReference = FileReference.builder()
+                .name("test")
+                .type("jpeg")
+                .build();
 
         var id = fileReferenceDao.insertFile(fileReference);
         var fileReferenceDbo = fileReferenceDao.selectFile(id);

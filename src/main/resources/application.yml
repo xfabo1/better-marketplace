@@ -8,6 +8,17 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: marketplace
     password: changeit
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+
+clients:
+  open-data-client:
+    url: 'https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/geonames-postal-code@public/exports'
 
 file-service:
   storage-directory: /files

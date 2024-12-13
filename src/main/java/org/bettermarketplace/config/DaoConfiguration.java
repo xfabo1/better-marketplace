@@ -1,6 +1,7 @@
 package org.bettermarketplace.config;
 
 import org.bettermarketplace.db.dao.FileReferenceDao;
+import org.bettermarketplace.db.dao.LocationDao;
 import org.jdbi.v3.core.Jdbi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,5 +12,10 @@ public class DaoConfiguration {
 	@Bean
 	public FileReferenceDao fileReferenceDao(Jdbi jdbi) {
 		return jdbi.onDemand(FileReferenceDao.class);
+	}
+
+	@Bean
+	public LocationDao locationDao(Jdbi jdbi) {
+		return jdbi.onDemand(LocationDao.class);
 	}
 }
