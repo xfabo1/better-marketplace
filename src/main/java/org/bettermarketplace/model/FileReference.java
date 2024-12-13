@@ -4,24 +4,26 @@ import java.time.Instant;
 
 import org.bettermarketplace.db.entity.FileReferenceDbo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
+@AllArgsConstructor
 public class FileReference {
 
-	private Long id;
 	private Instant createdAt;
 	private Instant updatedAt;
 	private String type;
 	private String name;
 
 	public static FileReference from(FileReferenceDbo fileReferenceDbo) {
-		FileReference fileReference = new FileReference();
-		fileReference.setId(fileReferenceDbo.id());
-		fileReference.setName(fileReferenceDbo.name());
-		fileReference.setType(fileReferenceDbo.type());
-		fileReference.setCreatedAt(fileReferenceDbo.createdAt());
-		fileReference.setUpdatedAt(fileReferenceDbo.updatedAt());
-		return fileReference;
+		return FileReference.builder()
+				.createdAt(fileReferenceDbo.createdAt())
+				.updatedAt(fileReferenceDbo.updatedAt())
+				.type(fileReferenceDbo.type())
+				.name(fileReferenceDbo.name())
+				.build();
 	}
 }
