@@ -66,9 +66,10 @@ public class FileService {
     }
 
     private OpenedFileDto createReference(MultipartFile file) {
-        FileReference fileReference = new FileReference();
-        fileReference.setName(file.getOriginalFilename());
-        fileReference.setType(file.getContentType());
+        var fileReference = FileReference.builder()
+                .name(file.getName())
+                .type(file.getContentType())
+                .build();
 
         Long id = fileReferenceDao.insertFile(fileReference);
         FileReferenceDbo fileReferenceDbo = FileReferenceDbo.from(id, fileReference);

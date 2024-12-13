@@ -20,11 +20,11 @@ public interface FileReferenceDao {
     @SqlUpdate
     @GetGeneratedKeys
     @RegisterConstructorMapper(FileReference.class)
-    Long insertFile(@BindBean FileReference fileReference);
+    Long insertFile(@BindBean("fileReference") FileReference fileReference);
 
     @SqlQuery
     Optional<FileReferenceDbo> selectFile(@Bind("id") Long id);
 
     @SqlUpdate
-    void updateFile(@BindMethods FileReferenceDbo fileReference);
+    void updateFile(@BindMethods("fileReference") FileReferenceDbo fileReference);
 }
