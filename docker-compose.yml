@@ -9,6 +9,15 @@ services:
       - postgres-data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
+  marketplace-app:
+    container_name: better-marketplace
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+    - marketplace-database
+    ports:
+    - 8080:8080
 
 volumes:
   postgres-data: {}
