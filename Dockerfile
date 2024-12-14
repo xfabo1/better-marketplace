@@ -6,7 +6,7 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
 RUN \
- --mount=type=cache,target=~/.m2 \
+ --mount=type=cache,target=/root/.m2 \
  ./mvnw clean package
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 

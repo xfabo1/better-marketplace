@@ -16,6 +16,7 @@ public record LocationDbo(String id,
 		return LocationDbo.builder()
 				.id(postalCodeDto.postalCode())
 				.countryCode(postalCodeDto.countryCode())
+				.name(postalCodeDto.placeName())
 				.latitude(postalCodeDto.latitude())
 				.longitude(postalCodeDto.longitude())
 				.build();

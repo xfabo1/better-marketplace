@@ -1,7 +1,5 @@
 package org.bettermarketplace.service;
 
-import java.util.stream.Stream;
-
 import org.bettermarketplace.db.dao.LocationDao;
 import org.bettermarketplace.db.entity.LocationDbo;
 import org.bettermarketplace.http.OpenDataClient;
@@ -21,7 +19,7 @@ public class LocationService {
 	}
 
 	public void processPostalCodes(String refine) {
-		Stream<LocationDbo> locationDboStream = client.fetchPostalCodes(refine).map(LocationDbo::from);
-		locationDao.insertUrbanDistricts(locationDboStream);
+		var locationDboStream = client.fetchPostalCodes(refine).stream().map(LocationDbo::from).toList();
+		locationDao.insertLocations(locationDboStream);
 	}
 }
