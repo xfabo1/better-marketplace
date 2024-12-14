@@ -1,0 +1,10 @@
+insertLocations(location) ::= <<
+  INSERT INTO location(id, country_code, name, latitude, longitude)
+  VALUES (:location.id, :location.countryCode, :location.name, :location.latitude, :location.longitude)
+>>
+
+findLocation(id) ::= <<
+  SELECT *
+  FROM location
+  WHERE id=:id
+>>
