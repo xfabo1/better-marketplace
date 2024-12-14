@@ -1,27 +1,29 @@
 services:
-  better-marketplace_db:
-    container_name: better-marketplace_db
+  better-marketplace-db:
+    container_name: better-marketplace-db
     image: postgis/postgis
     environment:
     - POSTGRES_PASSWORD=changemelater
-    - POSTGRES_USER=marketplace_user
+    - POSTGRES_USER=marketplace-user
     - POSTGRES_DB=marketplace
     volumes:
     - marketplace-data:/var/lib/postgresql/data
     ports:
     - "5432:5432"
   marketplace-app:
+    profiles:
+      - start-app
     container_name: better-marketplace
     environment:
-    - SPRING_DATASOURCE_URL=jdbc:postgresql://better-marketplace_db:5432/marketplace
-    - SPRING_DATASOURCE_USERNAME=marketplace_user
+    - SPRING_DATASOURCE_URL=jdbc:postgresql://better-marketplace-db:5432/marketplace
+    - SPRING_DATASOURCE_USERNAME=marketplace-user
     - SPRING_DATASOURCE_PASSWORD=changemelater
     - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
     build:
       context: .
       dockerfile: ./Dockerfile
     depends_on:
-    - better-marketplace_db
+    - better-marketplace-db
     ports:
     - "8080:8080"
 
