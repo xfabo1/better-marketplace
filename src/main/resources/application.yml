@@ -5,7 +5,7 @@ spring:
     name: better-marketplace
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: marketplace_user
+    username: marketplace-user
     password: changemelater
     url: jdbc:postgresql://localhost:5432/marketplace
 feign:
