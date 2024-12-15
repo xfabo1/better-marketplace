@@ -1,0 +1,182 @@
+[
+  {
+    "country_code": "SK",
+    "postal_code": "976 02",
+    "place_name": "Turecká",
+    "admin_name1": "Banska Bystrica",
+    "admin_code1": "BC",
+    "admin_name2": "Okres Banská Bystrica",
+    "admin_code2": "601",
+    "admin_name3": null,
+    "admin_code3": null,
+    "latitude": 48.8494,
+    "longitude": 19.0845,
+    "accuracy": 3,
+    "coordinates": {
+      "lon": 19.0845,
+      "lat": 48.8494
+    }
+  },
+  {
+    "country_code": "SK",
+    "postal_code": "976 32",
+    "place_name": "Badín",
+    "admin_name1": "Banska Bystrica",
+    "admin_code1": "BC",
+    "admin_name2": "Okres Banská Bystrica",
+    "admin_code2": "601",
+    "admin_name3": null,
+    "admin_code3": null,
+    "latitude": 48.6638,
+    "longitude": 19.1232,
+    "accuracy": 4,
+    "coordinates": {
+      "lon": 19.1232,
+      "lat": 48.6638
+    }
+  },
+  {
+    "country_code": "SK",
+    "postal_code": "976 81",
+    "place_name": "Štiavnička",
+    "admin_name1": "Banska Bystrica",
+    "admin_code1": "BC",
+    "admin_name2": "Okres Banská Bystrica",
+    "admin_code2": "601",
+    "admin_name3": null,
+    "admin_code3": null,
+    "latitude": 48.7609,
+    "longitude": 19.231,
+    "accuracy": 4,
+    "coordinates": {
+      "lon": 19.231,
+      "lat": 48.7609
+    }
+  },
+  {
+    "country_code": "SK",
+    "postal_code": "962 02",
+    "place_name": "Vígľaš",
+    "admin_name1": "Banska Bystrica",
+    "admin_code1": "BC",
+    "admin_name2": "Okres Detva",
+    "admin_code2": "604",
+    "admin_name3": null,
+    "admin_code3": null,
+    "latitude": 48.5632,
+    "longitude": 19.3029,
+    "accuracy": 4,
+    "coordinates": {
+      "lon": 19.3029,
+      "lat": 48.5632
+    }
+  },
+  {
+    "country_code": "SK",
+    "postal_code": "985 32",
+    "place_name": "Jelšovec",
+    "admin_name1": "Banska Bystrica",
+    "admin_code1": "BC",
+    "admin_name2": "Okres Lučenec",
+    "admin_code2": "606",
+    "admin_name3": null,
+    "admin_code3": null,
+    "latitude": 48.2816,
+    "longitude": 19.6006,
+    "accuracy": 4,
+    "coordinates": {
+      "lon": 19.6006,
+      "lat": 48.2816
+    }
+  },
+  {
+    "country_code": "SK",
+    "postal_code": "985 59",
+    "place_name": "Vidiná",
+    "admin_name1": "Banska Bystrica",
+    "admin_code1": "BC",
+    "admin_name2": "Okres Lučenec",
+    "admin_code2": "606",
+    "admin_name3": null,
+    "admin_code3": null,
+    "latitude": 48.3591,
+    "longitude": 19.6543,
+    "accuracy": 4,
+    "coordinates": {
+      "lon": 19.6543,
+      "lat": 48.3591
+    }
+  },
+  {
+    "country_code": "SK",
+    "postal_code": "985 07",
+    "place_name": "Šoltýska",
+    "admin_name1": "Banska Bystrica",
+    "admin_code1": "BC",
+    "admin_name2": "Okres Poltár",
+    "admin_code2": "607",
+    "admin_name3": null,
+    "admin_code3": null,
+    "latitude": 48.5813,
+    "longitude": 19.747,
+    "accuracy": 4,
+    "coordinates": {
+      "lon": 19.747,
+      "lat": 48.5813
+    }
+  },
+  {
+    "country_code": "SK",
+    "postal_code": "980 31",
+    "place_name": "Hodejov",
+    "admin_name1": "Banska Bystrica",
+    "admin_code1": "BC",
+    "admin_name2": "Okres Rimavská Sobota",
+    "admin_code2": "609",
+    "admin_name3": null,
+    "admin_code3": null,
+    "latitude": 48.3012,
+    "longitude": 19.9898,
+    "accuracy": 4,
+    "coordinates": {
+      "lon": 19.9898,
+      "lat": 48.3012
+    }
+  },
+  {
+    "country_code": "SK",
+    "postal_code": "991 06",
+    "place_name": "Kováčovce",
+    "admin_name1": "Banska Bystrica",
+    "admin_code1": "BC",
+    "admin_name2": "Okres Veľký Krtíš",
+    "admin_code2": "610",
+    "admin_name3": null,
+    "admin_code3": null,
+    "latitude": 48.094,
+    "longitude": 19.4579,
+    "accuracy": 4,
+    "coordinates": {
+      "lon": 19.4579,
+      "lat": 48.094
+    }
+  },
+  {
+    "country_code": "SK",
+    "postal_code": "962 61",
+    "place_name": "Ostrá Lúka",
+    "admin_name1": "Banska Bystrica",
+    "admin_code1": "BC",
+    "admin_name2": "Okres Zvolen",
+    "admin_code2": "611",
+    "admin_name3": null,
+    "admin_code3": null,
+    "latitude": 48.5454,
+    "longitude": 19.0523,
+    "accuracy": 4,
+    "coordinates": {
+      "lon": 19.0523,
+      "lat": 48.5454
+    }
+  }
+]

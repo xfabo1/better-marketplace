@@ -19,6 +19,9 @@ public interface LocationDao {
 	@SqlQuery
 	Optional<LocationDbo> findLocation(@Bind("id") String id);
 
+	@SqlQuery
+	List<LocationDbo> findLocations();
+
 	@SqlBatch
 	@BatchChunkSize(1000)
 	int[] insertLocations(@BindMethods("location") List<LocationDbo> locations);

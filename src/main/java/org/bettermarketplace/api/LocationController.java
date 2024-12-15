@@ -18,7 +18,7 @@ public class LocationController {
 		this.locationService = locationService;
 	}
 
-	@PostMapping
+	@PostMapping("/process")
 	public void process(@RequestParam("refine") String refine) {
 		locationService.processPostalCodes(refine);
 	}
