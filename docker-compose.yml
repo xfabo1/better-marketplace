@@ -11,8 +11,6 @@ services:
     ports:
     - "5432:5432"
   marketplace-app:
-    profiles:
-      - start-app
     container_name: better-marketplace
     environment:
     - SPRING_DATASOURCE_URL=jdbc:postgresql://better-marketplace-db:5432/marketplace

@@ -1,6 +1,5 @@
 package org.bettermarketplace.dao;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -35,5 +34,13 @@ public class LocationDaoIT extends PostgisTest {
 						.build());
 		var insertedNumber = locationDao.insertLocations(records);
 		assertThat(insertedNumber.length).isEqualTo(2);
+
+		assertThat(locationDao.findLocations()).containsExactlyInAnyOrder(records.get(0), records.get(1));
+		assertThat(locationDao.findLocation("1")).isPresent()
+				.get()
+				.returns(11.111f, LocationDbo::latitude)
+				.returns(11.111f, LocationDbo::longitude)
+				.returns("Brno", LocationDbo::name)
+				.returns("CZ", LocationDbo::countryCode);
 	}
 }
