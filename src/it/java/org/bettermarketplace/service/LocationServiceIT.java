@@ -21,6 +21,7 @@ public class LocationServiceIT extends PostgisTest {
 	private static final String REFINE = "country_code:\"SK\"";
 	private static final List<PostalCodeDto> CLIENT_RESPONSE = readResource("/json/postal_codes.json",
 			new TypeReference<>() {});
+	private static final String POSTAL_CODE = "976 02";
 
 	@Autowired
 	private LocationDao locationDao;
@@ -38,6 +39,7 @@ public class LocationServiceIT extends PostgisTest {
 	void fetchData_successfulFetch_dataStoredInDatabase() {
 		locationService.processPostalCodes(REFINE);
 		assertThat(locationDao.findLocations()).hasSize(10);
+		assertThat(locationDao.findLocation(POSTAL_CODE)).isPresent();
 	}
 }
 

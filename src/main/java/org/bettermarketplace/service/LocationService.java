@@ -19,7 +19,7 @@ public class LocationService {
 	}
 
 	public void processPostalCodes(String refine) {
-		var locationDboStream = client.fetchPostalCodes(refine).stream().map(LocationDbo::from).toList();
-		locationDao.insertLocations(locationDboStream);
+		var locations = client.fetchPostalCodes(refine).stream().map(LocationDbo::from).toList();
+		locationDao.insertLocations(locations);
 	}
 }
