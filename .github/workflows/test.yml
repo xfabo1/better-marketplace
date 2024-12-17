@@ -7,18 +7,11 @@
 # documentation.
 
 name: Test and build application
-
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
-
 jobs:
-  build:
-
+  build-test:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 23
@@ -29,6 +22,5 @@ jobs:
         cache: maven
     - name: Set executable permission for mvnw
       run: chmod +x ./mvnw
-
     - name: Build with Maven
       run: ./mvnw clean verify
