@@ -1,0 +1,14 @@
+insertUser(user) ::= <<
+  INSERT INTO user VALUES (:user.name, :user.surname, :user.email)
+>>
+
+getUser(id) ::= <<
+  SELECT *
+  FROM user
+  WHERE id=:id
+>>
+
+getUser() ::= <<
+  SELECT *
+  FROM user;
+>>
