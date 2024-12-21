@@ -1,3 +1,8 @@
+server:
+  servlet:
+    context-path: '/api/better-marketplace'
+  port: 8080
+
 spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
@@ -8,13 +13,13 @@ spring:
     username: marketplace-user
     password: changemelater
     url: jdbc:postgresql://localhost:5432/marketplace
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 10000
-        loggerLevel: basic
+  openfeign:
+    client:
+      config:
+        default:
+          connectTimeout: 5000
+          readTimeout: 10000
+          loggerLevel: basic
 
 clients:
   open-data-client:

@@ -6,6 +6,9 @@ import org.bettermarketplace.api.dto.RenameFileDto;
 import org.bettermarketplace.model.FileReference;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
+import lombok.Builder;
+
+@Builder
 public record FileReferenceDbo(Long id,
 							   @ColumnName("created_at") Instant createdAt,
 							   @ColumnName("updated_at") Instant updatedAt,
@@ -13,13 +16,23 @@ public record FileReferenceDbo(Long id,
 							   String type) {
 
 	public static FileReferenceDbo from(Long id, FileReference fileReference) {
-		return new FileReferenceDbo(id, fileReference.getCreatedAt(), fileReference.getUpdatedAt(), fileReference.getName(),
-				fileReference.getType());
+		return FileReferenceDbo.builder()
+				.id(id)
+				.createdAt(fileReference.getCreatedAt())
+				.updatedAt(fileReference.getUpdatedAt())
+				.name(fileReference.getName())
+				.type(fileReference.getType())
+				.build();
 	}
 
 	public static FileReferenceDbo from(FileReferenceDbo fileReferenceDbo, RenameFileDto renameFileDto) {
-		return new FileReferenceDbo(fileReferenceDbo.id(), fileReferenceDbo.createdAt, fileReferenceDbo.updatedAt,
-				renameFileDto.name(), fileReferenceDbo.type);
+		return FileReferenceDbo.builder()
+				.id(fileReferenceDbo.id())
+				.name(renameFileDto.name())
+				.updatedAt(fileReferenceDbo.updatedAt())
+				.createdAt(fileReferenceDbo.createdAt())
+				.type(fileReferenceDbo.type())
+				.build();
 	}
 }
 
