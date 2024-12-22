@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.bettermarketplace.db.entity.FileReferenceDbo;
 import org.bettermarketplace.model.FileReference;
+import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -19,7 +20,7 @@ public interface FileReferenceDao {
 
     @SqlUpdate
     @GetGeneratedKeys
-    @RegisterConstructorMapper(FileReference.class)
+    @RegisterBeanMapper(FileReference.class)
     Long insertFile(@BindBean("fileReference") FileReference fileReference);
 
     @SqlQuery

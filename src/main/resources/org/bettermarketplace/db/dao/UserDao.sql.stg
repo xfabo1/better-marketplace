@@ -1,14 +1,20 @@
-insertUser(user) ::= <<
-  INSERT INTO user VALUES (:user.name, :user.surname, :user.email)
+insertUser(userObject) ::= <<
+  INSERT INTO marketplace_user(username,email) VALUES (:userObject.username, :userObject.email)
 >>
 
 getUser(id) ::= <<
   SELECT *
-  FROM user
+  FROM marketplace_user
   WHERE id=:id
 >>
 
-getUser() ::= <<
+getUsers() ::= <<
   SELECT *
-  FROM user;
+  FROM marketplace_user
+>>
+
+deleteUser(id) ::= <<
+  DELETE
+  FROM marketplace_user
+  WHERE id=:id
 >>

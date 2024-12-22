@@ -19,9 +19,9 @@ public class UserService {
 	}
 
 	public User insertUser(CreateUserDto createUserDto) {
-		var user = User.from(createUserDto);
-		userDao.insertUser(user);
-		return user;
+		var id = userDao.insertUser(User.from(createUserDto));
+		var user = userDao.getUser(id);
+		return user.map(User::from).orElse(null);
 	}
 
 	public User getUser(Long id) {
@@ -31,5 +31,9 @@ public class UserService {
 
 	public Stream<User> getUsers() {
 		return userDao.getUsers().stream().map(User::from);
+	}
+
+	public void deleteUser(Long id) {
+		userDao.deleteUser(id);
 	}
 }
