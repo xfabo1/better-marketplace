@@ -7,7 +7,8 @@ import lombok.Builder;
 
 @Builder
 public record LocationDbo(String id,
-						  @ColumnName("country_code") String countryCode,
+						  @ColumnName("country_code")
+						  String countryCode,
 						  String name,
 						  float latitude,
 						  float longitude) {
@@ -22,4 +23,3 @@ public record LocationDbo(String id,
 				.build();
 	}
 }
-
