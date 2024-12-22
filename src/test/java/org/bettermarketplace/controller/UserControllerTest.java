@@ -1,7 +1,10 @@
 package org.bettermarketplace.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,16 +49,15 @@ public class UserControllerTest {
 	void insertUser_validBody_userCreated() throws Exception {
 		var createUserDto = CreateUserDto.builder()
 				.email("random@gmail.com")
-				.name("test")
-				.surname("test")
+				.username("test")
+				.password("test")
 				.build();
 		var user = User.from(createUserDto);
-
 		when(userService.insertUser(createUserDto)).thenReturn(user);
 
 		var result = mockMvc.perform(post(USER_CONTROLLER_PATH + "/user")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(createUserDto)))
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(createUserDto)))
 				.andExpect(status().is(201))
 				.andReturn()
 				.getResponse().getContentAsString();
@@ -62,13 +65,47 @@ public class UserControllerTest {
 		var userDto = objectMapper.readValue(result, UserDto.class);
 
 		assertThat(userDto)
-				.returns("test", UserDto::name)
-				.returns("test", UserDto::surname)
+				.returns("test", UserDto::username)
 				.returns("random@gmail.com", UserDto::email);
 	}
 
 	@Test
-	void getUsers_validRequest_usersReturned() {
-		when(userService.getUsers()).thenReturn(Stream.of());
+	void getUsers_validRequest_usersReturned() throws Exception {
+		var user = User.builder()
+				.username("test")
+				.email("random@gmail.com")
+				.build();
+
+		when(userService.getUsers()).thenReturn(Stream.of(user));
+
+		var result = mockMvc.perform(get(USER_CONTROLLER_PATH))
+				.andExpect(status().isOk())
+				.andReturn()
+				.getResponse()
+				.getContentAsString();
+		var listOfUsers = objectMapper.readValue(result, new TypeReference<List<UserDto>>() {});
+		assertThat(listOfUsers)
+				.extracting(UserDto::email, UserDto::username)
+				.containsExactly(tuple("random@gmail.com", "test"));
+	}
+
+	@Test
+	void getUser_validRequest_userReturned() throws Exception {
+		var user = User.builder()
+				.username("test")
+				.email("random@gmail.com")
+				.build();
+		when(userService.getUser(anyLong())).thenReturn(user);
+
+		var result = mockMvc.perform(get(USER_CONTROLLER_PATH + "/user/1"))
+				.andExpect(status().isOk())
+				.andReturn()
+				.getResponse()
+				.getContentAsString();
+		var userDto = objectMapper.readValue(result, UserDto.class);
+
+		assertThat(userDto)
+				.returns("test", UserDto::username)
+				.returns("random@gmail.com", UserDto::email);
 	}
 }

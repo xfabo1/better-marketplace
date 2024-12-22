@@ -4,11 +4,11 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="01-01-initial-migration-tag" author="xkollar3">
+    <changeSet id="01-01-initial-migration-tag" author="xkollar3/xfabo1">
         <tagDatabase tag="0"/>
     </changeSet>
 
-    <changeSet id="01-02-initial-migration-tables" author="xkollar3">
+    <changeSet id="01-02-initial-migration-tables" author="xkollar3/xfabo1">
         <createTable tableName="location">
             <column name="id" type="varchar(255)">
                 <constraints primaryKey="true" primaryKeyName="location_pk"/>
@@ -33,11 +33,11 @@
             <column name="updated_at" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
+            <column name="username" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
             </column>
-            <column name="surname" type="varchar(255)">
-                <constraints nullable="false"/>
+            <column name="email" type="varchar(255)">
+                <constraints unique="true" nullable="false"/>
             </column>
         </createTable>
         <createTable tableName="review">
@@ -101,6 +101,7 @@
             <column name="location_id" type="varchar(255)">
                 <constraints nullable="false" foreignKeyName="item_location_id" referencedTableName="location" referencedColumnNames="id"/>
             </column>
+            <column name="deleted" type="boolean"/>
         </createTable>
         <createTable tableName="item_photo">
             <column name="item_id" type="bigint">

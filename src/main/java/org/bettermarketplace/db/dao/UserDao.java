@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bettermarketplace.db.entity.UserDbo;
-import org.bettermarketplace.model.FileReference;
 import org.bettermarketplace.model.User;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;

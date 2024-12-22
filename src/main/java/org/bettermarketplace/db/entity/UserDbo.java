@@ -1,10 +1,13 @@
 package org.bettermarketplace.db.entity;
 
+import java.time.Instant;
+
 import lombok.Builder;
 
 @Builder
 public record UserDbo(Long id,
-					  String name,
-					  String surname,
+					  String username,
+					  Instant createdAt,
+					  Instant updatedAt,
 					  String email) {
 }
