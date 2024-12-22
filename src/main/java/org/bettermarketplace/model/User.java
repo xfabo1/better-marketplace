@@ -15,9 +15,9 @@ import lombok.Data;
 public class User {
 
 	private String username;
+	private String email;
 	private Instant createdAt;
 	private Instant updatedAt;
-	private String email;
 
 	public static User from(CreateUserDto createUserDto) {
 		return User.builder()

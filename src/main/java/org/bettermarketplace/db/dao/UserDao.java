@@ -5,9 +5,10 @@ import java.util.Optional;
 
 import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.model.User;
+import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
-import org.jdbi.v3.sqlobject.customizer.BindMethods;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -22,9 +23,12 @@ public interface UserDao {
 
 	@SqlUpdate
 	@GetGeneratedKeys
-	@RegisterConstructorMapper(User.class)
-	void insertUser(@BindMethods("user") User user);
+	@RegisterBeanMapper(User.class)
+	Long insertUser(@BindBean("userObject") User user);
 
 	@SqlQuery
 	Optional<UserDbo> getUser(@Bind("id") Long id);
+
+	@SqlUpdate
+	void deleteUser(@Bind("id") Long id);
 }
