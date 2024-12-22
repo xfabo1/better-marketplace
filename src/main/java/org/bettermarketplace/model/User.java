@@ -1,5 +1,7 @@
 package org.bettermarketplace.model;
 
+import java.time.Instant;
+
 import org.bettermarketplace.api.dto.CreateUserDto;
 import org.bettermarketplace.db.entity.UserDbo;
 
@@ -12,23 +14,21 @@ import lombok.Data;
 @AllArgsConstructor
 public class User {
 
-	private String name;
-	private String surname;
+	private String username;
+	private Instant createdAt;
+	private Instant updatedAt;
 	private String email;
 
 	public static User from(CreateUserDto createUserDto) {
 		return User.builder()
 				.email(createUserDto.email())
-				.name(createUserDto.name())
-				.surname(createUserDto.surname())
+				.username(createUserDto.username())
 				.build();
 	}
 
 	public static User from(UserDbo userDbo) {
-
 		return User.builder()
-				.name(userDbo.name())
-				.surname(userDbo.surname())
+				.username(userDbo.username())
 				.email(userDbo.email())
 				.build();
 	}
