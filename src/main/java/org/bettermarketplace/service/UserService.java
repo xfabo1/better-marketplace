@@ -1,6 +1,5 @@
 package org.bettermarketplace.service;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import org.bettermarketplace.api.dto.CreateUserDto;
@@ -23,7 +22,6 @@ public class UserService {
 		var user = User.from(createUserDto);
 		userDao.insertUser(user);
 		return user;
-
 	}
 
 	public User getUser(Long id) {

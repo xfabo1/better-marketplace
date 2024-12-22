@@ -42,7 +42,7 @@ public class UserController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<UserDto>> getUser() {
+	public ResponseEntity<List<UserDto>> getUsers() {
 		return ResponseEntity.ok(userService.getUsers().map(UserDto::from).toList());
 	}
 }
