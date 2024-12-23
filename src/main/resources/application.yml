@@ -8,6 +8,7 @@ spring:
     username: marketplace-user
     password: changemelater
     url: jdbc:postgresql://localhost:5432/marketplace
+<<<<<<< Updated upstream
 feign:
   client:
     config:
@@ -15,6 +16,37 @@ feign:
         connectTimeout: 5000
         readTimeout: 10000
         loggerLevel: basic
+=======
+  openfeign:
+    client:
+      config:
+        default:
+          connectTimeout: 5000
+          readTimeout: 10000
+          loggerLevel: basic
+  security:
+    oauth2:
+      client:
+        registration:
+          better-marketplace:
+            provider: better-marketplace-provider
+            client-id: better-marketplace
+            scope:
+              - openid
+              - profile
+            redirect-uri: http://localhost:8080/api/better-marketplace/login/oauth2/code/better-marketplace
+            authorization-grant-type: authorization_code
+            client-name: Better marketplace
+        provider:
+          better-marketplace-provider:
+            issuer-uri: http://localhost:8081/realms/marketplace
+            authorization-uri: http://localhost:8081/realms/marketplace/protocol/openid-connect/auth
+            token-uri: http://localhost:8081/realms/marketplace/protocol/openid-connect/token
+            user-info-uri: http://localhost:8081/realms/marketplace/protocol/openid-connect/userinfo
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/marketplace/token
+>>>>>>> Stashed changes
 
 clients:
   open-data-client:
@@ -22,3 +54,18 @@ clients:
 
 file-service:
   storage-directory: /files
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: better-marketplace
+      client-secret: idk
+      realm: marketplace
+      app-name: "Better marketplace"
+      scopes:
+        - openid
+      use-basic-authentication-with-access-code-grant: true
+    oauth2-redirect-url: http://localhost:8080/swagger-ui/oauth2-redirect.html
+    persist-authorization: true
+  show-oauth2-endpoints: true
+  enable-spring-security: true

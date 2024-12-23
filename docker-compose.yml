@@ -11,6 +11,8 @@ services:
     ports:
     - "5432:5432"
   marketplace-app:
+    profiles:
+      - 'start-app'
     container_name: better-marketplace
     environment:
     - SPRING_DATASOURCE_URL=jdbc:postgresql://better-marketplace-db:5432/marketplace
@@ -24,6 +26,24 @@ services:
     - better-marketplace-db
     ports:
     - "8080:8080"
-
+  marketplace-keycloak:
+    container_name: marketplace-keycloak
+    image: keycloak/keycloak:26.0
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: changemelater
+      KC_HTTP_PORT: 8080
+      KC_HOSTNAME_URL: http://localhost:8080
+      KC_HOSTNAME_ADMIN_URL: http://localhost:8080
+      KC_HOSTNAME_STRICT_BACKCHANNEL: true
+      KC_HTTP_RELATIVE_PATH: /
+      KC_HTTP_ENABLED: true
+      KC_METRICS_ENABLED: true
+    command:
+      ["start-dev"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8081:8080"
 volumes:
   marketplace-data: { }
