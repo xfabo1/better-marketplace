@@ -5,11 +5,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.bettermarketplace.configuration.PostgisTest;
 import org.bettermarketplace.db.dao.FileReferenceDao;
 import org.bettermarketplace.db.entity.FileReferenceDbo;
+import org.bettermarketplace.mapper.FileReferenceMapper;
 import org.bettermarketplace.model.FileReference;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FileReferenceDaoIT extends PostgisTest {
+
+    private static final FileReferenceMapper MAPPER = FileReferenceMapper.INSTANCE;
 
     @Autowired
     private FileReferenceDao fileReferenceDao;
@@ -44,7 +47,7 @@ public class FileReferenceDaoIT extends PostgisTest {
         assertThat(fileReferenceDbo.get()).returns("test", FileReferenceDbo::name);
 
         fileReference.setName("changedName");
-        fileReferenceDao.updateFile(FileReferenceDbo.from(id, fileReference));
+        fileReferenceDao.updateFile(MAPPER.from(id, fileReference));
         var updatedFileDbo = fileReferenceDao.selectFile(id);
 
         assertThat(updatedFileDbo).isPresent();

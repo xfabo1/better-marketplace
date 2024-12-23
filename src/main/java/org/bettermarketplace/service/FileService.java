@@ -14,6 +14,7 @@ import org.bettermarketplace.api.dto.OpenedFileDto;
 import org.bettermarketplace.api.dto.RenameFileDto;
 import org.bettermarketplace.db.dao.FileReferenceDao;
 import org.bettermarketplace.db.entity.FileReferenceDbo;
+import org.bettermarketplace.mapper.FileReferenceMapper;
 import org.bettermarketplace.model.FileReference;
 import org.jdbi.v3.sqlobject.transaction.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileService {
+
+    private static final FileReferenceMapper MAPPER = FileReferenceMapper.INSTANCE;
 
     private final FileReferenceDao fileReferenceDao;
     private final Path directory;
@@ -35,13 +38,12 @@ public class FileService {
 
     public FileReferenceDbo rename(Long id, RenameFileDto renameFileDto) {
         Optional<FileReferenceDbo> file = fileReferenceDao.selectFile(id);
-
         if (file.isEmpty()) {
             return null;
         }
 
-        FileReferenceDbo fileReferenceDbo = file.get();
-        FileReferenceDbo updatedFileReference = FileReferenceDbo.from(fileReferenceDbo, renameFileDto);
+        var fileReferenceDbo = file.get();
+        var updatedFileReference = MAPPER.from(fileReferenceDbo, renameFileDto);
         fileReferenceDao.updateFile(updatedFileReference);
         return updatedFileReference;
     }
@@ -71,8 +73,8 @@ public class FileService {
                 .type(file.getContentType())
                 .build();
 
-        Long id = fileReferenceDao.insertFile(fileReference);
-        FileReferenceDbo fileReferenceDbo = FileReferenceDbo.from(id, fileReference);
+        var id = fileReferenceDao.insertFile(fileReference);
+        var fileReferenceDbo = MAPPER.from(id, fileReference);
 
         return createFileOnFs(file, fileReferenceDbo);
     }

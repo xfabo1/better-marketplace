@@ -1,5 +1,7 @@
 package org.bettermarketplace.api;
 
+import java.util.List;
+
 import org.bettermarketplace.api.dto.OpenedFileDto;
 import org.bettermarketplace.api.dto.RenameFileDto;
 import org.bettermarketplace.db.entity.FileReferenceDbo;
@@ -15,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/files")

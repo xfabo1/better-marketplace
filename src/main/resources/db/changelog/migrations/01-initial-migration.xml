@@ -110,5 +110,10 @@
             </column>
         </createTable>
     </changeSet>
-<!--    TODO: unique constraints/indices-->
+    <!--TODO: unique constraints/indices-->
+    <changeSet id="01-03-create-index-on-email" author="xfabo1">
+        <createIndex indexName="idx_marketplace_user_email" tableName="marketplace_user">
+            <column name="email"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
