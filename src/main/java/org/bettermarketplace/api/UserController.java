@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.bettermarketplace.api.dto.CreateUserDto;
 import org.bettermarketplace.api.dto.UserDto;
+import org.bettermarketplace.mapper.UserMapper;
 import org.bettermarketplace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +18,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
+@Validated
 @RestController
 @RequestMapping("/v1/users")
 public class UserController {
+
+	private static final UserMapper MAPPER = UserMapper.INSTANCE;
 
 	private final UserService userService;
 
@@ -40,17 +47,17 @@ public class UserController {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(UserDto.from(user));
+		return ResponseEntity.ok(MAPPER.from(user));
 	}
 
 	@PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDto> createUser(@RequestBody CreateUserDto createUserDto) {
+	public ResponseEntity<UserDto> createUser(@Valid @RequestBody CreateUserDto createUserDto) {
 		var user = userService.insertUser(createUserDto);
-		return ResponseEntity.status(201).body(UserDto.from(user));
+		return ResponseEntity.status(201).body(MAPPER.from(user));
 	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<UserDto>> getUsers() {
-		return ResponseEntity.ok(userService.getUsers().map(UserDto::from).toList());
+		return ResponseEntity.ok(userService.getUsers().map(MAPPER::from).toList());
 	}
 }

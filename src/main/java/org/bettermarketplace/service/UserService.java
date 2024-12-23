@@ -4,12 +4,15 @@ import java.util.stream.Stream;
 
 import org.bettermarketplace.api.dto.CreateUserDto;
 import org.bettermarketplace.db.dao.UserDao;
+import org.bettermarketplace.mapper.UserMapper;
 import org.bettermarketplace.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+
+	private static final UserMapper MAPPER = UserMapper.INSTANCE;
 
 	private final UserDao userDao;
 
@@ -19,18 +22,18 @@ public class UserService {
 	}
 
 	public User insertUser(CreateUserDto createUserDto) {
-		var id = userDao.insertUser(User.from(createUserDto));
+		var id = userDao.insertUser(MAPPER.from(createUserDto));
 		var user = userDao.getUser(id);
-		return user.map(User::from).orElse(null);
+		return user.map(MAPPER::from).orElse(null);
 	}
 
 	public User getUser(Long id) {
 		var userDbo = userDao.getUser(id);
-		return userDbo.map(User::from).orElse(null);
+		return userDbo.map(MAPPER::from).orElse(null);
 	}
 
 	public Stream<User> getUsers() {
-		return userDao.getUsers().stream().map(User::from);
+		return userDao.getUsers().stream().map(MAPPER::from);
 	}
 
 	public void deleteUser(Long id) {
