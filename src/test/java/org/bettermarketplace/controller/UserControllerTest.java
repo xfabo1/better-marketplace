@@ -15,6 +15,7 @@ import org.bettermarketplace.api.UserController;
 import org.bettermarketplace.api.dto.CreateUserDto;
 import org.bettermarketplace.api.dto.UserDto;
 import org.bettermarketplace.config.ObjectMapperConfiguration;
+import org.bettermarketplace.mapper.UserMapper;
 import org.bettermarketplace.model.User;
 import org.bettermarketplace.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Import(ObjectMapperConfiguration.class)
 public class UserControllerTest {
 
+	private static final UserMapper MAPPER = UserMapper.INSTANCE;
 	private static final String USER_CONTROLLER_PATH = "/v1/users";
 
 	@Autowired
@@ -50,9 +52,8 @@ public class UserControllerTest {
 		var createUserDto = CreateUserDto.builder()
 				.email("random@gmail.com")
 				.username("test")
-				.password("test")
 				.build();
-		var user = User.from(createUserDto);
+		var user = MAPPER.from(createUserDto);
 		when(userService.insertUser(createUserDto)).thenReturn(user);
 
 		var result = mockMvc.perform(post(USER_CONTROLLER_PATH + "/user")
