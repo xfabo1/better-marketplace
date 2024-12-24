@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="02-01-fill-database" author="xfabo1">
+        <loadData file="./postal-codes/postal_codes_sk.csv" tableName = "location" separator=";">
+            <column header="postal code" name="postal_code"/>
+            <column header="country code" name="country_code"/>
+            <column header="latitude" name="latitude"/>
+            <column header="longitude" name="longitude"/>
+            <column header="place name" name="name"/>
+            <column header="admin name1" type="skip"/>
+            <column header="admin code1" type="skip"/>
+            <column header="admin name2" type="skip"/>
+            <column header="admin name3" type="skip"/>
+            <column header="admin code3" type="skip"/>
+            <column header="admin code2" type="skip"/>
+            <column header="accuracy" type="skip"/>
+            <column header="coordinates" type="skip"/>
+        </loadData>
+        <loadData file="./postal-codes/postal_codes_cz.csv" tableName = "location" separator=";">
+            <column header="postal code" name="postal_code"/>
+            <column header="country code" name="country_code"/>
+            <column header="latitude" name="latitude"/>
+            <column header="longitude" name="longitude"/>
+            <column header="place name" name="name"/>
+            <column header="admin name1" type="skip"/>
+            <column header="admin code1" type="skip"/>
+            <column header="admin name2" type="skip"/>
+            <column header="admin name3" type="skip"/>
+            <column header="admin code3" type="skip"/>
+            <column header="admin code2" type="skip"/>
+            <column header="accuracy" type="skip"/>
+            <column header="coordinates" type="skip"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>
