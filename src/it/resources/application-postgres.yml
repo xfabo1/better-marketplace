@@ -1,4 +1,6 @@
 spring:
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-test.xml
   datasource:
     url: jdbc:tc:postgis:17-3.5://localhost:33333/marketplace
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver

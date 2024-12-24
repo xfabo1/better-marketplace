@@ -9,6 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class Location {
 
+	private String name;
 	private String postalCode;
 	private String countryCode;
 	private float latitude;

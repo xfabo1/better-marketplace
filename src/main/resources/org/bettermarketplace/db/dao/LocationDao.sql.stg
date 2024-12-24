@@ -1,6 +1,6 @@
 insertLocations(location) ::= <<
-  INSERT INTO location(id, country_code, name, latitude, longitude)
-  VALUES (:location.id, :location.countryCode, :location.name, :location.latitude, :location.longitude)
+  INSERT INTO location(postal_code, country_code, name, latitude, longitude)
+  VALUES (:location.postalCode, :location.countryCode, :location.name, :location.latitude, :location.longitude)
   ON CONFLICT DO NOTHING
 >>
 
