@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 
@@ -267,6 +268,9 @@ const dateFilterOptions = [
 const ITEMS_PER_PAGE = 9;
 
 export default function ListingsPage() {
+  const searchParams = useSearchParams();
+  
+  // Initialize state from URL parameters
   const [locationQuery, setLocationQuery] = useState("");
   const [selectedCondition, setSelectedCondition] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
@@ -276,6 +280,25 @@ export default function ListingsPage() {
   const [dateFilter, setDateFilter] = useState("all");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+
+  // Apply URL parameters on component mount
+  useEffect(() => {
+    if (searchParams) {
+      const q = searchParams.get("q");
+      const location = searchParams.get("location");
+      const condition = searchParams.get("condition");
+      const date = searchParams.get("date");
+      const min = searchParams.get("minPrice");
+      const max = searchParams.get("maxPrice");
+
+      if (q) setSearchQuery(q);
+      if (location) setLocationQuery(location);
+      if (condition) setSelectedCondition(condition);
+      if (date) setDateFilter(date);
+      if (min) setMinPrice(min);
+      if (max) setMaxPrice(max);
+    }
+  }, [searchParams]);
 
   // Filter listings based on selected filters
   const filteredListings = allListings.filter((listing) => {

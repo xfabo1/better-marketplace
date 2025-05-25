@@ -1,30 +1,58 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+// Import conditions from listings page
+const conditions = [
+  { id: "all", name: "Všechny stavy" },
+  { id: "nove", name: "Nové" },
+  { id: "jako_nove", name: "Použité - jako nové" },
+  { id: "velmi_dobre", name: "Použité - velmi dobrý stav" },
+  { id: "dobre", name: "Použité - dobrý stav" },
+  { id: "horsi", name: "Použité - horší stav" }
+];
+
+// Date filter options
+const dateFilterOptions = [
+  { label: "Všechny", value: "all" },
+  { label: "Dnes", value: "today" },
+  { label: "Tento týden", value: "week" },
+  { label: "Tento měsíc", value: "month" },
+];
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
 }
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
+  const router = useRouter();
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [location, setLocation] = useState("");
-  const [postalCode, setPostalCode] = useState("");
+  const [condition, setCondition] = useState("all");
+  const [dateFilter, setDateFilter] = useState("all");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle search logic here
-    console.log({
-      searchQuery,
-      location,
-      postalCode,
-      priceRange: { min: minPrice, max: maxPrice },
-    });
     
-    // Call the onSearch prop if provided
+    // Build the query parameters
+    const params = new URLSearchParams();
+    
+    if (searchQuery) params.append("q", searchQuery);
+    if (location) params.append("location", location);
+    if (condition !== "all") params.append("condition", condition);
+    if (dateFilter !== "all") params.append("date", dateFilter);
+    if (minPrice) params.append("minPrice", minPrice);
+    if (maxPrice) params.append("maxPrice", maxPrice);
+    
+    // Redirect to the listings page with the filters
+    const queryString = params.toString();
+    router.push(`/listings${queryString ? `?${queryString}` : ''}`);
+    
+    // Call the onSearch prop if provided (for backward compatibility)
     if (onSearch) {
       onSearch(searchQuery);
     }
@@ -67,7 +95,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         </div>
         
         {isFiltersOpen && (
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-5 bg-gray-50 rounded-lg border border-gray-100">
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="location" className="block text-sm font-medium text-gray-700">
                 Lokalita
@@ -76,51 +104,73 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                 type="text"
                 id="location"
                 className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
-                placeholder="Město, kraj..."
+                placeholder="Zadejte město nebo PSČ..."
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               />
             </div>
+            
             <div>
-              <label htmlFor="postal-code" className="block text-sm font-medium text-gray-700">
-                PSČ
+              <label htmlFor="condition" className="block text-sm font-medium text-gray-700">
+                Stav
               </label>
-              <input
-                type="text"
-                id="postal-code"
+              <select
+                id="condition"
                 className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
-                placeholder="Zadejte PSČ"
-                value={postalCode}
-                onChange={(e) => setPostalCode(e.target.value)}
-              />
+                value={condition}
+                onChange={(e) => setCondition(e.target.value)}
+              >
+                {conditions.map((cond) => (
+                  <option key={cond.id} value={cond.id}>
+                    {cond.name}
+                  </option>
+                ))}
+              </select>
             </div>
+            
             <div>
-              <label htmlFor="min-price" className="block text-sm font-medium text-gray-700">
-                Min. cena
+              <label htmlFor="dateFilter" className="block text-sm font-medium text-gray-700">
+                Datum přidání
               </label>
-              <input
-                type="number"
-                id="min-price"
+              <select
+                id="dateFilter"
                 className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
-                placeholder="Od"
-                min="0"
-                value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
-              />
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+              >
+                {dateFilterOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
             </div>
+            
             <div>
-              <label htmlFor="max-price" className="block text-sm font-medium text-gray-700">
-                Max. cena
+              <label htmlFor="priceRange" className="block text-sm font-medium text-gray-700">
+                Cenové rozmezí
               </label>
-              <input
-                type="number"
-                id="max-price"
-                className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
-                placeholder="Do"
-                min="0"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
-              />
+              <div className="mt-1 flex items-center space-x-2">
+                <input
+                  type="number"
+                  id="minPrice"
+                  placeholder="Od"
+                  className="block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  min="0"
+                />
+                <span className="text-gray-500">-</span>
+                <input
+                  type="number"
+                  id="maxPrice"
+                  placeholder="Do"
+                  className="block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  min="0"
+                />
+              </div>
             </div>
           </div>
         )}
