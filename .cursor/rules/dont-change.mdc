@@ -1,7 +1,8 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 Do not change the existing UI components in a way that would make the website look different. Just add improvements but do not rework it unless specifically told to
+
 

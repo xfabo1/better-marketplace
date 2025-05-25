@@ -1,0 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+
+ Do not repeat yourself, before writting a function, data or something just look and figure out if you cannot extract it somewhere and then reference it for better readability and to comply with the DRY concept

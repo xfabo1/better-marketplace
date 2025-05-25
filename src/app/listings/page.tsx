@@ -6,252 +6,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-
-// Mock data for listings
-const allListings = [
-  {
-    id: 1,
-    title: "Toyota Camry 2019 - Výborný stav",
-    price: 350000,
-    location: "Praha",
-    postalCode: "110 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Toyota+Camry",
-    category: "Automobily",
-    condition: "Použité - velmi dobrý stav",
-    conditionId: "velmi_dobre",
-    createdAt: "2023-10-15",
-  },
-  {
-    id: 2,
-    title: "iPhone 14 Pro Max - Jako nový",
-    price: 22000,
-    location: "Brno",
-    postalCode: "602 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=iPhone+14",
-    category: "Elektronika",
-    condition: "Použité - jako nové",
-    conditionId: "jako_nove",
-    createdAt: "2023-10-12",
-  },
-  {
-    id: 3,
-    title: "Moderní pohovka - Pohodlná a stylová",
-    price: 11500,
-    location: "Ostrava",
-    postalCode: "702 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Pohovka",
-    category: "Nábytek",
-    condition: "Použité - dobrý stav",
-    conditionId: "dobre",
-    createdAt: "2023-10-10",
-  },
-  {
-    id: 4,
-    title: "Horské kolo - Trek X-Caliber 8",
-    price: 18500,
-    location: "Plzeň",
-    postalCode: "301 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Horské+kolo",
-    category: "Sport",
-    condition: "Použité - velmi dobrý stav",
-    conditionId: "velmi_dobre",
-    createdAt: "2023-10-08",
-  },
-  {
-    id: 5,
-    title: "Značkové šaty - Velikost M",
-    price: 2990,
-    location: "Liberec",
-    postalCode: "460 01",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Šaty",
-    category: "Oblečení",
-    condition: "Nové",
-    conditionId: "nove",
-    createdAt: "2023-10-05",
-  },
-  {
-    id: 6,
-    title: "PlayStation 5 se 2 ovladači",
-    price: 12500,
-    location: "Olomouc",
-    postalCode: "779 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=PlayStation+5",
-    category: "Elektronika",
-    condition: "Použité - jako nové",
-    conditionId: "jako_nove",
-    createdAt: "2023-10-03",
-  },
-  {
-    id: 7,
-    title: "Dětská postýlka s matrací",
-    price: 3500,
-    location: "Praha",
-    postalCode: "140 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dětská+postýlka",
-    category: "Dětské zboží",
-    condition: "Použité - dobrý stav",
-    conditionId: "dobre",
-    createdAt: "2023-10-01",
-  },
-  {
-    id: 8,
-    title: "MacBook Pro 2022 - M2 chip",
-    price: 38000,
-    location: "Praha",
-    postalCode: "120 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=MacBook+Pro",
-    category: "Elektronika",
-    condition: "Použité - jako nové",
-    conditionId: "jako_nove",
-    createdAt: "2023-09-28",
-  },
-  {
-    id: 9,
-    title: "Zahradní nábytek - Set 6 kusů",
-    price: 8500,
-    location: "Brno",
-    postalCode: "639 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Zahradní+nábytek",
-    category: "Nábytek",
-    condition: "Použité - dobrý stav",
-    conditionId: "dobre",
-    createdAt: "2023-09-25",
-  },
-  {
-    id: 10,
-    title: "Elektrická koloběžka Xiaomi",
-    price: 9900,
-    location: "Praha",
-    postalCode: "160 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Koloběžka",
-    category: "Sport",
-    condition: "Použité - velmi dobrý stav",
-    conditionId: "velmi_dobre",
-    createdAt: "2023-09-22",
-  },
-  {
-    id: 11,
-    title: "Zimní bunda - Velikost L",
-    price: 1800,
-    location: "Ostrava",
-    postalCode: "710 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Zimní+bunda",
-    category: "Oblečení",
-    condition: "Použité - dobrý stav",
-    conditionId: "dobre",
-    createdAt: "2023-09-20",
-  },
-  {
-    id: 12,
-    title: "Kuchyňský robot Kenwood",
-    price: 4500,
-    location: "Plzeň",
-    postalCode: "326 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Kuchyňský+robot",
-    category: "Elektronika",
-    condition: "Použité - horší stav",
-    conditionId: "horsi",
-    createdAt: "2023-09-18",
-  },
-  {
-    id: 13,
-    title: "Dámské kolo Specialized",
-    price: 12000,
-    location: "Praha",
-    postalCode: "190 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dámské+kolo",
-    category: "Sport",
-    condition: "Použité - velmi dobrý stav",
-    conditionId: "velmi_dobre",
-    createdAt: "2023-09-16",
-  },
-  {
-    id: 14,
-    title: "Herní počítač - RTX 3080",
-    price: 45000,
-    location: "Brno",
-    postalCode: "612 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Herní+PC",
-    category: "Elektronika",
-    condition: "Použité - jako nové",
-    conditionId: "jako_nove",
-    createdAt: "2023-09-14",
-  },
-  {
-    id: 15,
-    title: "Dětské oblečení - Set 0-6 měsíců",
-    price: 1200,
-    location: "Ostrava",
-    postalCode: "700 30",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dětské+oblečení",
-    category: "Dětské zboží",
-    condition: "Použité - dobrý stav",
-    conditionId: "dobre",
-    createdAt: "2023-09-12",
-  },
-  {
-    id: 16,
-    title: "IKEA pohovka KIVIK",
-    price: 8000,
-    location: "Praha",
-    postalCode: "170 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=IKEA+pohovka",
-    category: "Nábytek",
-    condition: "Použité - dobrý stav",
-    conditionId: "dobre",
-    createdAt: "2023-09-10",
-  },
-  {
-    id: 17,
-    title: "Dámské lodičky - Velikost 39",
-    price: 1500,
-    location: "Brno",
-    postalCode: "602 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dámské+lodičky",
-    category: "Oblečení",
-    condition: "Použité - jako nové",
-    conditionId: "jako_nove",
-    createdAt: "2023-09-08",
-  },
-  {
-    id: 18,
-    title: "Elektrická vrtačka Bosch",
-    price: 2800,
-    location: "Plzeň",
-    postalCode: "301 00",
-    image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Vrtačka+Bosch",
-    category: "Elektronika",
-    condition: "Použité - horší stav",
-    conditionId: "horsi",
-    createdAt: "2023-09-06",
-  },
-];
-
-// Condition options for filtering
-const conditions = [
-  { id: "all", name: "Všechny stavy" },
-  { id: "nove", name: "Nové" },
-  { id: "jako_nove", name: "Použité - jako nové" },
-  { id: "velmi_dobre", name: "Použité - velmi dobrý stav" },
-  { id: "dobre", name: "Použité - dobrý stav" },
-  { id: "horsi", name: "Použité - horší stav" }
-];
-
-// Sort options
-const sortOptions = [
-  { label: "Nejnovější", value: "newest" },
-  { label: "Nejstarší", value: "oldest" },
-  { label: "Nejlevnější", value: "price_asc" },
-  { label: "Nejdražší", value: "price_desc" },
-];
-
-// Date filter options
-const dateFilterOptions = [
-  { label: "Všechny", value: "all" },
-  { label: "Dnes", value: "today" },
-  { label: "Tento týden", value: "week" },
-  { label: "Tento měsíc", value: "month" },
-];
+import { allListings, conditions, sortOptions, dateFilterOptions } from "@/data/mockData";
 
 // Items per page
 const ITEMS_PER_PAGE = 9;
@@ -646,33 +401,33 @@ export default function ListingsPage() {
           
           {paginatedListings.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {paginatedListings.map((listing) => (
                   <Link href={`/listing/${listing.id}`} key={listing.id} className="group">
                     <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
-                      <div className="relative h-48 w-full">
+                      <div className="relative h-32 w-full">
                         <Image
                           src={listing.image}
                           alt={listing.title}
                           fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                           className="object-cover"
                         />
                       </div>
-                      <div className="p-4 flex-grow flex flex-col">
+                      <div className="p-2 flex-grow flex flex-col">
                         <div className="flex justify-between items-center mb-1">
-                          <div className="text-xs text-primary font-medium">{listing.category}</div>
-                          <div className="text-xs text-gray-500">{formatDate(listing.createdAt)}</div>
+                          <div className="text-xs text-primary font-medium truncate max-w-[70%]">{listing.category}</div>
+                          <div className="text-xs text-gray-500 hidden sm:block">{formatDate(listing.createdAt)}</div>
                         </div>
-                        <h3 className="text-base font-medium text-gray-900 group-hover:text-primary transition-colors duration-200 mb-2 line-clamp-2">
+                        <h3 className="text-xs font-medium text-gray-900 group-hover:text-primary transition-colors duration-200 mb-1 line-clamp-2">
                           {listing.title}
                         </h3>
-                        <div className="text-xs text-gray-600 mb-2">
+                        <div className="text-xs text-gray-600 mb-1 hidden sm:block">
                           {listing.condition}
                         </div>
                         <div className="mt-auto flex justify-between items-center">
-                          <span className="text-lg font-bold text-gray-900">{listing.price.toLocaleString()} Kč</span>
-                          <span className="text-sm text-gray-500">{listing.location}, {listing.postalCode}</span>
+                          <span className="text-sm font-bold text-gray-900">{listing.price.toLocaleString()} Kč</span>
+                          <span className="text-xs text-gray-500 truncate max-w-[40%]">{listing.location}</span>
                         </div>
                       </div>
                     </div>

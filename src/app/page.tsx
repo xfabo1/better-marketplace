@@ -1,7 +1,6 @@
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/SearchBar";
-import FeaturedListings from "@/components/FeaturedListings";
 
 export default function Home() {
   return (
