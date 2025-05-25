@@ -80,40 +80,40 @@ export default function SettingsPage() {
                 <div>
                   <h2 className="text-xl font-medium text-gray-900 mb-6">Osobní údaje</h2>
                   <form onSubmit={handleProfileSubmit} className="space-y-6 max-w-2xl">
-                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="mb-4">
                       <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                         E-mail
                       </label>
                       <input
                         type="email"
                         id="email"
-                        className="block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
+                        className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                         value={userData.email}
                         onChange={(e) => setUserData({...userData, email: e.target.value})}
                       />
                     </div>
                     
-                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="mb-4">
                       <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                         Telefon
                       </label>
                       <input
                         type="tel"
                         id="phone"
-                        className="block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
+                        className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                         value={userData.phone}
                         onChange={(e) => setUserData({...userData, phone: e.target.value})}
                       />
                     </div>
                     
-                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="mb-4">
                       <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
                         Lokalita
                       </label>
                       <input
                         type="text"
                         id="location"
-                        className="block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
+                        className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                         value={userData.location}
                         onChange={(e) => setUserData({...userData, location: e.target.value})}
                       />
@@ -135,36 +135,36 @@ export default function SettingsPage() {
                 <div>
                   <h2 className="text-xl font-medium text-gray-900 mb-6">Zabezpečení</h2>
                   <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-2xl">
-                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="mb-4">
                       <label htmlFor="current-password" className="block text-sm font-medium text-gray-700 mb-1">
                         Současné heslo
                       </label>
                       <input
                         type="password"
                         id="current-password"
-                        className="block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
+                        className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                       />
                     </div>
                     
-                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="mb-4">
                       <label htmlFor="new-password" className="block text-sm font-medium text-gray-700 mb-1">
                         Nové heslo
                       </label>
                       <input
                         type="password"
                         id="new-password"
-                        className="block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
+                        className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                       />
                     </div>
                     
-                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="mb-4">
                       <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">
                         Potvrdit nové heslo
                       </label>
                       <input
                         type="password"
                         id="confirm-password"
-                        className="block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
+                        className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                       />
                     </div>
                     

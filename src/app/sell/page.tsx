@@ -136,7 +136,7 @@ export default function SellPage() {
             </h1>
             
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="mb-4">
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
                   Název inzerátu *
                 </label>
@@ -144,11 +144,11 @@ export default function SellPage() {
                   type="text"
                   id="title"
                   name="title"
-                  className={`block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ${
+                  className={`block w-full px-4 py-3 rounded-md border ${
                     errors.title 
-                      ? 'ring-red-300 focus:ring-red-500' 
-                      : 'ring-gray-300 focus:ring-primary'
-                  } placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm`}
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-gray-300 focus:border-primary'
+                  } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="Např. iPhone 12 Pro Max, 256GB, Pacific Blue"
@@ -158,18 +158,18 @@ export default function SellPage() {
                 )}
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="mb-4">
                 <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
                   Kategorie *
                 </label>
                 <select
                   id="category"
                   name="category"
-                  className={`block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ${
+                  className={`block w-full px-4 py-3 rounded-md border ${
                     errors.category 
-                      ? 'ring-red-300 focus:ring-red-500' 
-                      : 'ring-gray-300 focus:ring-primary'
-                  } placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm`}
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-gray-300 focus:border-primary'
+                  } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                   value={formData.category}
                   onChange={handleChange}
                 >
@@ -185,7 +185,7 @@ export default function SellPage() {
                 )}
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="mb-4">
                 <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
                   Cena (Kč) *
                 </label>
@@ -193,11 +193,11 @@ export default function SellPage() {
                   type="text"
                   id="price"
                   name="price"
-                  className={`block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ${
+                  className={`block w-full px-4 py-3 rounded-md border ${
                     errors.price 
-                      ? 'ring-red-300 focus:ring-red-500' 
-                      : 'ring-gray-300 focus:ring-primary'
-                  } placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm`}
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-gray-300 focus:border-primary'
+                  } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                   value={formData.price}
                   onChange={handleChange}
                   placeholder="Např. 18500"
@@ -207,7 +207,7 @@ export default function SellPage() {
                 )}
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="mb-4">
                 <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
                   Popis *
                 </label>
@@ -215,11 +215,11 @@ export default function SellPage() {
                   id="description"
                   name="description"
                   rows={5}
-                  className={`block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ${
+                  className={`block w-full px-4 py-3 rounded-md border ${
                     errors.description 
-                      ? 'ring-red-300 focus:ring-red-500' 
-                      : 'ring-gray-300 focus:ring-primary'
-                  } placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm`}
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-gray-300 focus:border-primary'
+                  } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                   value={formData.description}
                   onChange={handleChange}
                   placeholder="Podrobný popis inzerátu..."
@@ -229,7 +229,7 @@ export default function SellPage() {
                 )}
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="mb-4">
                 <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
                   Lokalita *
                 </label>
@@ -237,11 +237,11 @@ export default function SellPage() {
                   type="text"
                   id="location"
                   name="location"
-                  className={`block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ${
+                  className={`block w-full px-4 py-3 rounded-md border ${
                     errors.location 
-                      ? 'ring-red-300 focus:ring-red-500' 
-                      : 'ring-gray-300 focus:ring-primary'
-                  } placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm`}
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-gray-300 focus:border-primary'
+                  } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                   value={formData.location}
                   onChange={handleChange}
                   placeholder="Např. Praha 5"
@@ -251,7 +251,7 @@ export default function SellPage() {
                 )}
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
                   Fotografie (max. 5)
                 </label>
@@ -294,7 +294,7 @@ export default function SellPage() {
               </div>
               
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div className="mb-4">
                   <label htmlFor="contactPhone" className="block text-sm font-medium text-gray-700 mb-1">
                     Telefon
                   </label>
@@ -302,11 +302,11 @@ export default function SellPage() {
                     type="tel"
                     id="contactPhone"
                     name="contactPhone"
-                    className={`block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ${
+                    className={`block w-full px-4 py-3 rounded-md border ${
                       errors.contactPhone 
-                        ? 'ring-red-300 focus:ring-red-500' 
-                        : 'ring-gray-300 focus:ring-primary'
-                    } placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm`}
+                        ? 'border-red-300 focus:border-red-500' 
+                        : 'border-gray-300 focus:border-primary'
+                    } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                     value={formData.contactPhone}
                     onChange={handleChange}
                     placeholder="+420 123 456 789"
@@ -316,7 +316,7 @@ export default function SellPage() {
                   )}
                 </div>
                 
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div className="mb-4">
                   <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-1">
                     E-mail
                   </label>
@@ -324,11 +324,11 @@ export default function SellPage() {
                     type="email"
                     id="contactEmail"
                     name="contactEmail"
-                    className={`block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ${
+                    className={`block w-full px-4 py-3 rounded-md border ${
                       errors.contactEmail 
-                        ? 'ring-red-300 focus:ring-red-500' 
-                        : 'ring-gray-300 focus:ring-primary'
-                    } placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm`}
+                        ? 'border-red-300 focus:border-red-500' 
+                        : 'border-gray-300 focus:border-primary'
+                    } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                     value={formData.contactEmail}
                     onChange={handleChange}
                     placeholder="vas@email.cz"
