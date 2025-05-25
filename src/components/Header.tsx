@@ -15,7 +15,7 @@ export default function Header() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold text-primary">Lepší Tržiště</span>
+              <span className="text-2xl font-bold text-primary">Better Marketplace</span>
             </Link>
           </div>
           
@@ -43,12 +43,20 @@ export default function Header() {
                 </button>
               </div>
             ) : (
-              <Link 
-                href="/login" 
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              >
-                Přihlásit
-              </Link>
+              <div className="flex items-center space-x-3">
+                <Link 
+                  href="/login" 
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                >
+                  Přihlásit
+                </Link>
+                <Link 
+                  href="/register" 
+                  className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-primary bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                >
+                  Registrovat
+                </Link>
+              </div>
             )}
           </div>
           
@@ -108,12 +116,20 @@ export default function Header() {
                 </button>
               </>
             ) : (
-              <Link 
-                href="/login" 
-                className="block px-4 py-2 text-base font-medium text-primary hover:bg-gray-50"
-              >
-                Přihlásit
-              </Link>
+              <>
+                <Link 
+                  href="/login" 
+                  className="block px-4 py-2 text-base font-medium text-primary hover:bg-gray-50"
+                >
+                  Přihlásit
+                </Link>
+                <Link 
+                  href="/register" 
+                  className="block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
+                >
+                  Registrovat
+                </Link>
+              </>
             )}
           </div>
         </div>
