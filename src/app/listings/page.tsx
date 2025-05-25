@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import SearchBar from "@/components/SearchBar";
 
 // Mock data for listings
 const allListings = [

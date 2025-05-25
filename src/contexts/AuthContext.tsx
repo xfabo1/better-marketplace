@@ -15,7 +15,7 @@ type User = {
 type AuthContextType = {
   user: User;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password?: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 };
@@ -59,7 +59,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   // Login function - accepts any credentials and logs in as Jan Novák
-  const login = async (email: string, password: string) => {
+  const login = async (email: string) => {
     setIsLoading(true);
     
     try {

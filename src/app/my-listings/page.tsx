@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Header from "@/components/Header";
 
 // Mock data for user's listings
@@ -93,10 +94,12 @@ export default function MyListingsPage() {
               {filteredListings.map((listing) => (
                 <div key={listing.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="relative h-48 bg-gray-200">
-                    <img
+                    <Image
                       src={listing.imageUrl}
                       alt={listing.title}
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover"
                     />
                     {listing.status === 'sold' && (
                       <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">

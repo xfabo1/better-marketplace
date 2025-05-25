@@ -21,7 +21,7 @@ const mockUserData = {
 };
 
 export default function ProfilePage() {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [userData, setUserData] = useState(mockUserData);
 
   // In a real app, you would fetch the user data from an API

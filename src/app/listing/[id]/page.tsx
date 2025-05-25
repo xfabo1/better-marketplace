@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import Header from "@/components/Header";
 
 // Mock data for a single listing
@@ -72,7 +71,7 @@ const similarListings = [
 ];
 
 export default function ListingDetailPage() {
-  const { id } = useParams();
+  // In a real app, we would use useParams() to get the listing ID
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showContactInfo, setShowContactInfo] = useState(false);
 
