@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 
-export default function SearchBar() {
+interface SearchBarProps {
+  onSearch?: (query: string) => void;
+}
+
+export default function SearchBar({ onSearch }: SearchBarProps) {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [location, setLocation] = useState("");
   const [postalCode, setPostalCode] = useState("");
@@ -19,6 +23,11 @@ export default function SearchBar() {
       postalCode,
       priceRange: { min: minPrice, max: maxPrice },
     });
+    
+    // Call the onSearch prop if provided
+    if (onSearch) {
+      onSearch(searchQuery);
+    }
   };
 
   return (
@@ -33,7 +42,7 @@ export default function SearchBar() {
             </div>
             <input
               type="text"
-              className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-150 ease-in-out"
+              className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-0 transition duration-150 ease-in-out"
               placeholder="Hledat cokoliv..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -66,7 +75,7 @@ export default function SearchBar() {
               <input
                 type="text"
                 id="location"
-                className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary bg-white"
+                className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                 placeholder="Město, kraj..."
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
@@ -79,7 +88,7 @@ export default function SearchBar() {
               <input
                 type="text"
                 id="postal-code"
-                className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary bg-white"
+                className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                 placeholder="Zadejte PSČ"
                 value={postalCode}
                 onChange={(e) => setPostalCode(e.target.value)}
@@ -92,7 +101,7 @@ export default function SearchBar() {
               <input
                 type="number"
                 id="min-price"
-                className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary bg-white"
+                className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                 placeholder="Od"
                 min="0"
                 value={minPrice}
@@ -106,7 +115,7 @@ export default function SearchBar() {
               <input
                 type="number"
                 id="max-price"
-                className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary bg-white"
+                className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                 placeholder="Do"
                 min="0"
                 value={maxPrice}
