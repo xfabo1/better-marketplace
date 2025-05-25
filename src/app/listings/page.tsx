@@ -15,6 +15,8 @@ const allListings = [
     location: "Praha",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Toyota+Camry",
     category: "Automobily",
+    condition: "Použité - velmi dobrý stav",
+    conditionId: "velmi_dobre",
     createdAt: "2023-10-15",
   },
   {
@@ -24,6 +26,8 @@ const allListings = [
     location: "Brno",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=iPhone+14",
     category: "Elektronika",
+    condition: "Použité - jako nové",
+    conditionId: "jako_nove",
     createdAt: "2023-10-12",
   },
   {
@@ -33,6 +37,8 @@ const allListings = [
     location: "Ostrava",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Pohovka",
     category: "Nábytek",
+    condition: "Použité - dobrý stav",
+    conditionId: "dobre",
     createdAt: "2023-10-10",
   },
   {
@@ -42,6 +48,8 @@ const allListings = [
     location: "Plzeň",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Horské+kolo",
     category: "Sport",
+    condition: "Použité - velmi dobrý stav",
+    conditionId: "velmi_dobre",
     createdAt: "2023-10-08",
   },
   {
@@ -51,6 +59,8 @@ const allListings = [
     location: "Liberec",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Šaty",
     category: "Oblečení",
+    condition: "Nové",
+    conditionId: "nove",
     createdAt: "2023-10-05",
   },
   {
@@ -60,6 +70,8 @@ const allListings = [
     location: "Olomouc",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=PlayStation+5",
     category: "Elektronika",
+    condition: "Použité - jako nové",
+    conditionId: "jako_nove",
     createdAt: "2023-10-03",
   },
   {
@@ -69,6 +81,8 @@ const allListings = [
     location: "Praha",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dětská+postýlka",
     category: "Dětské zboží",
+    condition: "Použité - dobrý stav",
+    conditionId: "dobre",
     createdAt: "2023-10-01",
   },
   {
@@ -78,6 +92,8 @@ const allListings = [
     location: "Praha",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=MacBook+Pro",
     category: "Elektronika",
+    condition: "Použité - jako nové",
+    conditionId: "jako_nove",
     createdAt: "2023-09-28",
   },
   {
@@ -87,6 +103,8 @@ const allListings = [
     location: "Brno",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Zahradní+nábytek",
     category: "Nábytek",
+    condition: "Použité - dobrý stav",
+    conditionId: "dobre",
     createdAt: "2023-09-25",
   },
   {
@@ -96,6 +114,8 @@ const allListings = [
     location: "Praha",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Koloběžka",
     category: "Sport",
+    condition: "Použité - velmi dobrý stav",
+    conditionId: "velmi_dobre",
     createdAt: "2023-09-22",
   },
   {
@@ -105,6 +125,8 @@ const allListings = [
     location: "Ostrava",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Zimní+bunda",
     category: "Oblečení",
+    condition: "Použité - dobrý stav",
+    conditionId: "dobre",
     createdAt: "2023-09-20",
   },
   {
@@ -114,6 +136,8 @@ const allListings = [
     location: "Plzeň",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Kuchyňský+robot",
     category: "Elektronika",
+    condition: "Použité - horší stav",
+    conditionId: "horsi",
     createdAt: "2023-09-18",
   },
   {
@@ -123,6 +147,8 @@ const allListings = [
     location: "Praha",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dámské+kolo",
     category: "Sport",
+    condition: "Použité - velmi dobrý stav",
+    conditionId: "velmi_dobre",
     createdAt: "2023-09-16",
   },
   {
@@ -132,6 +158,8 @@ const allListings = [
     location: "Brno",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Herní+PC",
     category: "Elektronika",
+    condition: "Použité - jako nové",
+    conditionId: "jako_nove",
     createdAt: "2023-09-14",
   },
   {
@@ -141,6 +169,8 @@ const allListings = [
     location: "Ostrava",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dětské+oblečení",
     category: "Dětské zboží",
+    condition: "Použité - dobrý stav",
+    conditionId: "dobre",
     createdAt: "2023-09-12",
   },
   {
@@ -150,6 +180,8 @@ const allListings = [
     location: "Praha",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=IKEA+pohovka",
     category: "Nábytek",
+    condition: "Použité - dobrý stav",
+    conditionId: "dobre",
     createdAt: "2023-09-10",
   },
   {
@@ -159,6 +191,8 @@ const allListings = [
     location: "Brno",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dámské+lodičky",
     category: "Oblečení",
+    condition: "Použité - jako nové",
+    conditionId: "jako_nove",
     createdAt: "2023-09-08",
   },
   {
@@ -168,6 +202,8 @@ const allListings = [
     location: "Plzeň",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Vrtačka+Bosch",
     category: "Elektronika",
+    condition: "Použité - horší stav",
+    conditionId: "horsi",
     createdAt: "2023-09-06",
   },
 ];
@@ -181,6 +217,16 @@ const locations = [
   "Plzeň",
   "Liberec",
   "Olomouc",
+];
+
+// Condition options for filtering
+const conditions = [
+  { id: "all", name: "Všechny stavy" },
+  { id: "nove", name: "Nové" },
+  { id: "jako_nove", name: "Použité - jako nové" },
+  { id: "velmi_dobre", name: "Použité - velmi dobrý stav" },
+  { id: "dobre", name: "Použité - dobrý stav" },
+  { id: "horsi", name: "Použité - horší stav" }
 ];
 
 // Sort options
@@ -204,6 +250,7 @@ const ITEMS_PER_PAGE = 9;
 
 export default function ListingsPage() {
   const [selectedLocation, setSelectedLocation] = useState("Všechny lokality");
+  const [selectedCondition, setSelectedCondition] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -216,6 +263,11 @@ export default function ListingsPage() {
   const filteredListings = allListings.filter((listing) => {
     // Filter by location
     if (selectedLocation !== "Všechny lokality" && listing.location !== selectedLocation) {
+      return false;
+    }
+    
+    // Filter by condition
+    if (selectedCondition !== "all" && listing.conditionId !== selectedCondition) {
       return false;
     }
     
@@ -308,6 +360,12 @@ export default function ListingsPage() {
     setCurrentPage(1);
   };
 
+  // Handle condition change
+  const handleConditionChange = (condition: string) => {
+    setSelectedCondition(condition);
+    setCurrentPage(1);
+  };
+
   // Format date function
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -326,6 +384,7 @@ export default function ListingsPage() {
     const [localDateFilter, setLocalDateFilter] = useState(dateFilter);
     const [localMinPrice, setLocalMinPrice] = useState(minPrice);
     const [localMaxPrice, setLocalMaxPrice] = useState(maxPrice);
+    const [condition, setCondition] = useState(selectedCondition);
 
     const handleLocalSearch = (e: React.FormEvent) => {
       e.preventDefault();
@@ -333,6 +392,10 @@ export default function ListingsPage() {
       
       if (location !== selectedLocation) {
         handleLocationChange(location);
+      }
+      
+      if (condition !== selectedCondition) {
+        handleConditionChange(condition);
       }
       
       if (localDateFilter !== dateFilter) {
@@ -420,7 +483,7 @@ export default function ListingsPage() {
           </div>
           
           {isFiltersOpen && (
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 p-5 bg-gray-50 rounded-lg border border-gray-100">
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="location" className="block text-sm font-medium text-gray-700">
                   Lokalita
@@ -438,6 +501,25 @@ export default function ListingsPage() {
                   ))}
                 </select>
               </div>
+              
+              <div>
+                <label htmlFor="condition" className="block text-sm font-medium text-gray-700">
+                  Stav
+                </label>
+                <select
+                  id="condition"
+                  className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
+                  value={condition}
+                  onChange={(e) => setCondition(e.target.value)}
+                >
+                  {conditions.map((cond) => (
+                    <option key={cond.id} value={cond.id}>
+                      {cond.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
               <div>
                 <label htmlFor="dateFilter" className="block text-sm font-medium text-gray-700">
                   Datum přidání
@@ -555,6 +637,9 @@ export default function ListingsPage() {
                         <h3 className="text-base font-medium text-gray-900 group-hover:text-primary transition-colors duration-200 mb-2 line-clamp-2">
                           {listing.title}
                         </h3>
+                        <div className="text-xs text-gray-600 mb-2">
+                          {listing.condition}
+                        </div>
                         <div className="mt-auto flex justify-between items-center">
                           <span className="text-lg font-bold text-gray-900">{listing.price.toLocaleString()} Kč</span>
                           <span className="text-sm text-gray-500">{listing.location}</span>

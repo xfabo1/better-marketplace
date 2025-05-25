@@ -15,7 +15,9 @@ const mockListings = [
     location: "Praha",
     imageUrl: "https://placehold.co/600x400/3b82f6/ffffff?text=iPhone+12",
     createdAt: "2023-10-15",
-    status: "active"
+    status: "active",
+    condition: "Použité - jako nové",
+    conditionId: "jako_nove"
   },
   {
     id: "2",
@@ -25,7 +27,9 @@ const mockListings = [
     location: "Brno",
     imageUrl: "https://placehold.co/600x400/22c55e/ffffff?text=Sedačka",
     createdAt: "2023-09-28",
-    status: "active"
+    status: "active",
+    condition: "Použité - dobrý stav",
+    conditionId: "dobre"
   },
   {
     id: "3",
@@ -35,7 +39,9 @@ const mockListings = [
     location: "Ostrava",
     imageUrl: "https://placehold.co/600x400/f59e0b/ffffff?text=Kolo",
     createdAt: "2023-08-10",
-    status: "sold"
+    status: "sold",
+    condition: "Použité - velmi dobrý stav",
+    conditionId: "velmi_dobre"
   }
 ];
 
@@ -120,6 +126,9 @@ export default function MyListingsPage() {
                       <span>{listing.category}</span>
                       <span className="mx-2">•</span>
                       <span>{listing.location}</span>
+                    </div>
+                    <div className="mt-1 text-xs text-gray-600">
+                      {listing.condition}
                     </div>
                     <div className="mt-4 flex justify-between">
                       <span className="text-xs text-gray-500">

@@ -18,12 +18,27 @@ const categories = [
   { id: "ostatni", name: "Ostatní" }
 ];
 
+// Condition options for the form
+const conditions = [
+  { id: "nove", name: "Nové" },
+  { id: "jako_nove", name: "Použité - jako nové" },
+  { id: "velmi_dobre", name: "Použité - velmi dobrý stav" },
+  { id: "dobre", name: "Použité - dobrý stav" },
+  { id: "horsi", name: "Použité - horší stav" }
+];
+
+// Character limits
+const TITLE_MAX_LENGTH = 100;
+const DESCRIPTION_MAX_LENGTH = 2000;
+const PRICE_MAX_VALUE = 10000000; // 10 million Kč
+
 // Component that uses useRouter
 function SellForm() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
     category: "",
+    condition: "",
     price: "",
     description: "",
     location: "",
@@ -71,20 +86,33 @@ function SellForm() {
     
     if (!formData.title.trim()) {
       newErrors.title = "Vyplňte název inzerátu";
+    } else if (formData.title.length > TITLE_MAX_LENGTH) {
+      newErrors.title = `Název může mít maximálně ${TITLE_MAX_LENGTH} znaků`;
     }
     
     if (!formData.category) {
       newErrors.category = "Vyberte kategorii";
     }
     
+    if (!formData.condition) {
+      newErrors.condition = "Vyberte stav";
+    }
+    
     if (!formData.price.trim()) {
       newErrors.price = "Vyplňte cenu";
-    } else if (isNaN(Number(formData.price)) || Number(formData.price) < 0) {
-      newErrors.price = "Zadejte platnou cenu";
+    } else {
+      const priceValue = Number(formData.price);
+      if (isNaN(priceValue) || priceValue < 0) {
+        newErrors.price = "Zadejte platnou cenu";
+      } else if (priceValue > PRICE_MAX_VALUE) {
+        newErrors.price = `Cena nemůže být vyšší než ${PRICE_MAX_VALUE.toLocaleString()} Kč`;
+      }
     }
     
     if (!formData.description.trim()) {
       newErrors.description = "Vyplňte popis inzerátu";
+    } else if (formData.description.length > DESCRIPTION_MAX_LENGTH) {
+      newErrors.description = `Popis může mít maximálně ${DESCRIPTION_MAX_LENGTH} znaků`;
     }
     
     if (!formData.location.trim()) {
@@ -137,7 +165,7 @@ function SellForm() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="mb-4">
               <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                Název inzerátu *
+                Název inzerátu * <span className="text-xs text-gray-500">({formData.title.length}/{TITLE_MAX_LENGTH})</span>
               </label>
               <input
                 type="text"
@@ -151,6 +179,7 @@ function SellForm() {
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="Např. iPhone 12 Pro Max, 256GB, Pacific Blue"
+                maxLength={TITLE_MAX_LENGTH}
               />
               {errors.title && (
                 <p className="mt-2 text-sm text-red-600">{errors.title}</p>
@@ -185,11 +214,38 @@ function SellForm() {
             </div>
             
             <div className="mb-4">
+              <label htmlFor="condition" className="block text-sm font-medium text-gray-700 mb-1">
+                Stav *
+              </label>
+              <select
+                id="condition"
+                name="condition"
+                className={`block w-full px-4 py-3 rounded-md border ${
+                  errors.condition 
+                    ? 'border-red-300 focus:border-red-500' 
+                    : 'border-gray-300 focus:border-primary'
+                } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
+                value={formData.condition}
+                onChange={handleChange}
+              >
+                <option value="">Vyberte stav</option>
+                {conditions.map(condition => (
+                  <option key={condition.id} value={condition.id}>
+                    {condition.name}
+                  </option>
+                ))}
+              </select>
+              {errors.condition && (
+                <p className="mt-2 text-sm text-red-600">{errors.condition}</p>
+              )}
+            </div>
+            
+            <div className="mb-4">
               <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
                 Cena (Kč) *
               </label>
               <input
-                type="text"
+                type="number"
                 id="price"
                 name="price"
                 className={`block w-full px-4 py-3 rounded-md border ${
@@ -200,6 +256,8 @@ function SellForm() {
                 value={formData.price}
                 onChange={handleChange}
                 placeholder="Např. 18500"
+                min="0"
+                max={PRICE_MAX_VALUE}
               />
               {errors.price && (
                 <p className="mt-2 text-sm text-red-600">{errors.price}</p>
@@ -208,7 +266,7 @@ function SellForm() {
             
             <div className="mb-4">
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                Popis *
+                Popis * <span className="text-xs text-gray-500">({formData.description.length}/{DESCRIPTION_MAX_LENGTH})</span>
               </label>
               <textarea
                 id="description"
@@ -222,6 +280,7 @@ function SellForm() {
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Podrobný popis inzerátu..."
+                maxLength={DESCRIPTION_MAX_LENGTH}
               />
               {errors.description && (
                 <p className="mt-2 text-sm text-red-600">{errors.description}</p>

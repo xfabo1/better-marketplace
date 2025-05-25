@@ -26,6 +26,7 @@ const mockListing = {
   `,
   category: "Mobilní telefony",
   condition: "Použité - jako nové",
+  conditionId: "jako_nove",
   location: "Brno",
   createdAt: "2023-10-12",
   seller: {
