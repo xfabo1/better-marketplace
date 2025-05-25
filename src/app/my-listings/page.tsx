@@ -13,6 +13,7 @@ const mockListings = [
     price: 18500,
     category: "Elektronika",
     location: "Praha",
+    postalCode: "110 00",
     imageUrl: "https://placehold.co/600x400/3b82f6/ffffff?text=iPhone+12",
     createdAt: "2023-10-15",
     status: "active",
@@ -25,6 +26,7 @@ const mockListings = [
     price: 12000,
     category: "Nábytek",
     location: "Brno",
+    postalCode: "602 00",
     imageUrl: "https://placehold.co/600x400/22c55e/ffffff?text=Sedačka",
     createdAt: "2023-09-28",
     status: "active",
@@ -37,6 +39,7 @@ const mockListings = [
     price: 15000,
     category: "Sport",
     location: "Ostrava",
+    postalCode: "702 00",
     imageUrl: "https://placehold.co/600x400/f59e0b/ffffff?text=Kolo",
     createdAt: "2023-08-10",
     status: "sold",
@@ -125,7 +128,7 @@ export default function MyListingsPage() {
                     <div className="mt-2 flex items-center text-sm text-gray-500">
                       <span>{listing.category}</span>
                       <span className="mx-2">•</span>
-                      <span>{listing.location}</span>
+                      <span>{listing.location}, {listing.postalCode}</span>
                     </div>
                     <div className="mt-1 text-xs text-gray-600">
                       {listing.condition}

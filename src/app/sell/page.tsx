@@ -302,11 +302,14 @@ function SellForm() {
                 } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                 value={formData.location}
                 onChange={handleChange}
-                placeholder="Např. Praha 5"
+                placeholder="Zadejte město nebo PSČ (např. Praha 5, 110 00)"
               />
               {errors.location && (
                 <p className="mt-2 text-sm text-red-600">{errors.location}</p>
               )}
+              <p className="mt-1 text-xs text-gray-500">
+                Zadejte název města nebo PSČ. V budoucí verzi bude k dispozici našeptávač.
+              </p>
             </div>
             
             <div className="mb-4">

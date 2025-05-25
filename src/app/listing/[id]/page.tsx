@@ -28,6 +28,7 @@ const mockListing = {
   condition: "Použité - jako nové",
   conditionId: "jako_nove",
   location: "Brno",
+  postalCode: "602 00",
   createdAt: "2023-10-12",
   seller: {
     name: "Jan Novák",
@@ -314,6 +315,7 @@ export default function ListingDetailPage() {
                     Lokalita
                   </h2>
                   <div className="text-gray-700">{listing.location}</div>
+                  <div className="text-gray-700 mt-1">PSČ: {listing.postalCode}</div>
                 </div>
               </div>
 

@@ -13,6 +13,7 @@ const allListings = [
     title: "Toyota Camry 2019 - Výborný stav",
     price: 350000,
     location: "Praha",
+    postalCode: "110 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Toyota+Camry",
     category: "Automobily",
     condition: "Použité - velmi dobrý stav",
@@ -24,6 +25,7 @@ const allListings = [
     title: "iPhone 14 Pro Max - Jako nový",
     price: 22000,
     location: "Brno",
+    postalCode: "602 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=iPhone+14",
     category: "Elektronika",
     condition: "Použité - jako nové",
@@ -35,6 +37,7 @@ const allListings = [
     title: "Moderní pohovka - Pohodlná a stylová",
     price: 11500,
     location: "Ostrava",
+    postalCode: "702 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Pohovka",
     category: "Nábytek",
     condition: "Použité - dobrý stav",
@@ -46,6 +49,7 @@ const allListings = [
     title: "Horské kolo - Trek X-Caliber 8",
     price: 18500,
     location: "Plzeň",
+    postalCode: "301 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Horské+kolo",
     category: "Sport",
     condition: "Použité - velmi dobrý stav",
@@ -57,6 +61,7 @@ const allListings = [
     title: "Značkové šaty - Velikost M",
     price: 2990,
     location: "Liberec",
+    postalCode: "460 01",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Šaty",
     category: "Oblečení",
     condition: "Nové",
@@ -68,6 +73,7 @@ const allListings = [
     title: "PlayStation 5 se 2 ovladači",
     price: 12500,
     location: "Olomouc",
+    postalCode: "779 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=PlayStation+5",
     category: "Elektronika",
     condition: "Použité - jako nové",
@@ -79,6 +85,7 @@ const allListings = [
     title: "Dětská postýlka s matrací",
     price: 3500,
     location: "Praha",
+    postalCode: "140 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dětská+postýlka",
     category: "Dětské zboží",
     condition: "Použité - dobrý stav",
@@ -90,6 +97,7 @@ const allListings = [
     title: "MacBook Pro 2022 - M2 chip",
     price: 38000,
     location: "Praha",
+    postalCode: "120 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=MacBook+Pro",
     category: "Elektronika",
     condition: "Použité - jako nové",
@@ -101,6 +109,7 @@ const allListings = [
     title: "Zahradní nábytek - Set 6 kusů",
     price: 8500,
     location: "Brno",
+    postalCode: "639 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Zahradní+nábytek",
     category: "Nábytek",
     condition: "Použité - dobrý stav",
@@ -112,6 +121,7 @@ const allListings = [
     title: "Elektrická koloběžka Xiaomi",
     price: 9900,
     location: "Praha",
+    postalCode: "160 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Koloběžka",
     category: "Sport",
     condition: "Použité - velmi dobrý stav",
@@ -123,6 +133,7 @@ const allListings = [
     title: "Zimní bunda - Velikost L",
     price: 1800,
     location: "Ostrava",
+    postalCode: "710 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Zimní+bunda",
     category: "Oblečení",
     condition: "Použité - dobrý stav",
@@ -134,6 +145,7 @@ const allListings = [
     title: "Kuchyňský robot Kenwood",
     price: 4500,
     location: "Plzeň",
+    postalCode: "326 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Kuchyňský+robot",
     category: "Elektronika",
     condition: "Použité - horší stav",
@@ -145,6 +157,7 @@ const allListings = [
     title: "Dámské kolo Specialized",
     price: 12000,
     location: "Praha",
+    postalCode: "190 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dámské+kolo",
     category: "Sport",
     condition: "Použité - velmi dobrý stav",
@@ -156,6 +169,7 @@ const allListings = [
     title: "Herní počítač - RTX 3080",
     price: 45000,
     location: "Brno",
+    postalCode: "612 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Herní+PC",
     category: "Elektronika",
     condition: "Použité - jako nové",
@@ -167,6 +181,7 @@ const allListings = [
     title: "Dětské oblečení - Set 0-6 měsíců",
     price: 1200,
     location: "Ostrava",
+    postalCode: "700 30",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dětské+oblečení",
     category: "Dětské zboží",
     condition: "Použité - dobrý stav",
@@ -178,6 +193,7 @@ const allListings = [
     title: "IKEA pohovka KIVIK",
     price: 8000,
     location: "Praha",
+    postalCode: "170 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=IKEA+pohovka",
     category: "Nábytek",
     condition: "Použité - dobrý stav",
@@ -189,6 +205,7 @@ const allListings = [
     title: "Dámské lodičky - Velikost 39",
     price: 1500,
     location: "Brno",
+    postalCode: "602 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dámské+lodičky",
     category: "Oblečení",
     condition: "Použité - jako nové",
@@ -200,6 +217,7 @@ const allListings = [
     title: "Elektrická vrtačka Bosch",
     price: 2800,
     location: "Plzeň",
+    postalCode: "301 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Vrtačka+Bosch",
     category: "Elektronika",
     condition: "Použité - horší stav",
@@ -249,7 +267,7 @@ const dateFilterOptions = [
 const ITEMS_PER_PAGE = 9;
 
 export default function ListingsPage() {
-  const [selectedLocation, setSelectedLocation] = useState("Všechny lokality");
+  const [locationQuery, setLocationQuery] = useState("");
   const [selectedCondition, setSelectedCondition] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [searchQuery, setSearchQuery] = useState("");
@@ -261,9 +279,13 @@ export default function ListingsPage() {
 
   // Filter listings based on selected filters
   const filteredListings = allListings.filter((listing) => {
-    // Filter by location
-    if (selectedLocation !== "Všechny lokality" && listing.location !== selectedLocation) {
-      return false;
+    // Filter by location (city name or postal code)
+    if (locationQuery) {
+      const locationMatches = listing.location.toLowerCase().includes(locationQuery.toLowerCase());
+      const postalCodeMatches = listing.postalCode.includes(locationQuery);
+      if (!locationMatches && !postalCodeMatches) {
+        return false;
+      }
     }
     
     // Filter by condition
@@ -340,7 +362,7 @@ export default function ListingsPage() {
   );
 
   const handleLocationChange = (location: string) => {
-    setSelectedLocation(location);
+    setLocationQuery(location);
     setCurrentPage(1);
   };
 
@@ -380,7 +402,7 @@ export default function ListingsPage() {
   const CustomSearchBar = () => {
     const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
-    const [location, setLocation] = useState(selectedLocation);
+    const [location, setLocation] = useState(locationQuery);
     const [localDateFilter, setLocalDateFilter] = useState(dateFilter);
     const [localMinPrice, setLocalMinPrice] = useState(minPrice);
     const [localMaxPrice, setLocalMaxPrice] = useState(maxPrice);
@@ -390,7 +412,7 @@ export default function ListingsPage() {
       e.preventDefault();
       handleSearch(localSearchQuery);
       
-      if (location !== selectedLocation) {
+      if (location !== locationQuery) {
         handleLocationChange(location);
       }
       
@@ -488,18 +510,14 @@ export default function ListingsPage() {
                 <label htmlFor="location" className="block text-sm font-medium text-gray-700">
                   Lokalita
                 </label>
-                <select
+                <input
+                  type="text"
                   id="location"
                   className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                >
-                  {locations.map((loc) => (
-                    <option key={loc} value={loc}>
-                      {loc}
-                    </option>
-                  ))}
-                </select>
+                  placeholder="Zadejte město nebo PSČ..."
+                />
               </div>
               
               <div>
@@ -642,7 +660,7 @@ export default function ListingsPage() {
                         </div>
                         <div className="mt-auto flex justify-between items-center">
                           <span className="text-lg font-bold text-gray-900">{listing.price.toLocaleString()} Kč</span>
-                          <span className="text-sm text-gray-500">{listing.location}</span>
+                          <span className="text-sm text-gray-500">{listing.location}, {listing.postalCode}</span>
                         </div>
                       </div>
                     </div>
@@ -737,7 +755,8 @@ export default function ListingsPage() {
               <div className="mt-6">
                 <button
                   onClick={() => {
-                    setSelectedLocation("Všechny lokality");
+                    setLocationQuery("");
+                    setSelectedCondition("all");
                     setSearchQuery("");
                     setSortBy("newest");
                     setDateFilter("all");
