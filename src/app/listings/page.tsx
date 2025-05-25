@@ -192,6 +192,14 @@ const sortOptions = [
   { label: "Nejdražší", value: "price_desc" },
 ];
 
+// Date filter options
+const dateFilterOptions = [
+  { label: "Všechny", value: "all" },
+  { label: "Dnes", value: "today" },
+  { label: "Tento týden", value: "week" },
+  { label: "Tento měsíc", value: "month" },
+];
+
 // Items per page
 const ITEMS_PER_PAGE = 9;
 
@@ -201,6 +209,9 @@ export default function ListingsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
+  const [dateFilter, setDateFilter] = useState("all");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
   // Filter listings based on selected filters
   const filteredListings = allListings.filter((listing) => {
@@ -212,6 +223,43 @@ export default function ListingsPage() {
     // Filter by search query
     if (searchQuery && !listing.title.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
+    }
+    
+    // Filter by price range
+    if (minPrice && listing.price < parseInt(minPrice)) {
+      return false;
+    }
+    
+    if (maxPrice && listing.price > parseInt(maxPrice)) {
+      return false;
+    }
+    
+    // Filter by date
+    if (dateFilter !== "all") {
+      const today = new Date();
+      const listingDate = new Date(listing.createdAt);
+      
+      if (dateFilter === "today") {
+        if (
+          today.getDate() !== listingDate.getDate() ||
+          today.getMonth() !== listingDate.getMonth() ||
+          today.getFullYear() !== listingDate.getFullYear()
+        ) {
+          return false;
+        }
+      } else if (dateFilter === "week") {
+        const weekAgo = new Date();
+        weekAgo.setDate(today.getDate() - 7);
+        if (listingDate < weekAgo) {
+          return false;
+        }
+      } else if (dateFilter === "month") {
+        const monthAgo = new Date();
+        monthAgo.setMonth(today.getMonth() - 1);
+        if (listingDate < monthAgo) {
+          return false;
+        }
+      }
     }
     
     return true;
@@ -256,11 +304,29 @@ export default function ListingsPage() {
     setIsSortMenuOpen(false);
   };
 
+  const handleDateFilterChange = (filter: string) => {
+    setDateFilter(filter);
+    setCurrentPage(1);
+  };
+
+  // Format date function
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('cs-CZ', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
   // Custom SearchBar with added sort button
   const CustomSearchBar = () => {
     const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [location, setLocation] = useState(selectedLocation);
+    const [localDateFilter, setLocalDateFilter] = useState(dateFilter);
+    const [localMinPrice, setLocalMinPrice] = useState(minPrice);
+    const [localMaxPrice, setLocalMaxPrice] = useState(maxPrice);
 
     const handleLocalSearch = (e: React.FormEvent) => {
       e.preventDefault();
@@ -268,6 +334,20 @@ export default function ListingsPage() {
       
       if (location !== selectedLocation) {
         handleLocationChange(location);
+      }
+      
+      if (localDateFilter !== dateFilter) {
+        handleDateFilterChange(localDateFilter);
+      }
+      
+      if (localMinPrice !== minPrice) {
+        setMinPrice(localMinPrice);
+        setCurrentPage(1);
+      }
+      
+      if (localMaxPrice !== maxPrice) {
+        setMaxPrice(localMaxPrice);
+        setCurrentPage(1);
       }
     };
 
@@ -359,6 +439,49 @@ export default function ListingsPage() {
                   ))}
                 </select>
               </div>
+              <div>
+                <label htmlFor="dateFilter" className="block text-sm font-medium text-gray-700">
+                  Datum přidání
+                </label>
+                <select
+                  id="dateFilter"
+                  className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
+                  value={localDateFilter}
+                  onChange={(e) => setLocalDateFilter(e.target.value)}
+                >
+                  {dateFilterOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="priceRange" className="block text-sm font-medium text-gray-700">
+                  Cenové rozmezí
+                </label>
+                <div className="mt-1 flex items-center space-x-2">
+                  <input
+                    type="number"
+                    id="minPrice"
+                    placeholder="Od"
+                    className="block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
+                    value={localMinPrice}
+                    onChange={(e) => setLocalMinPrice(e.target.value)}
+                    min="0"
+                  />
+                  <span className="text-gray-500">-</span>
+                  <input
+                    type="number"
+                    id="maxPrice"
+                    placeholder="Do"
+                    className="block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
+                    value={localMaxPrice}
+                    onChange={(e) => setLocalMaxPrice(e.target.value)}
+                    min="0"
+                  />
+                </div>
+              </div>
             </div>
           )}
         </form>
@@ -426,7 +549,10 @@ export default function ListingsPage() {
                         />
                       </div>
                       <div className="p-4 flex-grow flex flex-col">
-                        <div className="text-xs text-primary font-medium mb-1">{listing.category}</div>
+                        <div className="flex justify-between items-center mb-1">
+                          <div className="text-xs text-primary font-medium">{listing.category}</div>
+                          <div className="text-xs text-gray-500">{formatDate(listing.createdAt)}</div>
+                        </div>
                         <h3 className="text-base font-medium text-gray-900 group-hover:text-primary transition-colors duration-200 mb-2 line-clamp-2">
                           {listing.title}
                         </h3>
@@ -530,6 +656,9 @@ export default function ListingsPage() {
                     setSelectedLocation("Všechny lokality");
                     setSearchQuery("");
                     setSortBy("newest");
+                    setDateFilter("all");
+                    setMinPrice("");
+                    setMaxPrice("");
                     setCurrentPage(1);
                   }}
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"

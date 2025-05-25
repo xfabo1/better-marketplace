@@ -60,6 +60,13 @@ export default function Header() {
                     <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                       <div className="py-1" role="menu" aria-orientation="vertical">
                         <Link 
+                          href="/profile" 
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          Profil
+                        </Link>
+                        <Link 
                           href="/settings" 
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           onClick={() => setIsUserMenuOpen(false)}
@@ -147,6 +154,12 @@ export default function Header() {
                   <div className="px-4 py-2 text-base font-medium text-gray-900">
                     {user?.name}
                   </div>
+                  <Link 
+                    href="/profile" 
+                    className="block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
+                  >
+                    Profil
+                  </Link>
                   <Link 
                     href="/settings" 
                     className="block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
