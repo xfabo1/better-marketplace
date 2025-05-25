@@ -31,10 +31,6 @@ export default function Home() {
             </div>
             
             <SearchBar />
-            
-            <div className="mt-12">
-              <FeaturedListings />
-            </div>
           </div>
         </main>
       </div>

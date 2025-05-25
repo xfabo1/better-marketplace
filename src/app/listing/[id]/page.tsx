@@ -30,7 +30,7 @@ const mockListing = {
   seller: {
     name: "Jan Novák",
     memberSince: "2021-05",
-    otherListings: 5
+    otherListings: 5,
   },
   contactPhone: "+420 123 456 789",
   contactEmail: "jan.novak@example.com",
@@ -38,8 +38,8 @@ const mockListing = {
     "https://placehold.co/800x600/e6f7ef/10b981/png?text=iPhone+14+Pro+Max+1",
     "https://placehold.co/800x600/e6f7ef/10b981/png?text=iPhone+14+Pro+Max+2",
     "https://placehold.co/800x600/e6f7ef/10b981/png?text=iPhone+14+Pro+Max+3",
-    "https://placehold.co/800x600/e6f7ef/10b981/png?text=iPhone+14+Pro+Max+4"
-  ]
+    "https://placehold.co/800x600/e6f7ef/10b981/png?text=iPhone+14+Pro+Max+4",
+  ],
 };
 
 // Similar listings data
@@ -67,7 +67,7 @@ const similarListings = [
     location: "Brno",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Pixel+7+Pro",
     category: "Mobilní telefony",
-  }
+  },
 ];
 
 export default function ListingDetailPage() {
@@ -80,16 +80,19 @@ export default function ListingDetailPage() {
   const listing = mockListing;
 
   // Format the date
-  const formattedDate = new Date(listing.createdAt).toLocaleDateString('cs-CZ', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
+  const formattedDate = new Date(listing.createdAt).toLocaleDateString(
+    "cs-CZ",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }
+  );
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />
-      
+
       <main className="flex-grow py-6 md:py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumbs */}
@@ -102,11 +105,15 @@ export default function ListingDetailPage() {
               Inzeráty
             </Link>{" "}
             &gt;{" "}
-            <Link href={`/listings?category=${encodeURIComponent(listing.category)}`} className="hover:text-primary">
+            <Link
+              href={`/listings?category=${encodeURIComponent(
+                listing.category
+              )}`}
+              className="hover:text-primary"
+            >
               {listing.category}
             </Link>{" "}
-            &gt;{" "}
-            <span className="text-gray-700">{listing.title}</span>
+            &gt; <span className="text-gray-700">{listing.title}</span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -156,7 +163,7 @@ export default function ListingDetailPage() {
                   <h1 className="text-2xl font-medium text-gray-900 mb-2">
                     {listing.title}
                   </h1>
-                  
+
                   <div className="flex items-center text-sm text-gray-500 mb-4">
                     <span>{listing.category}</span>
                     <span className="mx-2">•</span>
@@ -181,11 +188,13 @@ export default function ListingDetailPage() {
                       Popis
                     </h2>
                     <div className="prose prose-sm max-w-none text-gray-700">
-                      {listing.description.split('\n').map((paragraph, index) => (
-                        <p key={index} className="mb-4">
-                          {paragraph}
-                        </p>
-                      ))}
+                      {listing.description
+                        .split("\n")
+                        .map((paragraph, index) => (
+                          <p key={index} className="mb-4">
+                            {paragraph}
+                          </p>
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -250,8 +259,18 @@ export default function ListingDetailPage() {
                       href={`tel:${listing.contactPhone}`}
                       className="w-full py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary flex items-center justify-center"
                     >
-                      <svg className="w-5 h-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      <svg
+                        className="w-5 h-5 mr-2 text-gray-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                        />
                       </svg>
                       Zavolat
                     </a>
@@ -260,14 +279,24 @@ export default function ListingDetailPage() {
                   {showContactInfo && (
                     <div className="mt-4 p-4 bg-gray-50 rounded-md border border-gray-200">
                       <div className="mb-3">
-                        <div className="text-sm font-medium text-gray-700">Telefon:</div>
-                        <a href={`tel:${listing.contactPhone}`} className="text-primary hover:underline">
+                        <div className="text-sm font-medium text-gray-700">
+                          Telefon:
+                        </div>
+                        <a
+                          href={`tel:${listing.contactPhone}`}
+                          className="text-primary hover:underline"
+                        >
                           {listing.contactPhone}
                         </a>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-700">E-mail:</div>
-                        <a href={`mailto:${listing.contactEmail}`} className="text-primary hover:underline">
+                        <div className="text-sm font-medium text-gray-700">
+                          E-mail:
+                        </div>
+                        <a
+                          href={`mailto:${listing.contactEmail}`}
+                          className="text-primary hover:underline"
+                        >
                           {listing.contactEmail}
                         </a>
                       </div>
@@ -294,26 +323,56 @@ export default function ListingDetailPage() {
                   </h2>
                   <ul className="text-sm text-gray-700 space-y-2">
                     <li className="flex items-start">
-                      <svg className="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      <svg
+                        className="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
                       </svg>
                       <span>Nikdy neposílejte peníze předem.</span>
                     </li>
                     <li className="flex items-start">
-                      <svg className="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      <svg
+                        className="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
                       </svg>
                       <span>Setkávejte se na veřejných místech.</span>
                     </li>
                     <li className="flex items-start">
-                      <svg className="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      <svg
+                        className="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
                       </svg>
                       <span>Zkontrolujte zboží před zaplacením.</span>
                     </li>
                   </ul>
-                  <Link 
-                    href="/bezpecnost" 
+                  <Link
+                    href="/bezpecnost"
                     className="mt-4 inline-block text-sm text-primary hover:underline"
                   >
                     Více o bezpečném nakupování
@@ -330,7 +389,11 @@ export default function ListingDetailPage() {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {similarListings.map((item) => (
-                <Link href={`/listing/${item.id}`} key={item.id} className="group">
+                <Link
+                  href={`/listing/${item.id}`}
+                  key={item.id}
+                  className="group"
+                >
                   <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
                     <div className="relative h-48 w-full">
                       <Image
@@ -342,13 +405,19 @@ export default function ListingDetailPage() {
                       />
                     </div>
                     <div className="p-4 flex-grow flex flex-col">
-                      <div className="text-xs text-primary font-medium mb-1">{item.category}</div>
+                      <div className="text-xs text-primary font-medium mb-1">
+                        {item.category}
+                      </div>
                       <h3 className="text-base font-medium text-gray-900 group-hover:text-primary transition-colors duration-200 mb-2 line-clamp-2">
                         {item.title}
                       </h3>
                       <div className="mt-auto flex justify-between items-center">
-                        <span className="text-lg font-bold text-gray-900">{item.price.toLocaleString()} Kč</span>
-                        <span className="text-sm text-gray-500">{item.location}</span>
+                        <span className="text-lg font-bold text-gray-900">
+                          {item.price.toLocaleString()} Kč
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          {item.location}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -360,4 +429,4 @@ export default function ListingDetailPage() {
       </main>
     </div>
   );
-} 
+}
