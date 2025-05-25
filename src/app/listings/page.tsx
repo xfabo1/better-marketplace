@@ -227,17 +227,6 @@ const allListings = [
   },
 ];
 
-// Locations for filtering
-const locations = [
-  "Všechny lokality",
-  "Praha",
-  "Brno",
-  "Ostrava",
-  "Plzeň",
-  "Liberec",
-  "Olomouc",
-];
-
 // Condition options for filtering
 const conditions = [
   { id: "all", name: "Všechny stavy" },
