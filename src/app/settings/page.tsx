@@ -6,15 +6,13 @@ import Header from "@/components/Header";
 
 export default function SettingsPage() {
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'notifications'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'security'>('profile');
   
   // Set active tab based on URL parameter if present
   useEffect(() => {
     const tab = searchParams.get('tab');
     if (tab === 'security') {
       setActiveTab('security');
-    } else if (tab === 'notifications') {
-      setActiveTab('notifications');
     } else {
       setActiveTab('profile');
     }
@@ -22,13 +20,9 @@ export default function SettingsPage() {
   
   // Mock user data
   const [userData, setUserData] = useState({
-    name: "Jan Novák",
     email: "jan.novak@example.com",
     phone: "+420 123 456 789",
-    location: "Praha",
-    notifyNewMessages: true,
-    notifyStatusChanges: true,
-    notifyPromotions: false
+    location: "Praha"
   });
 
   const handleProfileSubmit = (e: React.FormEvent) => {
@@ -43,15 +37,6 @@ export default function SettingsPage() {
     // Here you would call your API to update the password
     console.log("Password update submitted");
     alert("Heslo bylo úspěšně změněno!");
-  };
-
-  const handleNotificationChange = (setting: string, value: boolean) => {
-    setUserData(prev => ({
-      ...prev,
-      [setting]: value
-    }));
-    // Here you would call your API to update notification settings
-    console.log(`Notification setting ${setting} changed to ${value}`);
   };
 
   return (
@@ -87,16 +72,6 @@ export default function SettingsPage() {
                 >
                   Zabezpečení
                 </button>
-                <button
-                  onClick={() => setActiveTab('notifications')}
-                  className={`px-6 py-4 text-sm font-medium whitespace-nowrap ${
-                    activeTab === 'notifications'
-                      ? 'border-b-2 border-primary text-primary'
-                      : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  Oznámení
-                </button>
               </nav>
             </div>
             
@@ -105,19 +80,6 @@ export default function SettingsPage() {
                 <div>
                   <h2 className="text-xl font-medium text-gray-900 mb-4">Osobní údaje</h2>
                   <form onSubmit={handleProfileSubmit} className="space-y-6 max-w-2xl">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                        Jméno a příjmení
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                        value={userData.name}
-                        onChange={(e) => setUserData({...userData, name: e.target.value})}
-                      />
-                    </div>
-                    
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                         E-mail
@@ -215,62 +177,6 @@ export default function SettingsPage() {
                       </button>
                     </div>
                   </form>
-                </div>
-              )}
-              
-              {activeTab === 'notifications' && (
-                <div>
-                  <h2 className="text-xl font-medium text-gray-900 mb-4">Oznámení</h2>
-                  
-                  <div className="space-y-6 max-w-2xl">
-                    <div className="flex items-start">
-                      <div className="flex items-center h-5">
-                        <input
-                          id="notify-messages"
-                          type="checkbox"
-                          className="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded"
-                          checked={userData.notifyNewMessages}
-                          onChange={(e) => handleNotificationChange('notifyNewMessages', e.target.checked)}
-                        />
-                      </div>
-                      <div className="ml-3 text-sm">
-                        <label htmlFor="notify-messages" className="font-medium text-gray-700">Nové zprávy</label>
-                        <p className="text-gray-500">Dostávat oznámení o nových zprávách od ostatních uživatelů.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <div className="flex items-center h-5">
-                        <input
-                          id="notify-status"
-                          type="checkbox"
-                          className="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded"
-                          checked={userData.notifyStatusChanges}
-                          onChange={(e) => handleNotificationChange('notifyStatusChanges', e.target.checked)}
-                        />
-                      </div>
-                      <div className="ml-3 text-sm">
-                        <label htmlFor="notify-status" className="font-medium text-gray-700">Změny stavu inzerátů</label>
-                        <p className="text-gray-500">Dostávat oznámení o změnách stavu vašich inzerátů.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <div className="flex items-center h-5">
-                        <input
-                          id="notify-promotions"
-                          type="checkbox"
-                          className="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded"
-                          checked={userData.notifyPromotions}
-                          onChange={(e) => handleNotificationChange('notifyPromotions', e.target.checked)}
-                        />
-                      </div>
-                      <div className="ml-3 text-sm">
-                        <label htmlFor="notify-promotions" className="font-medium text-gray-700">Propagační nabídky</label>
-                        <p className="text-gray-500">Dostávat oznámení o speciálních nabídkách a novinkách.</p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               )}
             </div>
