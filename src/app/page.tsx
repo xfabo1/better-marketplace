@@ -4,7 +4,7 @@ import SearchBar from "@/components/SearchBar";
 import FeaturedListings from "@/components/FeaturedListings";
 
 // Temporary authentication state (in a real app, this would come from a proper auth system)
-const isLoggedIn = false;
+const isLoggedIn = true;
 
 export default function Home() {
   return (

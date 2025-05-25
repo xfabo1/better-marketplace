@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useState } from "react";
 
 // Temporary authentication state (in a real app, this would come from a proper auth system)
-const isLoggedIn = false;
+const isLoggedIn = true; // Changed to true to mock logged-in state
+const userName = "Jan Novák"; // User name to display in the header
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
@@ -32,15 +34,48 @@ export default function Header() {
             
             {isLoggedIn ? (
               <div className="flex items-center space-x-4">
-                <Link href="/account" className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium">
-                  Můj účet
+                <Link href="/my-listings" className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium">
+                  Moje inzeráty
                 </Link>
-                <button 
-                  className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium"
-                  onClick={() => console.log("Logout clicked")}
-                >
-                  Odhlásit
-                </button>
+                
+                {/* User dropdown menu */}
+                <div className="relative ml-3">
+                  <div>
+                    <button
+                      type="button"
+                      className="flex items-center text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium focus:outline-none"
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    >
+                      <span>{userName}</span>
+                      <svg className="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  {isUserMenuOpen && (
+                    <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                      <div className="py-1" role="menu" aria-orientation="vertical">
+                        <Link 
+                          href="/settings" 
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          Nastavení
+                        </Link>
+                        <button 
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={() => {
+                            console.log("Logout clicked");
+                            setIsUserMenuOpen(false);
+                          }}
+                        >
+                          Odhlásit
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
               <div className="flex items-center space-x-3">
@@ -60,7 +95,7 @@ export default function Header() {
             )}
           </div>
           
-          <div className="flex items-center sm:hidden">
+          <div className="sm:hidden flex items-center">
             <button
               type="button"
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
@@ -103,17 +138,28 @@ export default function Header() {
             {isLoggedIn ? (
               <>
                 <Link 
-                  href="/account" 
+                  href="/my-listings" 
                   className="block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
                 >
-                  Můj účet
+                  Moje inzeráty
                 </Link>
-                <button 
-                  className="block w-full text-left px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-                  onClick={() => console.log("Logout clicked")}
-                >
-                  Odhlásit
-                </button>
+                <div className="border-t border-gray-100 pt-2">
+                  <div className="px-4 py-2 text-base font-medium text-gray-900">
+                    {userName}
+                  </div>
+                  <Link 
+                    href="/settings" 
+                    className="block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
+                  >
+                    Nastavení
+                  </Link>
+                  <button 
+                    className="block w-full text-left px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
+                    onClick={() => console.log("Logout clicked")}
+                  >
+                    Odhlásit
+                  </button>
+                </div>
               </>
             ) : (
               <>
