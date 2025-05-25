@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import Header from "@/components/Header";
 
 // Mock data for a single listing
@@ -71,7 +72,7 @@ const similarListings = [
 ];
 
 export default function ListingDetailPage() {
-  // In a real app, we would use useParams() to get the listing ID
+  const { id } = useParams();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showContactInfo, setShowContactInfo] = useState(false);
 
@@ -379,50 +380,6 @@ export default function ListingDetailPage() {
                   </Link>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Similar listings */}
-          <div className="mt-12">
-            <h2 className="text-xl font-medium text-gray-900 mb-6">
-              Podobné inzeráty
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {similarListings.map((item) => (
-                <Link
-                  href={`/listing/${item.id}`}
-                  key={item.id}
-                  className="group"
-                >
-                  <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
-                    <div className="relative h-48 w-full">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="p-4 flex-grow flex flex-col">
-                      <div className="text-xs text-primary font-medium mb-1">
-                        {item.category}
-                      </div>
-                      <h3 className="text-base font-medium text-gray-900 group-hover:text-primary transition-colors duration-200 mb-2 line-clamp-2">
-                        {item.title}
-                      </h3>
-                      <div className="mt-auto flex justify-between items-center">
-                        <span className="text-lg font-bold text-gray-900">
-                          {item.price.toLocaleString()} Kč
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          {item.location}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
             </div>
           </div>
         </div>
