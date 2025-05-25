@@ -3,9 +3,6 @@ import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/SearchBar";
 import FeaturedListings from "@/components/FeaturedListings";
 
-// Temporary authentication state (in a real app, this would come from a proper auth system)
-const isLoggedIn = true;
-
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-white">

@@ -2,14 +2,17 @@
 
 import Link from "next/link";
 import { useState } from "react";
-
-// Temporary authentication state (in a real app, this would come from a proper auth system)
-const isLoggedIn = true; // Changed to true to mock logged-in state
-const userName = "Jan Novák"; // User name to display in the header
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    setIsUserMenuOpen(false);
+  };
 
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
@@ -26,13 +29,13 @@ export default function Header() {
               Procházet
             </Link>
             
-            {isLoggedIn && (
+            {isAuthenticated && (
               <Link href="/sell" className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium">
                 Prodat
               </Link>
             )}
             
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <Link href="/my-listings" className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium">
                   Moje inzeráty
@@ -46,7 +49,7 @@ export default function Header() {
                       className="flex items-center text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium focus:outline-none"
                       onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     >
-                      <span>{userName}</span>
+                      <span>{user?.name}</span>
                       <svg className="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
@@ -65,10 +68,7 @@ export default function Header() {
                         </Link>
                         <button 
                           className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          onClick={() => {
-                            console.log("Logout clicked");
-                            setIsUserMenuOpen(false);
-                          }}
+                          onClick={handleLogout}
                         >
                           Odhlásit
                         </button>
@@ -126,7 +126,7 @@ export default function Header() {
               Procházet
             </Link>
             
-            {isLoggedIn && (
+            {isAuthenticated && (
               <Link 
                 href="/sell" 
                 className="block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
@@ -135,7 +135,7 @@ export default function Header() {
               </Link>
             )}
             
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <>
                 <Link 
                   href="/my-listings" 
@@ -145,7 +145,7 @@ export default function Header() {
                 </Link>
                 <div className="border-t border-gray-100 pt-2">
                   <div className="px-4 py-2 text-base font-medium text-gray-900">
-                    {userName}
+                    {user?.name}
                   </div>
                   <Link 
                     href="/settings" 
@@ -155,7 +155,7 @@ export default function Header() {
                   </Link>
                   <button 
                     className="block w-full text-left px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-                    onClick={() => console.log("Logout clicked")}
+                    onClick={handleLogout}
                   >
                     Odhlásit
                   </button>
