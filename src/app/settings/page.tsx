@@ -78,51 +78,51 @@ export default function SettingsPage() {
             <div className="p-6">
               {activeTab === 'profile' && (
                 <div>
-                  <h2 className="text-xl font-medium text-gray-900 mb-4">Osobní údaje</h2>
+                  <h2 className="text-xl font-medium text-gray-900 mb-6">Osobní údaje</h2>
                   <form onSubmit={handleProfileSubmit} className="space-y-6 max-w-2xl">
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                         E-mail
                       </label>
                       <input
                         type="email"
                         id="email"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        className="block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
                         value={userData.email}
                         onChange={(e) => setUserData({...userData, email: e.target.value})}
                       />
                     </div>
                     
-                    <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                         Telefon
                       </label>
                       <input
                         type="tel"
                         id="phone"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        className="block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
                         value={userData.phone}
                         onChange={(e) => setUserData({...userData, phone: e.target.value})}
                       />
                     </div>
                     
-                    <div>
-                      <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
                         Lokalita
                       </label>
                       <input
                         type="text"
                         id="location"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        className="block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
                         value={userData.location}
                         onChange={(e) => setUserData({...userData, location: e.target.value})}
                       />
                     </div>
                     
-                    <div>
+                    <div className="pt-4">
                       <button
                         type="submit"
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                        className="w-full sm:w-auto inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
                       >
                         Uložit změny
                       </button>
@@ -133,45 +133,45 @@ export default function SettingsPage() {
               
               {activeTab === 'security' && (
                 <div>
-                  <h2 className="text-xl font-medium text-gray-900 mb-4">Zabezpečení</h2>
+                  <h2 className="text-xl font-medium text-gray-900 mb-6">Zabezpečení</h2>
                   <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-2xl">
-                    <div>
-                      <label htmlFor="current-password" className="block text-sm font-medium text-gray-700">
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <label htmlFor="current-password" className="block text-sm font-medium text-gray-700 mb-1">
                         Současné heslo
                       </label>
                       <input
                         type="password"
                         id="current-password"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        className="block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
                       />
                     </div>
                     
-                    <div>
-                      <label htmlFor="new-password" className="block text-sm font-medium text-gray-700">
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <label htmlFor="new-password" className="block text-sm font-medium text-gray-700 mb-1">
                         Nové heslo
                       </label>
                       <input
                         type="password"
                         id="new-password"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        className="block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
                       />
                     </div>
                     
-                    <div>
-                      <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">
                         Potvrdit nové heslo
                       </label>
                       <input
                         type="password"
                         id="confirm-password"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        className="block w-full px-4 py-3 rounded-md bg-white border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
                       />
                     </div>
                     
-                    <div>
+                    <div className="pt-4">
                       <button
                         type="submit"
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                        className="w-full sm:w-auto inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
                       >
                         Změnit heslo
                       </button>
