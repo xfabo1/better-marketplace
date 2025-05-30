@@ -25,8 +25,14 @@ function SettingsContent() {
   const [userData, setUserData] = useState({
     email: "jan.novak@example.com",
     phone: "+420 123 456 789",
-    location: "Praha"
+    location: t('czech_republic')
   });
+
+  // Available locations
+  const locations = [
+    { value: t('czech_republic'), label: t('czech_republic') },
+    { value: t('slovakia'), label: t('slovakia') }
+  ];
 
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,10 +93,12 @@ function SettingsContent() {
                     <input
                       type="email"
                       id="email"
-                      className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
+                      className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-500 bg-gray-100 sm:text-sm cursor-not-allowed"
                       value={userData.email}
-                      onChange={(e) => setUserData({...userData, email: e.target.value})}
+                      disabled
+                      readOnly
                     />
+                    <p className="mt-1 text-xs text-gray-500">{t('email_cannot_change')}</p>
                   </div>
                   
                   <div className="mb-4">
@@ -100,23 +108,31 @@ function SettingsContent() {
                     <input
                       type="tel"
                       id="phone"
-                      className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
+                      className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-500 bg-gray-100 sm:text-sm cursor-not-allowed"
                       value={userData.phone}
-                      onChange={(e) => setUserData({...userData, phone: e.target.value})}
+                      disabled
+                      readOnly
                     />
+                    <p className="mt-1 text-xs text-gray-500">{t('phone_cannot_change')}</p>
                   </div>
                   
                   <div className="mb-4">
                     <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
                       {t('location')}
                     </label>
-                    <input
-                      type="text"
+                    <select
                       id="location"
                       className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                       value={userData.location}
                       onChange={(e) => setUserData({...userData, location: e.target.value})}
-                    />
+                    >
+                      {locations.map((location) => (
+                        <option key={location.value} value={location.value}>
+                          {location.label}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="mt-1 text-xs text-gray-500">{t('location_restricted')}</p>
                   </div>
                   
                   <div className="pt-4">
