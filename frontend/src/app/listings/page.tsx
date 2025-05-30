@@ -6,9 +6,9 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { allListings, conditions, sortOptions, dateFilterOptions } from "@/data/mockData";
+import { allListings, sortOptions, dateFilterOptions } from "@/data/mockData";
+import { conditions } from "@/data/conditions";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categoryTranslationMap, conditionTranslationMap } from "@/data/translations";
 
 // Items per page
 const ITEMS_PER_PAGE = 9;
@@ -166,6 +166,24 @@ export default function ListingsPage() {
       month: '2-digit',
       year: 'numeric'
     }).replace(/\s/g, '');
+  };
+
+  // Add this helper function to map category slugs to proper translation keys
+  const getCategoryTranslationKey = (category: string): string => {
+    // Map of possible category slugs to their translation keys
+    const categoryMap: Record<string, string> = {
+      "zahrada-dilna": "garden_workshop",
+      "doprava": "transport",
+      "elektronika": "electronics", 
+      "domacnost": "household",
+      "moda": "fashion",
+      "sport-hobby": "sport_hobby",
+      "deti": "children",
+      "zvirata": "animals",
+      "kultura-vzdelavani": "culture_education",
+    };
+    
+    return categoryMap[category] || category;
   };
 
   // Custom SearchBar with added sort button
@@ -423,8 +441,8 @@ export default function ListingsPage() {
                       </div>
                       <div className="p-2 flex-grow flex flex-col">
                         <div className="flex justify-between items-center mb-1">
-                          <div className="text-xs text-primary font-medium truncate max-w-[70%] capitalize">
-                            {t(categoryTranslationMap[listing.category.toLowerCase().replace(/\s/g, '-')] || listing.category)}
+                          <div className="text-xs text-primary font-medium truncate max-w-[70%]">
+                            {t(getCategoryTranslationKey(listing.category))}
                           </div>
                           <div className="text-xs text-gray-500 hidden sm:block">{formatDate(listing.createdAt)}</div>
                         </div>
@@ -432,7 +450,7 @@ export default function ListingsPage() {
                           {listing.title}
                         </h3>
                         <div className="text-xs text-gray-600 mb-1 hidden sm:block">
-                          {t(conditionTranslationMap[listing.conditionId] || listing.condition)}
+                          {t(listing.conditionId)}
                         </div>
                         <div className="mt-auto flex justify-between items-center">
                           <span className="text-sm font-bold text-gray-900">{listing.price.toLocaleString()} Kč</span>

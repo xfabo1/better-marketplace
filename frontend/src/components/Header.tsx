@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -9,13 +9,39 @@ import LanguageSwitcher from "./LanguageSwitcher";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const { t } = useLanguage();
+
+  // Only run client-side
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = () => {
     logout();
     setIsUserMenuOpen(false);
   };
+
+  // Show a simplified header during server-rendering to avoid hydration mismatch
+  if (!mounted) {
+    return (
+      <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <Link href="/" className="flex-shrink-0 flex items-center">
+                <span className="text-2xl font-bold text-primary">Better Marketplace</span>
+              </Link>
+              <div className="ml-4">
+                <LanguageSwitcher />
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-10">

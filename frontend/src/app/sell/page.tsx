@@ -5,28 +5,27 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categoryTranslationMap, conditionTranslationMap } from "@/data/translations";
 import Link from "next/link";
 
 // Mock categories for the form
 const categories = [
-  { id: "elektronika", name: "electronics" },
-  { id: "doprava", name: "transport" },
-  { id: "domacnost", name: "household" },
-  { id: "moda", name: "fashion" },
-  { id: "sport-hobby", name: "sport_hobby" },
-  { id: "deti", name: "children" },
-  { id: "zvirata", name: "animals" },
-  { id: "zahrada-dilna", name: "garden_workshop" }
+  { id: "electronics", name: "electronics" },
+  { id: "transport", name: "transport" },
+  { id: "household", name: "household" },
+  { id: "fashion", name: "fashion" },
+  { id: "sport_hobby", name: "sport_hobby" },
+  { id: "children", name: "children" },
+  { id: "animals", name: "animals" },
+  { id: "garden_workshop", name: "garden_workshop" }
 ];
 
 // Condition options for the form
 const conditions = [
-  { id: "nove", name: "new" },
-  { id: "jako_nove", name: "used_like_new" },
-  { id: "velmi_dobre", name: "used_very_good" },
-  { id: "dobre", name: "used_good" },
-  { id: "horsi", name: "used_fair" }
+  { id: "new", name: "new" },
+  { id: "used_like_new", name: "used_like_new" },
+  { id: "used_very_good", name: "used_very_good" },
+  { id: "used_good", name: "used_good" },
+  { id: "used_fair", name: "used_fair" }
 ];
 
 // Character limits

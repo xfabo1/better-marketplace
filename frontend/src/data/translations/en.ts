@@ -257,4 +257,18 @@ export const enTranslations = {
   "favorite": "Add to Favorites",
   "item_posted": "Posted",
   "no_longer_available": "No Longer Available",
+  
+  // Login and Register
+  "login_to_account": "Login to your account",
+  "no_account": "Don't have an account?",
+  "create_account": "Create new account",
+  "already_have_account": "Already have an account?",
+  "your_name": "Your full name",
+  "email_address": "Email address",
+  "password": "Password",
+  "remember_me": "Remember me",
+  "forgot_password": "Forgot password?",
+  "logging_in": "Logging in...",
+  "registering": "Registering...",
+  "or_continue_with": "Or continue with"
 };

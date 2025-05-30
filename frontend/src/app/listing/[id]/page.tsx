@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categoryTranslationMap } from "@/data/translations";
 
 // Mock data for a single listing
 const mockListing = {
@@ -26,9 +25,9 @@ const mockListing = {
     
     Možnost osobního předání v Brně nebo zaslání přes zásilkovnu.
   `,
-  category: "Mobilní telefony",
+  category: "mobile_phones",
   condition: "Použité - jako nové",
-  conditionId: "jako_nove",
+  conditionId: "used_like_new",
   location: "Brno",
   postalCode: "602 00",
   createdAt: "2023-10-12",
@@ -55,7 +54,7 @@ const similarListings = [
     price: 15000,
     location: "Praha",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=iPhone+13+Pro",
-    category: "Mobilní telefony",
+    category: "mobile_phones",
   },
   {
     id: "3",
@@ -63,7 +62,7 @@ const similarListings = [
     price: 18500,
     location: "Ostrava",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Samsung+S22",
-    category: "Mobilní telefony",
+    category: "mobile_phones",
   },
   {
     id: "4",
@@ -71,7 +70,7 @@ const similarListings = [
     price: 16000,
     location: "Brno",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Pixel+7+Pro",
-    category: "Mobilní telefony",
+    category: "mobile_phones",
   },
 ];
 
@@ -117,7 +116,7 @@ export default function ListingDetailPage() {
               )}`}
               className="hover:text-primary"
             >
-              <span className="capitalize">{t(categoryTranslationMap[listing.category.toLowerCase().replace(/\s/g, '-')] || listing.category)}</span>
+              <span className="capitalize">{t(listing.category)}</span>
             </Link>{" "}
             &gt; <span className="text-gray-700">{listing.title}</span>
           </div>
@@ -171,7 +170,7 @@ export default function ListingDetailPage() {
                   </h1>
 
                   <div className="flex items-center text-sm text-gray-500 mb-4">
-                    <span className="capitalize">{t(categoryTranslationMap[listing.category.toLowerCase().replace(/\s/g, '-')] || listing.category)}</span>
+                    <span>{t(listing.category)}</span>
                     <span className="mx-2">•</span>
                     <span>{listing.location}</span>
                     <span className="mx-2">•</span>
@@ -205,104 +204,86 @@ export default function ListingDetailPage() {
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Right column - Seller info and actions */}
-            <div>
-              {/* Price and action buttons (mobile) */}
-              <div className="lg:hidden bg-white rounded-lg shadow-sm overflow-hidden mb-6 p-4">
-                <div className="text-2xl font-bold text-gray-900 mb-4">
-                  {listing.price.toLocaleString()} Kč
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => setShowContactInfo(!showContactInfo)}
-                    className="w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                  >
-                    {showContactInfo ? "Skrýt kontakt" : "Zobrazit kontakt"}
-                  </button>
-                  <a
-                    href={`tel:${listing.contactPhone}`}
-                    className="w-full py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                  >
-                    Zavolat
-                  </a>
+              {/* Similar listings */}
+              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div className="p-6">
+                  <h2 className="text-lg font-medium text-gray-900 mb-4">
+                    {t('similar_items')}
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {similarListings.map((item) => (
+                      <Link href={`/listing/${item.id}`} key={item.id} className="group">
+                        <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
+                          <div className="relative h-32 w-full">
+                            <Image
+                              src={item.image}
+                              alt={item.title}
+                              fill
+                              sizes="(max-width: 640px) 100vw, (max-width: 768px) 33vw, 25vw"
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="p-3 flex-grow flex flex-col">
+                            <h3 className="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors duration-200 mb-1 line-clamp-2">
+                              {item.title}
+                            </h3>
+                            <div className="mt-auto flex justify-between items-center">
+                              <span className="text-sm font-bold text-gray-900">
+                                {item.price.toLocaleString()} Kč
+                              </span>
+                              <span className="text-xs text-gray-500">
+                                {item.location}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
-
-              {/* Seller info */}
+            </div>
+            
+            {/* Right column - Seller info & actions */}
+            <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
                 <div className="p-6">
                   <h2 className="text-lg font-medium text-gray-900 mb-4">
-                    Prodávající
+                    {t('seller_info')}
                   </h2>
-                  <div className="flex items-center mb-4">
-                    <div className="bg-gray-200 rounded-full w-12 h-12 flex items-center justify-center text-gray-600 font-medium text-lg">
-                      {listing.seller.name.charAt(0)}
+                  <div className="mb-4">
+                    <div className="font-medium">{listing.seller.name}</div>
+                    <div className="text-sm text-gray-500">
+                      {t('member_since')} {listing.seller.memberSince}
                     </div>
-                    <div className="ml-4">
-                      <div className="font-medium text-gray-900">
-                        {listing.seller.name}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        Na Lepším Tržišti od {listing.seller.memberSince}
-                      </div>
+                    <div className="text-sm text-gray-500">
+                      {listing.seller.otherListings} {t('active')} {t('listing_many').toLowerCase()}
                     </div>
                   </div>
-                  <div className="text-sm text-gray-500 mb-6">
-                    Počet inzerátů: {listing.seller.otherListings}
-                  </div>
-
-                  {/* Contact info */}
-                  <div className="hidden lg:block">
+                  
+                  {!showContactInfo ? (
                     <button
-                      onClick={() => setShowContactInfo(!showContactInfo)}
-                      className="w-full mb-3 py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      onClick={() => setShowContactInfo(true)}
+                      className="w-full px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                     >
-                      {showContactInfo ? "Skrýt kontakt" : "Zobrazit kontakt"}
+                      {t('contact_seller')}
                     </button>
-                    <a
-                      href={`tel:${listing.contactPhone}`}
-                      className="w-full py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary flex items-center justify-center"
-                    >
-                      <svg
-                        className="w-5 h-5 mr-2 text-gray-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                        />
-                      </svg>
-                      Zavolat
-                    </a>
-                  </div>
-
-                  {showContactInfo && (
-                    <div className="mt-4 p-4 bg-gray-50 rounded-md border border-gray-200">
-                      <div className="mb-3">
-                        <div className="text-sm font-medium text-gray-700">
-                          Telefon:
+                  ) : (
+                    <div className="space-y-3">
+                      <div>
+                        <div className="text-sm font-medium text-gray-500">
+                          {t('phone')}
                         </div>
-                        <a
-                          href={`tel:${listing.contactPhone}`}
-                          className="text-primary hover:underline"
-                        >
+                        <a href={`tel:${listing.contactPhone}`} className="text-primary hover:underline">
                           {listing.contactPhone}
                         </a>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-700">
-                          E-mail:
+                        <div className="text-sm font-medium text-gray-500">
+                          {t('email')}
                         </div>
-                        <a
-                          href={`mailto:${listing.contactEmail}`}
-                          className="text-primary hover:underline"
-                        >
+                        <a href={`mailto:${listing.contactEmail}`} className="text-primary hover:underline">
                           {listing.contactEmail}
                         </a>
                       </div>
@@ -310,80 +291,41 @@ export default function ListingDetailPage() {
                   )}
                 </div>
               </div>
-
-              {/* Location info without map */}
+              
               <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
                 <div className="p-6">
-                  <h2 className="text-lg font-medium text-gray-900 mb-3">
-                    Lokalita
+                  <h2 className="text-lg font-medium text-gray-900 mb-4">
+                    {t('location_info')}
                   </h2>
-                  <div className="text-gray-700">{listing.location}</div>
-                  <div className="text-gray-700 mt-1">PSČ: {listing.postalCode}</div>
+                  <div>
+                    <div className="font-medium">{listing.location}</div>
+                    <div className="text-sm text-gray-500">{listing.postalCode}</div>
+                  </div>
                 </div>
               </div>
-
-              {/* Safety tips */}
+              
               <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="p-6">
-                  <h2 className="text-lg font-medium text-gray-900 mb-3">
-                    Bezpečnostní tipy
-                  </h2>
-                  <ul className="text-sm text-gray-700 space-y-2">
-                    <li className="flex items-start">
-                      <svg
-                        className="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                        />
-                      </svg>
-                      <span>Nikdy neposílejte peníze předem.</span>
-                    </li>
-                    <li className="flex items-start">
-                      <svg
-                        className="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                        />
-                      </svg>
-                      <span>Setkávejte se na veřejných místech.</span>
-                    </li>
-                    <li className="flex items-start">
-                      <svg
-                        className="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                        />
-                      </svg>
-                      <span>Zkontrolujte zboží před zaplacením.</span>
-                    </li>
-                  </ul>
-                  <Link
-                    href="/bezpecnost"
-                    className="mt-4 inline-block text-sm text-primary hover:underline"
-                  >
-                    Více o bezpečném nakupování
-                  </Link>
+                <div className="p-6 space-y-4">
+                  <button className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
+                    {t('share')}
+                  </button>
+                  
+                  <button className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    {t('favorite')}
+                  </button>
+                  
+                  <button className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                    </svg>
+                    {t('report_item')}
+                  </button>
                 </div>
               </div>
             </div>
