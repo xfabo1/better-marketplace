@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Header from "@/components/Header";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { categoryTranslationMap } from "@/data/translations";
 
 // Mock data for a single listing
 const mockListing = {
@@ -75,6 +77,7 @@ const similarListings = [
 
 export default function ListingDetailPage() {
   const { id } = useParams();
+  const { t } = useLanguage();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showContactInfo, setShowContactInfo] = useState(false);
 
@@ -86,11 +89,11 @@ export default function ListingDetailPage() {
   const formattedDate = new Date(listing.createdAt).toLocaleDateString(
     "cs-CZ",
     {
-      day: "numeric",
-      month: "long",
+      day: "2-digit",
+      month: "2-digit",
       year: "numeric",
     }
-  );
+  ).replace(/\s/g, '');
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -114,7 +117,7 @@ export default function ListingDetailPage() {
               )}`}
               className="hover:text-primary"
             >
-              {listing.category}
+              {t(categoryTranslationMap[listing.category.toLowerCase().replace(/\s/g, '-')] || listing.category)}
             </Link>{" "}
             &gt; <span className="text-gray-700">{listing.title}</span>
           </div>
@@ -168,7 +171,7 @@ export default function ListingDetailPage() {
                   </h1>
 
                   <div className="flex items-center text-sm text-gray-500 mb-4">
-                    <span>{listing.category}</span>
+                    <span>{t(categoryTranslationMap[listing.category.toLowerCase().replace(/\s/g, '-')] || listing.category)}</span>
                     <span className="mx-2">•</span>
                     <span>{listing.location}</span>
                     <span className="mx-2">•</span>
@@ -181,14 +184,14 @@ export default function ListingDetailPage() {
 
                   <div className="mb-6">
                     <h2 className="text-lg font-medium text-gray-900 mb-3">
-                      Stav
+                      {t('condition')}
                     </h2>
-                    <p className="text-gray-700">{listing.condition}</p>
+                    <p className="text-gray-700">{t(listing.conditionId)}</p>
                   </div>
 
                   <div>
                     <h2 className="text-lg font-medium text-gray-900 mb-3">
-                      Popis
+                      {t('description')}
                     </h2>
                     <div className="prose prose-sm max-w-none text-gray-700">
                       {listing.description

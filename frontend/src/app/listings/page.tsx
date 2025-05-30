@@ -7,12 +7,14 @@ import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { allListings, conditions, sortOptions, dateFilterOptions } from "@/data/mockData";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Items per page
 const ITEMS_PER_PAGE = 9;
 
 export default function ListingsPage() {
   const searchParams = useSearchParams();
+  const { t } = useLanguage();
   
   // Initialize state from URL parameters
   const [locationQuery, setLocationQuery] = useState("");
@@ -215,7 +217,7 @@ export default function ListingsPage() {
               <input
                 type="text"
                 className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-0 transition duration-150 ease-in-out"
-                placeholder="Hledat cokoliv..."
+                placeholder={t('search_anything')}
                 value={localSearchQuery}
                 onChange={(e) => setLocalSearchQuery(e.target.value)}
               />
@@ -224,7 +226,7 @@ export default function ListingsPage() {
               type="submit"
               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150 ease-in-out"
             >
-              Hledat
+              {t('search')}
             </button>
             <button
               type="button"
@@ -234,7 +236,7 @@ export default function ListingsPage() {
               <svg className="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
-              Filtry
+              {t('filters')}
             </button>
             <div className="relative">
               <button
@@ -245,24 +247,24 @@ export default function ListingsPage() {
                 <svg className="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
                 </svg>
-                Řazení
+                {t('newest')}
               </button>
               
               {isSortMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-100">
-                  <div className="py-1">
+                <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                  <div className="py-1" role="menu" aria-orientation="vertical">
                     {sortOptions.map((option) => (
                       <button
                         key={option.value}
-                        type="button"
-                        onClick={() => handleSortChange(option.value)}
-                        className={`block w-full text-left px-4 py-2 text-sm ${
+                        className={`block px-4 py-2 text-sm text-left w-full ${
                           sortBy === option.value
-                            ? "bg-gray-100 text-primary font-medium"
-                            : "text-gray-700 hover:bg-gray-50"
+                            ? "bg-gray-100 text-primary"
+                            : "text-gray-700 hover:bg-gray-100"
                         }`}
+                        role="menuitem"
+                        onClick={() => handleSortChange(option.value)}
                       >
-                        {option.label}
+                        {t(option.label)}
                       </button>
                     ))}
                   </div>
@@ -275,21 +277,21 @@ export default function ListingsPage() {
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-                  Lokalita
+                  {t('location')}
                 </label>
                 <input
                   type="text"
                   id="location"
                   className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
+                  placeholder={t('enter_city')}
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Zadejte město nebo PSČ..."
                 />
               </div>
               
               <div>
                 <label htmlFor="condition" className="block text-sm font-medium text-gray-700">
-                  Stav
+                  {t('condition')}
                 </label>
                 <select
                   id="condition"
@@ -299,7 +301,7 @@ export default function ListingsPage() {
                 >
                   {conditions.map((cond) => (
                     <option key={cond.id} value={cond.id}>
-                      {cond.name}
+                      {t(cond.name)}
                     </option>
                   ))}
                 </select>
@@ -307,7 +309,7 @@ export default function ListingsPage() {
               
               <div>
                 <label htmlFor="dateFilter" className="block text-sm font-medium text-gray-700">
-                  Datum přidání
+                  {t('date_added')}
                 </label>
                 <select
                   id="dateFilter"
@@ -317,20 +319,21 @@ export default function ListingsPage() {
                 >
                   {dateFilterOptions.map((option) => (
                     <option key={option.value} value={option.value}>
-                      {option.label}
+                      {t(option.label)}
                     </option>
                   ))}
                 </select>
               </div>
+              
               <div>
                 <label htmlFor="priceRange" className="block text-sm font-medium text-gray-700">
-                  Cenové rozmezí
+                  {t('price_range')}
                 </label>
                 <div className="mt-1 flex items-center space-x-2">
                   <input
                     type="number"
                     id="minPrice"
-                    placeholder="Od"
+                    placeholder={t('from')}
                     className="block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                     value={localMinPrice}
                     onChange={(e) => setLocalMinPrice(e.target.value)}
@@ -340,7 +343,7 @@ export default function ListingsPage() {
                   <input
                     type="number"
                     id="maxPrice"
-                    placeholder="Do"
+                    placeholder={t('to')}
                     className="block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                     value={localMaxPrice}
                     onChange={(e) => setLocalMaxPrice(e.target.value)}
@@ -368,7 +371,7 @@ export default function ListingsPage() {
         
         <main className="flex-grow p-4 md:p-8">
           <div className="mb-6">
-            <h1 className="text-2xl font-medium text-gray-900 mb-4">Procházet inzeráty</h1>
+            <h1 className="text-2xl font-medium text-gray-900 mb-4">{t('browse_listings')}</h1>
             
             <div className="mb-6">
               <CustomSearchBar />
@@ -377,13 +380,16 @@ export default function ListingsPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
               <div className="mb-4 sm:mb-0">
                 <span className="text-sm text-gray-500">
-                  {filteredListings.length} {filteredListings.length === 1 ? "inzerát" : 
-                    filteredListings.length >= 2 && filteredListings.length <= 4 ? "inzeráty" : "inzerátů"}
+                  {filteredListings.length} {filteredListings.length === 1 
+                    ? t('listing_singular') 
+                    : filteredListings.length >= 2 && filteredListings.length <= 4 
+                      ? t('listing_few') 
+                      : t('listing_many')}
                 </span>
               </div>
               
               <div className="md:hidden flex items-center">
-                <span className="text-sm text-gray-700 mr-2">Řazení:</span>
+                <span className="text-sm text-gray-700 mr-2">{t('sort_by')}:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => handleSortChange(e.target.value)}
@@ -391,7 +397,7 @@ export default function ListingsPage() {
                 >
                   {sortOptions.map((option) => (
                     <option key={option.value} value={option.value}>
-                      {option.label}
+                      {t(option.label)}
                     </option>
                   ))}
                 </select>
@@ -423,7 +429,7 @@ export default function ListingsPage() {
                           {listing.title}
                         </h3>
                         <div className="text-xs text-gray-600 mb-1 hidden sm:block">
-                          {listing.condition}
+                          {t(listing.condition)}
                         </div>
                         <div className="mt-auto flex justify-between items-center">
                           <span className="text-sm font-bold text-gray-900">{listing.price.toLocaleString()} Kč</span>
@@ -444,7 +450,7 @@ export default function ListingsPage() {
                       disabled={currentPage === 1}
                       className="px-3 py-1 rounded-md mr-2 text-sm font-medium border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      &laquo; Předchozí
+                      &laquo; {t('previous')}
                     </button>
                     
                     <div className="hidden sm:flex">
@@ -494,7 +500,7 @@ export default function ListingsPage() {
                       disabled={currentPage === totalPages}
                       className="px-3 py-1 rounded-md ml-2 text-sm font-medium border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Další &raquo;
+                      {t('next')} &raquo;
                     </button>
                   </nav>
                 </div>
@@ -515,9 +521,9 @@ export default function ListingsPage() {
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">Žádné inzeráty</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">{t('no_listings')}</h3>
               <p className="mt-1 text-sm text-gray-500">
-                Pro vaše vyhledávání nebyly nalezeny žádné inzeráty.
+                {t('no_listings_found')}
               </p>
               <div className="mt-6">
                 <button
@@ -533,7 +539,7 @@ export default function ListingsPage() {
                   }}
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
-                  Resetovat filtry
+                  {t('reset_filters')}
                 </button>
               </div>
             </div>
