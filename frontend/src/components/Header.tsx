@@ -3,11 +3,14 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
+  const { t } = useLanguage();
 
   const handleLogout = () => {
     logout();
@@ -22,23 +25,26 @@ export default function Header() {
             <Link href="/" className="flex-shrink-0 flex items-center">
               <span className="text-2xl font-bold text-primary">Better Marketplace</span>
             </Link>
+            <div className="ml-4">
+              <LanguageSwitcher />
+            </div>
           </div>
           
           <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
             <Link href="/listings" className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium">
-              Procházet
+              {t('browse')}
             </Link>
             
             {isAuthenticated && (
               <Link href="/sell" className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium">
-                Prodat
+                {t('sell')}
               </Link>
             )}
             
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <Link href="/my-listings" className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium">
-                  Moje inzeráty
+                  {t('my_listings')}
                 </Link>
                 
                 {/* User dropdown menu */}
@@ -64,20 +70,20 @@ export default function Header() {
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           onClick={() => setIsUserMenuOpen(false)}
                         >
-                          Profil
+                          {t('profile')}
                         </Link>
                         <Link 
                           href="/settings" 
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           onClick={() => setIsUserMenuOpen(false)}
                         >
-                          Nastavení
+                          {t('settings')}
                         </Link>
                         <button 
                           className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           onClick={handleLogout}
                         >
-                          Odhlásit
+                          {t('logout')}
                         </button>
                       </div>
                     </div>
@@ -90,13 +96,13 @@ export default function Header() {
                   href="/login" 
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
-                  Přihlásit
+                  {t('login')}
                 </Link>
                 <Link 
                   href="/register" 
                   className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-primary bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
-                  Registrovat
+                  {t('register')}
                 </Link>
               </div>
             )}
@@ -108,7 +114,7 @@ export default function Header() {
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              <span className="sr-only">Otevřít menu</span>
+              <span className="sr-only">{t('open_menu')}</span>
               {isMenuOpen ? (
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -126,11 +132,14 @@ export default function Header() {
       {isMenuOpen && (
         <div className="sm:hidden border-t border-gray-100">
           <div className="pt-2 pb-3 space-y-1">
+            <div className="px-4 py-2">
+              <LanguageSwitcher />
+            </div>
             <Link 
               href="/listings" 
               className="block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
             >
-              Procházet
+              {t('browse')}
             </Link>
             
             {isAuthenticated && (
@@ -138,7 +147,7 @@ export default function Header() {
                 href="/sell" 
                 className="block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
               >
-                Prodat
+                {t('sell')}
               </Link>
             )}
             
@@ -148,7 +157,7 @@ export default function Header() {
                   href="/my-listings" 
                   className="block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
                 >
-                  Moje inzeráty
+                  {t('my_listings')}
                 </Link>
                 <div className="border-t border-gray-100 pt-2">
                   <div className="px-4 py-2 text-base font-medium text-gray-900">
@@ -158,19 +167,19 @@ export default function Header() {
                     href="/profile" 
                     className="block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
                   >
-                    Profil
+                    {t('profile')}
                   </Link>
                   <Link 
                     href="/settings" 
                     className="block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
                   >
-                    Nastavení
+                    {t('settings')}
                   </Link>
                   <button 
                     className="block w-full text-left px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
                     onClick={handleLogout}
                   >
-                    Odhlásit
+                    {t('logout')}
                   </button>
                 </div>
               </>
@@ -180,13 +189,13 @@ export default function Header() {
                   href="/login" 
                   className="block px-4 py-2 text-base font-medium text-primary hover:bg-gray-50"
                 >
-                  Přihlásit
+                  {t('login')}
                 </Link>
                 <Link 
                   href="/register" 
                   className="block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
                 >
-                  Registrovat
+                  {t('register')}
                 </Link>
               </>
             )}

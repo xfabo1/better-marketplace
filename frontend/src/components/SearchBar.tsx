@@ -2,23 +2,25 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { conditionTranslationMap } from "@/data/translations";
 
 // Import conditions from listings page
 const conditions = [
-  { id: "all", name: "Všechny stavy" },
-  { id: "nove", name: "Nové" },
-  { id: "jako_nove", name: "Použité - jako nové" },
-  { id: "velmi_dobre", name: "Použité - velmi dobrý stav" },
-  { id: "dobre", name: "Použité - dobrý stav" },
-  { id: "horsi", name: "Použité - horší stav" }
+  { id: "all", name: "all_conditions" },
+  { id: "nove", name: "new" },
+  { id: "jako_nove", name: "used_like_new" },
+  { id: "velmi_dobre", name: "used_very_good" },
+  { id: "dobre", name: "used_good" },
+  { id: "horsi", name: "used_fair" }
 ];
 
 // Date filter options
 const dateFilterOptions = [
-  { label: "Všechny", value: "all" },
-  { label: "Dnes", value: "today" },
-  { label: "Tento týden", value: "week" },
-  { label: "Tento měsíc", value: "month" },
+  { label: "all_dates", value: "all" },
+  { label: "today", value: "today" },
+  { label: "this_week", value: "week" },
+  { label: "this_month", value: "month" },
 ];
 
 interface SearchBarProps {
@@ -27,6 +29,7 @@ interface SearchBarProps {
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [location, setLocation] = useState("");
   const [condition, setCondition] = useState("all");
@@ -71,7 +74,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             <input
               type="text"
               className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-0 transition duration-150 ease-in-out"
-              placeholder="Hledat cokoliv..."
+              placeholder={t('search_anything')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -80,7 +83,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             type="submit"
             className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150 ease-in-out"
           >
-            Hledat
+            {t('search')}
           </button>
           <button
             type="button"
@@ -90,7 +93,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             <svg className="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
             </svg>
-            Filtry
+            {t('filters')}
           </button>
         </div>
         
@@ -98,13 +101,13 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-                Lokalita
+                {t('location')}
               </label>
               <input
                 type="text"
                 id="location"
                 className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
-                placeholder="Zadejte město nebo PSČ..."
+                placeholder={t('enter_city')}
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               />
@@ -112,7 +115,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             
             <div>
               <label htmlFor="condition" className="block text-sm font-medium text-gray-700">
-                Stav
+                {t('condition')}
               </label>
               <select
                 id="condition"
@@ -122,7 +125,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
               >
                 {conditions.map((cond) => (
                   <option key={cond.id} value={cond.id}>
-                    {cond.name}
+                    {t(cond.name)}
                   </option>
                 ))}
               </select>
@@ -130,7 +133,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             
             <div>
               <label htmlFor="dateFilter" className="block text-sm font-medium text-gray-700">
-                Datum přidání
+                {t('date_added')}
               </label>
               <select
                 id="dateFilter"
@@ -140,7 +143,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
               >
                 {dateFilterOptions.map((option) => (
                   <option key={option.value} value={option.value}>
-                    {option.label}
+                    {t(option.label)}
                   </option>
                 ))}
               </select>
@@ -148,13 +151,13 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             
             <div>
               <label htmlFor="priceRange" className="block text-sm font-medium text-gray-700">
-                Cenové rozmezí
+                {t('price_range')}
               </label>
               <div className="mt-1 flex items-center space-x-2">
                 <input
                   type="number"
                   id="minPrice"
-                  placeholder="Od"
+                  placeholder={t('from')}
                   className="block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
@@ -164,7 +167,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                 <input
                   type="number"
                   id="maxPrice"
-                  placeholder="Do"
+                  placeholder={t('to')}
                   className="block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}

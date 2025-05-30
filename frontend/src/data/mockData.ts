@@ -15,28 +15,28 @@ export interface Listing {
 
 // Condition options for filtering
 export const conditions = [
-  { id: "all", name: "Všechny stavy" },
-  { id: "nove", name: "Nové" },
-  { id: "jako_nove", name: "Použité - jako nové" },
-  { id: "velmi_dobre", name: "Použité - velmi dobrý stav" },
-  { id: "dobre", name: "Použité - dobrý stav" },
-  { id: "horsi", name: "Použité - horší stav" }
+  { id: "all", name: "all_conditions" },
+  { id: "nove", name: "new" },
+  { id: "jako_nove", name: "used_like_new" },
+  { id: "velmi_dobre", name: "used_very_good" },
+  { id: "dobre", name: "used_good" },
+  { id: "horsi", name: "used_fair" }
 ];
 
 // Sort options
 export const sortOptions = [
-  { label: "Nejnovější", value: "newest" },
-  { label: "Nejstarší", value: "oldest" },
-  { label: "Nejlevnější", value: "price_asc" },
-  { label: "Nejdražší", value: "price_desc" },
+  { label: "newest", value: "newest" },
+  { label: "oldest", value: "oldest" },
+  { label: "price_lowest", value: "price_asc" },
+  { label: "price_highest", value: "price_desc" },
 ];
 
 // Date filter options
 export const dateFilterOptions = [
-  { label: "Všechny", value: "all" },
-  { label: "Dnes", value: "today" },
-  { label: "Tento týden", value: "week" },
-  { label: "Tento měsíc", value: "month" },
+  { label: "all_dates", value: "all" },
+  { label: "today", value: "today" },
+  { label: "this_week", value: "week" },
+  { label: "this_month", value: "month" },
 ];
 
 // Mock listings data
@@ -49,7 +49,7 @@ export const allListings: Listing[] = [
     postalCode: "110 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Toyota+Camry",
     category: "Automobily",
-    condition: "Použité - velmi dobrý stav",
+    condition: "used_very_good",
     conditionId: "velmi_dobre",
     createdAt: "2023-10-15",
   },
@@ -61,7 +61,7 @@ export const allListings: Listing[] = [
     postalCode: "602 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=iPhone+14",
     category: "Elektronika",
-    condition: "Použité - jako nové",
+    condition: "used_like_new",
     conditionId: "jako_nove",
     createdAt: "2023-10-12",
   },
@@ -73,7 +73,7 @@ export const allListings: Listing[] = [
     postalCode: "702 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Pohovka",
     category: "Nábytek",
-    condition: "Použité - dobrý stav",
+    condition: "used_good",
     conditionId: "dobre",
     createdAt: "2023-10-10",
   },
@@ -85,7 +85,7 @@ export const allListings: Listing[] = [
     postalCode: "301 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Horské+kolo",
     category: "Sport",
-    condition: "Použité - velmi dobrý stav",
+    condition: "used_very_good",
     conditionId: "velmi_dobre",
     createdAt: "2023-10-08",
   },
@@ -97,7 +97,7 @@ export const allListings: Listing[] = [
     postalCode: "460 01",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Šaty",
     category: "Oblečení",
-    condition: "Nové",
+    condition: "new",
     conditionId: "nove",
     createdAt: "2023-10-05",
   },
@@ -109,7 +109,7 @@ export const allListings: Listing[] = [
     postalCode: "779 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=PlayStation+5",
     category: "Elektronika",
-    condition: "Použité - jako nové",
+    condition: "used_like_new",
     conditionId: "jako_nove",
     createdAt: "2023-10-03",
   },
@@ -121,7 +121,7 @@ export const allListings: Listing[] = [
     postalCode: "140 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dětská+postýlka",
     category: "Dětské zboží",
-    condition: "Použité - dobrý stav",
+    condition: "used_good",
     conditionId: "dobre",
     createdAt: "2023-10-01",
   },
@@ -133,7 +133,7 @@ export const allListings: Listing[] = [
     postalCode: "120 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=MacBook+Pro",
     category: "Elektronika",
-    condition: "Použité - jako nové",
+    condition: "used_like_new",
     conditionId: "jako_nove",
     createdAt: "2023-09-28",
   },
@@ -145,7 +145,7 @@ export const allListings: Listing[] = [
     postalCode: "639 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Zahradní+nábytek",
     category: "Nábytek",
-    condition: "Použité - dobrý stav",
+    condition: "used_good",
     conditionId: "dobre",
     createdAt: "2023-09-25",
   },
@@ -157,7 +157,7 @@ export const allListings: Listing[] = [
     postalCode: "160 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Koloběžka",
     category: "Sport",
-    condition: "Použité - velmi dobrý stav",
+    condition: "used_very_good",
     conditionId: "velmi_dobre",
     createdAt: "2023-09-22",
   },
@@ -169,7 +169,7 @@ export const allListings: Listing[] = [
     postalCode: "710 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Zimní+bunda",
     category: "Oblečení",
-    condition: "Použité - dobrý stav",
+    condition: "used_good",
     conditionId: "dobre",
     createdAt: "2023-09-20",
   },
@@ -181,7 +181,7 @@ export const allListings: Listing[] = [
     postalCode: "326 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Kuchyňský+robot",
     category: "Elektronika",
-    condition: "Použité - horší stav",
+    condition: "used_fair",
     conditionId: "horsi",
     createdAt: "2023-09-18",
   },
@@ -193,7 +193,7 @@ export const allListings: Listing[] = [
     postalCode: "190 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dámské+kolo",
     category: "Sport",
-    condition: "Použité - velmi dobrý stav",
+    condition: "used_very_good",
     conditionId: "velmi_dobre",
     createdAt: "2023-09-16",
   },
@@ -205,7 +205,7 @@ export const allListings: Listing[] = [
     postalCode: "612 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Herní+PC",
     category: "Elektronika",
-    condition: "Použité - jako nové",
+    condition: "used_like_new",
     conditionId: "jako_nove",
     createdAt: "2023-09-14",
   },
@@ -217,7 +217,7 @@ export const allListings: Listing[] = [
     postalCode: "700 30",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dětské+oblečení",
     category: "Dětské zboží",
-    condition: "Použité - dobrý stav",
+    condition: "used_good",
     conditionId: "dobre",
     createdAt: "2023-09-12",
   },
@@ -229,7 +229,7 @@ export const allListings: Listing[] = [
     postalCode: "170 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=IKEA+pohovka",
     category: "Nábytek",
-    condition: "Použité - dobrý stav",
+    condition: "used_good",
     conditionId: "dobre",
     createdAt: "2023-09-10",
   },
@@ -241,7 +241,7 @@ export const allListings: Listing[] = [
     postalCode: "602 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dámské+lodičky",
     category: "Oblečení",
-    condition: "Použité - jako nové",
+    condition: "used_like_new",
     conditionId: "jako_nove",
     createdAt: "2023-09-08",
   },
@@ -253,7 +253,7 @@ export const allListings: Listing[] = [
     postalCode: "301 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Vrtačka+Bosch",
     category: "Elektronika",
-    condition: "Použité - horší stav",
+    condition: "used_fair",
     conditionId: "horsi",
     createdAt: "2023-09-06",
   },
@@ -302,7 +302,6 @@ export const generateMockListings = (category: string, subcategory: string | nul
     }
     
     // Use default values if no condition was found
-    const conditionName = randomCondition?.name || "Použité - dobrý stav";
     const conditionId = randomCondition?.id || "dobre";
     
     // Try to get a relevant title for the category
@@ -324,11 +323,11 @@ export const generateMockListings = (category: string, subcategory: string | nul
       location: randomCity.name,
       postalCode: randomPostalCode,
       image: `https://placehold.co/600x400/e6f7ef/10b981/png?text=${encodeURIComponent(baseTitle)}`,
-      category: formatCategoryName(category),
-      condition: conditionName,
+      category: category,
+      condition: randomCondition?.name || "used_good",
       conditionId: conditionId,
       createdAt: new Date(Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      subcategory: subcategory ? formatCategoryName(subcategory) : undefined,
+      subcategory: subcategory ? subcategory : undefined,
     });
   }
   
