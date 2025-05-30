@@ -41,6 +41,7 @@ export const translations: TranslationData = {
     "sport_hobby": "Sport a hobby",
     "children": "Děti",
     "animals": "Zvířata",
+    "culture_education": "Kultura a vzdělávání",
     
     // Subcategories - Transport
     "cars": "Automobily",
@@ -123,6 +124,12 @@ export const translations: TranslationData = {
     "accessories_for_animals": "Chovatelské potřeby",
     "food": "Krmivo",
     
+    // Subcategories - Culture & Education
+    "books": "Knihy",
+    "textbooks": "Učebnice",
+    "cds_dvds": "CD, DVD, Blu-ray",
+    "posters_pictures": "Plakáty a obrazy",
+    
     // Condition options
     "all_conditions": "Všechny stavy",
     "new": "Nové",
@@ -154,6 +161,7 @@ export const translations: TranslationData = {
     "price_range": "Cenové rozmezí",
     "from": "Od",
     "to": "Do",
+    "added": "Přidáno",
     
     // Listings page
     "browse_listings": "Procházet inzeráty",
@@ -192,6 +200,54 @@ export const translations: TranslationData = {
     "total": "Celkem",
     "active": "Aktivní",
     "sold": "Prodané",
+    
+    // Settings page
+    "security": "Zabezpečení",
+    "current_password": "Současné heslo",
+    "new_password": "Nové heslo",
+    "confirm_password": "Potvrdit nové heslo",
+    "save_changes": "Uložit změny",
+    "profile_updated": "Profil byl úspěšně aktualizován!",
+    "password_changed": "Heslo bylo úspěšně změněno!",
+    
+    // My Listings page
+    "new_listing": "Nový inzerát",
+    "create_new_listing": "Vytvořit nový inzerát",
+    "no_listings_of_type": "Nemáte žádné {type} inzeráty.",
+    "created": "Vytvořeno",
+    "edit": "Upravit",
+    "delete": "Smazat",
+    
+    // Create Listing page
+    "create_listing": "Vytvořit inzerát",
+    "listing_title": "Název inzerátu",
+    "select_category": "Vyberte kategorii",
+    "select_condition": "Vyberte stav",
+    "price": "Cena",
+    "upload_images": "Nahrát obrázky",
+    "max_images": "Maximum 5 obrázků",
+    "upload_image": "Nahrát obrázek",
+    "remove": "Odstranit",
+    "contact_info": "Kontaktní údaje",
+    "phone_number": "Telefonní číslo",
+    "publish_listing": "Zveřejnit inzerát",
+    "fill_title": "Vyplňte název inzerátu",
+    "max_title_length": "Název může mít maximálně {max} znaků",
+    "select_category_error": "Vyberte kategorii",
+    "select_condition_error": "Vyberte stav",
+    "enter_price": "Vyplňte cenu",
+    "valid_price": "Zadejte platnou cenu",
+    "max_price": "Cena nemůže být vyšší než {max} Kč",
+    "fill_description": "Vyplňte popis inzerátu",
+    "max_description_length": "Popis může mít maximálně {max} znaků",
+    "fill_location": "Vyplňte lokalitu",
+    "fill_contact": "Vyplňte alespoň jeden kontaktní údaj",
+    "location_hint": "Zadejte název města nebo PSČ.",
+    "images": "Fotografie",
+    "add_image": "Přidat foto",
+    "image_hint": "Nahrajte až 5 fotografií ve formátu JPG nebo PNG.",
+    "cancel": "Zrušit",
+    "submitting": "Odesílání...",
     
     // Item details
     "description": "Popis",
@@ -240,6 +296,7 @@ export const translations: TranslationData = {
     "sport_hobby": "Šport a hobby",
     "children": "Deti",
     "animals": "Zvieratá",
+    "culture_education": "Kultúra a vzdelávanie",
     
     // Subcategories - Transport
     "cars": "Automobily",
@@ -322,6 +379,12 @@ export const translations: TranslationData = {
     "accessories_for_animals": "Chovateľské potreby",
     "food": "Krmivo",
     
+    // Subcategories - Culture & Education
+    "books": "Knihy",
+    "textbooks": "Učebnice",
+    "cds_dvds": "CD, DVD, Blu-ray",
+    "posters_pictures": "Plagáty a obrazy",
+    
     // Condition options
     "all_conditions": "Všetky stavy",
     "new": "Nové",
@@ -353,6 +416,7 @@ export const translations: TranslationData = {
     "price_range": "Cenové rozpätie",
     "from": "Od",
     "to": "Do",
+    "added": "Pridané",
     
     // Listings page
     "browse_listings": "Prehliadať inzeráty",
@@ -391,6 +455,54 @@ export const translations: TranslationData = {
     "total": "Celkom",
     "active": "Aktívne",
     "sold": "Predané",
+    
+    // Settings page
+    "security": "Zabezpečenie",
+    "current_password": "Súčasné heslo",
+    "new_password": "Nové heslo",
+    "confirm_password": "Potvrdiť nové heslo",
+    "save_changes": "Uložiť zmeny",
+    "profile_updated": "Profil bol úspešne aktualizovaný!",
+    "password_changed": "Heslo bolo úspešne zmenené!",
+    
+    // My Listings page
+    "new_listing": "Nový inzerát",
+    "create_new_listing": "Vytvoriť nový inzerát",
+    "no_listings_of_type": "Nemáte žiadne {type} inzeráty.",
+    "created": "Vytvorené",
+    "edit": "Upraviť",
+    "delete": "Zmazať",
+    
+    // Create Listing page
+    "create_listing": "Vytvoriť inzerát",
+    "listing_title": "Názov inzerátu",
+    "select_category": "Vyberte kategóriu",
+    "select_condition": "Vyberte stav",
+    "price": "Cena",
+    "upload_images": "Nahrať obrázky",
+    "max_images": "Maximum 5 obrázkov",
+    "upload_image": "Nahrať obrázok",
+    "remove": "Odstrániť",
+    "contact_info": "Kontaktné údaje",
+    "phone_number": "Telefónne číslo",
+    "publish_listing": "Zverejniť inzerát",
+    "fill_title": "Vyplňte názov inzerátu",
+    "max_title_length": "Názov môže mať maximálne {max} znakov",
+    "select_category_error": "Vyberte kategóriu",
+    "select_condition_error": "Vyberte stav",
+    "enter_price": "Vyplňte cenu",
+    "valid_price": "Zadajte platnú cenu",
+    "max_price": "Cena nemôže byť vyššia než {max} Kč",
+    "fill_description": "Vyplňte popis inzerátu",
+    "max_description_length": "Popis môže mať maximálne {max} znakov",
+    "fill_location": "Vyplňte lokalitu",
+    "fill_contact": "Vyplňte aspoň jeden kontaktný údaj",
+    "location_hint": "Zadajte názov mesta alebo PSČ.",
+    "images": "Fotografie",
+    "add_image": "Pridať foto",
+    "image_hint": "Nahrajte až 5 fotografií vo formáte JPG alebo PNG.",
+    "cancel": "Zrušiť",
+    "submitting": "Odosielanie...",
     
     // Item details
     "description": "Popis",
@@ -439,6 +551,7 @@ export const translations: TranslationData = {
     "sport_hobby": "Sports & Hobbies",
     "children": "Children",
     "animals": "Animals",
+    "culture_education": "Culture & Education",
     
     // Subcategories - Transport
     "cars": "Cars",
@@ -521,6 +634,12 @@ export const translations: TranslationData = {
     "accessories_for_animals": "Pet Supplies",
     "food": "Pet Food",
     
+    // Subcategories - Culture & Education
+    "books": "Books",
+    "textbooks": "Textbooks",
+    "cds_dvds": "CDs, DVDs & Blu-ray",
+    "posters_pictures": "Posters & Pictures",
+    
     // Condition options
     "all_conditions": "All Conditions",
     "new": "New",
@@ -552,6 +671,7 @@ export const translations: TranslationData = {
     "price_range": "Price Range",
     "from": "From",
     "to": "To",
+    "added": "Added",
     
     // Listings page
     "browse_listings": "Browse Listings",
@@ -591,6 +711,54 @@ export const translations: TranslationData = {
     "active": "Active",
     "sold": "Sold",
     
+    // Settings page
+    "security": "Security",
+    "current_password": "Current password",
+    "new_password": "New password",
+    "confirm_password": "Confirm new password",
+    "save_changes": "Save changes",
+    "profile_updated": "Profile was successfully updated!",
+    "password_changed": "Password was successfully changed!",
+    
+    // My Listings page
+    "new_listing": "New Listing",
+    "create_new_listing": "Create New Listing",
+    "no_listings_of_type": "You don't have any {type} listings.",
+    "created": "Created",
+    "edit": "Edit",
+    "delete": "Delete",
+    
+    // Create Listing page
+    "create_listing": "Create Listing",
+    "listing_title": "Listing Title",
+    "select_category": "Select Category",
+    "select_condition": "Select Condition",
+    "price": "Price",
+    "upload_images": "Upload Images",
+    "max_images": "Maximum 5 images",
+    "upload_image": "Upload Image",
+    "remove": "Remove",
+    "contact_info": "Contact Information",
+    "phone_number": "Phone Number",
+    "publish_listing": "Publish Listing",
+    "fill_title": "Please enter a title",
+    "max_title_length": "Title cannot exceed {max} characters",
+    "select_category_error": "Please select a category",
+    "select_condition_error": "Please select a condition",
+    "enter_price": "Please enter a price",
+    "valid_price": "Please enter a valid price",
+    "max_price": "Price cannot exceed {max} CZK",
+    "fill_description": "Please enter a description",
+    "max_description_length": "Description cannot exceed {max} characters",
+    "fill_location": "Please enter a location",
+    "fill_contact": "Please provide at least one contact method",
+    "location_hint": "Enter city name or ZIP code.",
+    "images": "Images",
+    "add_image": "Add photo",
+    "image_hint": "Upload up to 5 images in JPG or PNG format.",
+    "cancel": "Cancel",
+    "submitting": "Submitting...",
+    
     // Item details
     "description": "Description",
     "specifications": "Specifications",
@@ -618,6 +786,8 @@ export const categoryTranslationMap: Record<string, string> = {
   "sport-hobby": "sport_hobby",
   "deti": "children",
   "zvirata": "animals",
+  "nabytek": "furniture",
+  "kultura-vzdelavani": "culture_education",
 };
 
 // Map subcategory IDs to translation keys
@@ -701,6 +871,12 @@ export const subcategoryTranslationMap: Record<string, string> = {
   "teraristika": "terrarium",
   "chovatelske-potreby": "accessories_for_animals",
   "krmivo": "food",
+  
+  // Culture & Education subcategories
+  "knihy": "books",
+  "ucebnice": "textbooks",
+  "cd-dvd": "cds_dvds",
+  "obrazy": "posters_pictures",
 };
 
 export const conditionTranslationMap: Record<string, string> = {

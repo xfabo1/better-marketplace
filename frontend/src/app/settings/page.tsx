@@ -3,11 +3,13 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Component that uses useSearchParams
 function SettingsContent() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<'profile' | 'security'>('profile');
+  const { t } = useLanguage();
   
   // Set active tab based on URL parameter if present
   useEffect(() => {
@@ -30,21 +32,21 @@ function SettingsContent() {
     e.preventDefault();
     // Here you would call your API to update the user profile
     console.log("Profile update submitted:", userData);
-    alert("Profil byl úspěšně aktualizován!");
+    alert(t('profile_updated'));
   };
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would call your API to update the password
     console.log("Password update submitted");
-    alert("Heslo bylo úspěšně změněno!");
+    alert(t('password_changed'));
   };
 
   return (
     <main className="flex-grow py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-2xl font-medium text-gray-900 mb-6">
-          Nastavení účtu
+          {t('account_settings')}
         </h1>
         
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -58,7 +60,7 @@ function SettingsContent() {
                     : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                Osobní údaje
+                {t('personal_info')}
               </button>
               <button
                 onClick={() => setActiveTab('security')}
@@ -68,7 +70,7 @@ function SettingsContent() {
                     : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                Zabezpečení
+                {t('security')}
               </button>
             </nav>
           </div>
@@ -76,11 +78,11 @@ function SettingsContent() {
           <div className="p-6">
             {activeTab === 'profile' && (
               <div>
-                <h2 className="text-xl font-medium text-gray-900 mb-6">Osobní údaje</h2>
+                <h2 className="text-xl font-medium text-gray-900 mb-6">{t('personal_info')}</h2>
                 <form onSubmit={handleProfileSubmit} className="space-y-6 max-w-2xl">
                   <div className="mb-4">
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                      E-mail
+                      {t('email')}
                     </label>
                     <input
                       type="email"
@@ -93,7 +95,7 @@ function SettingsContent() {
                   
                   <div className="mb-4">
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                      Telefon
+                      {t('phone')}
                     </label>
                     <input
                       type="tel"
@@ -106,7 +108,7 @@ function SettingsContent() {
                   
                   <div className="mb-4">
                     <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-                      Lokalita
+                      {t('location')}
                     </label>
                     <input
                       type="text"
@@ -122,7 +124,7 @@ function SettingsContent() {
                       type="submit"
                       className="w-full sm:w-auto inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
                     >
-                      Uložit změny
+                      {t('save_changes')}
                     </button>
                   </div>
                 </form>
@@ -131,11 +133,11 @@ function SettingsContent() {
             
             {activeTab === 'security' && (
               <div>
-                <h2 className="text-xl font-medium text-gray-900 mb-6">Zabezpečení</h2>
+                <h2 className="text-xl font-medium text-gray-900 mb-6">{t('security')}</h2>
                 <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-2xl">
                   <div className="mb-4">
                     <label htmlFor="current-password" className="block text-sm font-medium text-gray-700 mb-1">
-                      Současné heslo
+                      {t('current_password')}
                     </label>
                     <input
                       type="password"
@@ -146,7 +148,7 @@ function SettingsContent() {
                   
                   <div className="mb-4">
                     <label htmlFor="new-password" className="block text-sm font-medium text-gray-700 mb-1">
-                      Nové heslo
+                      {t('new_password')}
                     </label>
                     <input
                       type="password"
@@ -157,7 +159,7 @@ function SettingsContent() {
                   
                   <div className="mb-4">
                     <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">
-                      Potvrdit nové heslo
+                      {t('confirm_password')}
                     </label>
                     <input
                       type="password"
@@ -171,7 +173,7 @@ function SettingsContent() {
                       type="submit"
                       className="w-full sm:w-auto inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
                     >
-                      Změnit heslo
+                      {t('change_password')}
                     </button>
                   </div>
                 </form>

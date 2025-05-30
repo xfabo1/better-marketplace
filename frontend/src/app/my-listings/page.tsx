@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { categoryTranslationMap, conditionTranslationMap } from "@/data/translations";
 
 // Mock data for user's listings
 const mockListings = [
@@ -11,7 +13,7 @@ const mockListings = [
     id: "1",
     title: "iPhone 12 Pro Max, 256GB, Pacific Blue",
     price: 18500,
-    category: "Elektronika",
+    category: "elektronika",
     location: "Praha",
     postalCode: "110 00",
     imageUrl: "https://placehold.co/600x400/3b82f6/ffffff?text=iPhone+12",
@@ -24,7 +26,7 @@ const mockListings = [
     id: "2",
     title: "Kožená sedačka IKEA, 3 místná",
     price: 12000,
-    category: "Nábytek",
+    category: "nabytek",
     location: "Brno",
     postalCode: "602 00",
     imageUrl: "https://placehold.co/600x400/22c55e/ffffff?text=Sedačka",
@@ -37,7 +39,7 @@ const mockListings = [
     id: "3",
     title: "Horské kolo Trek Marlin 7",
     price: 15000,
-    category: "Sport",
+    category: "sport",
     location: "Ostrava",
     postalCode: "702 00",
     imageUrl: "https://placehold.co/600x400/f59e0b/ffffff?text=Kolo",
@@ -49,11 +51,22 @@ const mockListings = [
 ];
 
 export default function MyListingsPage() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'active' | 'sold'>('active');
   
   const filteredListings = mockListings.filter(listing => 
     activeTab === 'active' ? listing.status === 'active' : listing.status === 'sold'
   );
+  
+  // Format date function
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('cs-CZ', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).replace(/\s/g, '');
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -63,13 +76,13 @@ export default function MyListingsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-medium text-gray-900">
-              Moje inzeráty
+              {t('my_listings')}
             </h1>
             <Link 
               href="/sell" 
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
-              + Nový inzerát
+              + {t('new_listing')}
             </Link>
           </div>
           
@@ -83,7 +96,7 @@ export default function MyListingsPage() {
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                Aktivní
+                {t('active')}
               </button>
               <button
                 onClick={() => setActiveTab('sold')}
@@ -93,7 +106,7 @@ export default function MyListingsPage() {
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                Prodané
+                {t('sold')}
               </button>
             </nav>
           </div>
@@ -112,7 +125,7 @@ export default function MyListingsPage() {
                     />
                     {listing.status === 'sold' && (
                       <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                        <span className="text-white font-medium text-lg">Prodáno</span>
+                        <span className="text-white font-medium text-lg">{t('sold')}</span>
                       </div>
                     )}
                   </div>
@@ -126,29 +139,29 @@ export default function MyListingsPage() {
                       </span>
                     </div>
                     <div className="mt-2 flex items-center text-sm text-gray-500">
-                      <span>{listing.category}</span>
+                      <span className="capitalize">{t(categoryTranslationMap[listing.category] || listing.category)}</span>
                       <span className="mx-2">•</span>
                       <span>{listing.location}, {listing.postalCode}</span>
                     </div>
                     <div className="mt-1 text-xs text-gray-600">
-                      {listing.condition}
+                      {t(conditionTranslationMap[listing.conditionId] || listing.conditionId)}
                     </div>
-                    <div className="mt-4 flex justify-between">
+                    <div className="mt-4 flex justify-between items-center">
                       <span className="text-xs text-gray-500">
-                        Vytvořeno: {listing.createdAt}
+                        {t('created')}: {formatDate(listing.createdAt)}
                       </span>
                       <div className="space-x-2">
                         <Link
                           href={`/listing/${listing.id}/edit`}
-                          className="text-sm font-medium text-primary hover:text-primary-hover"
+                          className="text-sm font-medium text-primary hover:text-primary-hover px-2 py-1"
                         >
-                          Upravit
+                          {t('edit')}
                         </Link>
                         <button
-                          className="text-sm font-medium text-red-600 hover:text-red-800"
+                          className="text-sm font-medium text-red-600 hover:text-red-800 px-2 py-1"
                           onClick={() => console.log(`Delete listing ${listing.id}`)}
                         >
-                          Smazat
+                          {t('delete')}
                         </button>
                       </div>
                     </div>
@@ -171,9 +184,9 @@ export default function MyListingsPage() {
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">Žádné inzeráty</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">{t('no_listings')}</h3>
               <p className="mt-1 text-sm text-gray-500">
-                Nemáte žádné {activeTab === 'active' ? 'aktivní' : 'prodané'} inzeráty.
+                {t('no_listings_of_type').replace('{type}', activeTab === 'active' ? t('active').toLowerCase() : t('sold').toLowerCase())}
               </p>
               {activeTab === 'active' && (
                 <div className="mt-6">
@@ -181,7 +194,7 @@ export default function MyListingsPage() {
                     href="/sell"
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                   >
-                    Vytvořit nový inzerát
+                    {t('create_new_listing')}
                   </Link>
                 </div>
               )}

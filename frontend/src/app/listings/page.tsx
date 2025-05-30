@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { allListings, conditions, sortOptions, dateFilterOptions } from "@/data/mockData";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { categoryTranslationMap, conditionTranslationMap } from "@/data/translations";
 
 // Items per page
 const ITEMS_PER_PAGE = 9;
@@ -161,10 +162,10 @@ export default function ListingsPage() {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('cs-CZ', {
-      day: 'numeric',
-      month: 'long',
+      day: '2-digit',
+      month: '2-digit',
       year: 'numeric'
-    });
+    }).replace(/\s/g, '');
   };
 
   // Custom SearchBar with added sort button
@@ -422,14 +423,16 @@ export default function ListingsPage() {
                       </div>
                       <div className="p-2 flex-grow flex flex-col">
                         <div className="flex justify-between items-center mb-1">
-                          <div className="text-xs text-primary font-medium truncate max-w-[70%]">{listing.category}</div>
+                          <div className="text-xs text-primary font-medium truncate max-w-[70%] capitalize">
+                            {t(categoryTranslationMap[listing.category.toLowerCase().replace(/\s/g, '-')] || listing.category)}
+                          </div>
                           <div className="text-xs text-gray-500 hidden sm:block">{formatDate(listing.createdAt)}</div>
                         </div>
                         <h3 className="text-xs font-medium text-gray-900 group-hover:text-primary transition-colors duration-200 mb-1 line-clamp-2">
                           {listing.title}
                         </h3>
                         <div className="text-xs text-gray-600 mb-1 hidden sm:block">
-                          {t(listing.condition)}
+                          {t(conditionTranslationMap[listing.conditionId] || listing.condition)}
                         </div>
                         <div className="mt-auto flex justify-between items-center">
                           <span className="text-sm font-bold text-gray-900">{listing.price.toLocaleString()} Kč</span>

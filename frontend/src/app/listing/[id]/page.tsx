@@ -117,7 +117,7 @@ export default function ListingDetailPage() {
               )}`}
               className="hover:text-primary"
             >
-              {t(categoryTranslationMap[listing.category.toLowerCase().replace(/\s/g, '-')] || listing.category)}
+              <span className="capitalize">{t(categoryTranslationMap[listing.category.toLowerCase().replace(/\s/g, '-')] || listing.category)}</span>
             </Link>{" "}
             &gt; <span className="text-gray-700">{listing.title}</span>
           </div>
@@ -171,11 +171,11 @@ export default function ListingDetailPage() {
                   </h1>
 
                   <div className="flex items-center text-sm text-gray-500 mb-4">
-                    <span>{t(categoryTranslationMap[listing.category.toLowerCase().replace(/\s/g, '-')] || listing.category)}</span>
+                    <span className="capitalize">{t(categoryTranslationMap[listing.category.toLowerCase().replace(/\s/g, '-')] || listing.category)}</span>
                     <span className="mx-2">•</span>
                     <span>{listing.location}</span>
                     <span className="mx-2">•</span>
-                    <span>Přidáno: {formattedDate}</span>
+                    <span>{t('added')}: {formattedDate}</span>
                   </div>
 
                   <div className="text-3xl font-bold text-gray-900 mb-6">

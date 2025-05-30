@@ -489,7 +489,7 @@ export default function CategoryPage() {
                         </div>
                         <div className="p-2 flex-grow flex flex-col">
                           <div className="flex justify-between items-center mb-1">
-                            <div className="text-xs text-primary font-medium truncate max-w-[70%]">
+                            <div className="text-xs text-primary font-medium truncate max-w-[70%] capitalize">
                               {t(categoryTranslationMap[listing.category.toLowerCase().replace(/\s/g, '-')] || listing.category)}
                             </div>
                             <div className="text-xs text-gray-500 hidden sm:block">{formatDate(listing.createdAt)}</div>
