@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categoryTranslationMap, conditionTranslationMap } from "@/data/translations";
 
 // Mock data for user's listings
 const mockListings = [
@@ -13,40 +12,40 @@ const mockListings = [
     id: "1",
     title: "iPhone 12 Pro Max, 256GB, Pacific Blue",
     price: 18500,
-    category: "elektronika",
+    category: "electronics",
     location: "Praha",
     postalCode: "110 00",
     imageUrl: "https://placehold.co/600x400/3b82f6/ffffff?text=iPhone+12",
     createdAt: "2023-10-15",
     status: "active",
     condition: "Použité - jako nové",
-    conditionId: "jako_nove"
+    conditionId: "used_like_new"
   },
   {
     id: "2",
     title: "Kožená sedačka IKEA, 3 místná",
     price: 12000,
-    category: "nabytek",
+    category: "furniture",
     location: "Brno",
     postalCode: "602 00",
     imageUrl: "https://placehold.co/600x400/22c55e/ffffff?text=Sedačka",
     createdAt: "2023-09-28",
     status: "active",
     condition: "Použité - dobrý stav",
-    conditionId: "dobre"
+    conditionId: "used_good"
   },
   {
     id: "3",
     title: "Horské kolo Trek Marlin 7",
     price: 15000,
-    category: "sport",
+    category: "sport_hobby",
     location: "Ostrava",
     postalCode: "702 00",
     imageUrl: "https://placehold.co/600x400/f59e0b/ffffff?text=Kolo",
     createdAt: "2023-08-10",
     status: "sold",
     condition: "Použité - velmi dobrý stav",
-    conditionId: "velmi_dobre"
+    conditionId: "used_very_good"
   }
 ];
 
@@ -66,6 +65,24 @@ export default function MyListingsPage() {
       month: '2-digit',
       year: 'numeric'
     }).replace(/\s/g, '');
+  };
+
+  // Add this helper function to map category slugs to proper translation keys
+  const getCategoryTranslationKey = (category: string): string => {
+    // Map of possible category slugs to their translation keys
+    const categoryMap: Record<string, string> = {
+      "zahrada-dilna": "garden_workshop",
+      "doprava": "transport",
+      "elektronika": "electronics", 
+      "domacnost": "household",
+      "moda": "fashion",
+      "sport-hobby": "sport_hobby",
+      "deti": "children",
+      "zvirata": "animals",
+      "kultura-vzdelavani": "culture_education",
+    };
+    
+    return categoryMap[category] || category;
   };
 
   return (
@@ -139,12 +156,12 @@ export default function MyListingsPage() {
                       </span>
                     </div>
                     <div className="mt-2 flex items-center text-sm text-gray-500">
-                      <span className="capitalize">{t(categoryTranslationMap[listing.category] || listing.category)}</span>
+                      <span>{t(getCategoryTranslationKey(listing.category))}</span>
                       <span className="mx-2">•</span>
                       <span>{listing.location}, {listing.postalCode}</span>
                     </div>
                     <div className="mt-1 text-xs text-gray-600">
-                      {t(conditionTranslationMap[listing.conditionId] || listing.conditionId)}
+                      {t(listing.conditionId)}
                     </div>
                     <div className="mt-4 flex justify-between items-center">
                       <span className="text-xs text-gray-500">

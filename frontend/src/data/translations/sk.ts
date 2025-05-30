@@ -257,4 +257,18 @@ export const skTranslations = {
   "favorite": "Pridať do obľúbených",
   "item_posted": "Inzerát pridaný",
   "no_longer_available": "Už nie je dostupné",
+  
+  // Login and Register
+  "login_to_account": "Prihlásiť sa k účtu",
+  "no_account": "Nemáte účet?",
+  "create_account": "Vytvoriť nový účet",
+  "already_have_account": "Už máte účet?",
+  "your_name": "Vaše meno a priezvisko",
+  "email_address": "E-mailová adresa",
+  "password": "Heslo",
+  "remember_me": "Zapamätať si ma",
+  "forgot_password": "Zabudnuté heslo?",
+  "logging_in": "Prihlasovanie...",
+  "registering": "Registrácia...",
+  "or_continue_with": "Alebo pokračovať s"
 };

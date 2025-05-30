@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { categories } from "@/data/mockData";
+import { categories } from "@/data/categories";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categoryTranslationMap, subcategoryTranslationMap } from "@/data/translations";
 
 export default function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -18,16 +17,6 @@ export default function Sidebar() {
     } else {
       setExpandedCategory(categoryId);
     }
-  };
-  
-  // Helper function to get translation key for a category
-  const getCategoryTranslationKey = (categoryId: string): string => {
-    return categoryTranslationMap[categoryId] || categoryId;
-  };
-  
-  // Helper function to get translation key for a subcategory
-  const getSubcategoryTranslationKey = (subcategoryId: string): string => {
-    return subcategoryTranslationMap[subcategoryId] || subcategoryId;
   };
 
   return (
@@ -59,7 +48,7 @@ export default function Sidebar() {
                   onClick={(e) => toggleCategory(category.id || '', e)}
                   className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-primary hover:bg-gray-50"
                 >
-                  <span>{category.id ? t(getCategoryTranslationKey(category.id)) : category.name}</span>
+                  <span>{t(category.id)}</span>
                   <span className="text-gray-400">
                     {expandedCategory === category.id ? (
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -83,7 +72,7 @@ export default function Sidebar() {
                           href={subcategory.href || '#'}
                           className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
                         >
-                          {subcategory.id ? t(getSubcategoryTranslationKey(subcategory.id)) : subcategory.name}
+                          {t(subcategory.id)}
                         </Link>
                       )
                     ))}

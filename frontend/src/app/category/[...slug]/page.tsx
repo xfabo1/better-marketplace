@@ -7,9 +7,9 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/SearchBar";
-import { Listing, sortOptions, generateMockListings, conditions, dateFilterOptions } from "@/data/mockData";
+import { Listing, sortOptions, generateMockListings, dateFilterOptions } from "@/data/mockData";
+import { conditions } from "@/data/conditions";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categoryTranslationMap, subcategoryTranslationMap } from "@/data/translations";
 
 export default function CategoryPage() {
   const params = useParams();
@@ -41,10 +41,10 @@ export default function CategoryPage() {
 
     // Set the category and subcategory names for display
     setCategoryName(formatCategoryName(mainCategory));
-    setCategoryId(mainCategory);
+    setCategoryId(convertToEnglishId(mainCategory));
     if (subCategory) {
       setSubcategoryName(formatCategoryName(subCategory));
-      setSubcategoryId(subCategory);
+      setSubcategoryId(convertToEnglishId(subCategory));
     }
 
     // Fetch listings based on category/subcategory
@@ -61,6 +61,26 @@ export default function CategoryPage() {
     setSearchQuery("");
     setIsFiltersOpen(false);
   }, [params]);
+
+  // Convert Czech/Slovak slugs to English IDs
+  const convertToEnglishId = (slug: string) => {
+    // Simple mapping for demonstration purposes
+    const czechToEnglishMap: Record<string, string> = {
+      'doprava': 'transport',
+      'elektronika': 'electronics',
+      'domacnost': 'household',
+      'zahrada-dilna': 'garden_workshop',
+      'moda': 'fashion',
+      'sport-hobby': 'sport_hobby',
+      'deti': 'children',
+      'zvirata': 'animals',
+      'nabytek': 'furniture',
+      'kultura-vzdelavani': 'culture_education',
+      // Add other mappings as needed for subcategories
+    };
+    
+    return czechToEnglishMap[slug] || slug;
+  };
 
   const formatCategoryName = (slug: string) => {
     // Convert slug to display name (e.g., "doprava" -> "Doprava")
@@ -200,8 +220,8 @@ export default function CategoryPage() {
   const paginatedListings = sortedListings.slice(startIndex, startIndex + itemsPerPage);
 
   // Get translated category and subcategory names
-  const translatedCategoryName = categoryId ? t(categoryTranslationMap[categoryId] || categoryId) : categoryName;
-  const translatedSubcategoryName = subcategoryId ? t(subcategoryTranslationMap[subcategoryId] || subcategoryId) : subcategoryName;
+  const translatedCategoryName = categoryId ? t(categoryId) : categoryName;
+  const translatedSubcategoryName = subcategoryId ? t(subcategoryId) : subcategoryName;
 
   // Custom SearchBar with filters
   const CustomSearchBar = () => {
@@ -489,8 +509,8 @@ export default function CategoryPage() {
                         </div>
                         <div className="p-2 flex-grow flex flex-col">
                           <div className="flex justify-between items-center mb-1">
-                            <div className="text-xs text-primary font-medium truncate max-w-[70%] capitalize">
-                              {t(categoryTranslationMap[listing.category.toLowerCase().replace(/\s/g, '-')] || listing.category)}
+                            <div className="text-xs text-primary font-medium truncate max-w-[70%]">
+                              {t(convertToEnglishId(listing.category))}
                             </div>
                             <div className="text-xs text-gray-500 hidden sm:block">{formatDate(listing.createdAt)}</div>
                           </div>

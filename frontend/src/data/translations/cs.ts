@@ -257,4 +257,18 @@ export const csTranslations = {
   "favorite": "Přidat do oblíbených",
   "item_posted": "Inzerát přidán",
   "no_longer_available": "Již není dostupné",
+  
+  // Login and Register
+  "login_to_account": "Přihlásit se k účtu",
+  "no_account": "Nemáte účet?",
+  "create_account": "Vytvořit nový účet",
+  "already_have_account": "Již máte účet?",
+  "your_name": "Vaše jméno a příjmení",
+  "email_address": "E-mailová adresa",
+  "password": "Heslo",
+  "remember_me": "Zapamatovat si mě",
+  "forgot_password": "Zapomenuté heslo?",
+  "logging_in": "Přihlašování...",
+  "registering": "Registrace...",
+  "or_continue_with": "Nebo pokračovat s"
 };

@@ -3,17 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { conditionTranslationMap } from "@/data/translations";
-
-// Import conditions from listings page
-const conditions = [
-  { id: "all", name: "all_conditions" },
-  { id: "nove", name: "new" },
-  { id: "jako_nove", name: "used_like_new" },
-  { id: "velmi_dobre", name: "used_very_good" },
-  { id: "dobre", name: "used_good" },
-  { id: "horsi", name: "used_fair" }
-];
+import { conditions } from "@/data/conditions";
 
 // Date filter options
 const dateFilterOptions = [

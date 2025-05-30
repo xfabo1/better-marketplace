@@ -38,24 +38,24 @@ type AuthProviderProps = {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
-  // Check if user is already logged in on mount
+  // First, set isClient to true when component mounts (client-side only)
   useEffect(() => {
-    const checkAuth = () => {
-      try {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
-      } catch (error) {
-        console.error('Error checking authentication:', error);
-      } finally {
-        setIsLoading(false);
+    setIsClient(true);
+    
+    // Check if user is already logged in, but only on the client
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
       }
-    };
-
-    checkAuth();
+    } catch (error) {
+      console.error('Error checking authentication:', error);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   // Login function - accepts any credentials and logs in as Jan Novák
@@ -71,15 +71,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
         location: "Praha"
       };
       
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Only access localStorage on the client
+      if (isClient) {
+        // Store user in localStorage
+        localStorage.setItem('user', JSON.stringify(mockUser));
+        
+        // Wait a tiny bit to ensure localStorage is fully updated
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 10);
+      }
       
-      // Store user in localStorage
-      localStorage.setItem('user', JSON.stringify(mockUser));
+      // Update state immediately
       setUser(mockUser);
-      
-      // Redirect to home page
-      router.push('/');
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -91,12 +95,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Logout function
   const logout = () => {
     try {
-      // Remove user from localStorage
-      localStorage.removeItem('user');
-      setUser(null);
+      // Only access localStorage on the client
+      if (isClient) {
+        // Remove user from localStorage
+        localStorage.removeItem('user');
+        
+        // Add small delay to ensure changes are applied before navigation
+        setTimeout(() => {
+          // Use window.location for a full page reload
+          window.location.href = '/';
+        }, 10);
+      }
       
-      // Redirect to home page
-      router.push('/');
+      // Update state immediately
+      setUser(null);
     } catch (error) {
       console.error('Logout error:', error);
     }

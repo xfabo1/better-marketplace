@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Language } from '@/data/translations';
 
@@ -31,8 +31,20 @@ const languages: LanguageOption[] = [
 export default function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  const currentLanguage = languages.find(lang => lang.code === language) || languages[0];
+  // Set mounted to true when component mounts on the client
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Default to first language for server rendering
+  const defaultLanguage = languages[0];
+  
+  // Only use the actual language state on the client to avoid hydration errors
+  const currentLanguage = mounted 
+    ? (languages.find(lang => lang.code === language) || defaultLanguage)
+    : defaultLanguage;
 
   const handleLanguageChange = (lang: Language) => {
     setLanguage(lang);

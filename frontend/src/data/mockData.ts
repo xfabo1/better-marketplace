@@ -1,4 +1,7 @@
 // Types
+import { conditions } from "./conditions";
+import { categories } from "./categories";
+
 export interface Listing {
   id: number | string;
   title: string;
@@ -12,16 +15,6 @@ export interface Listing {
   createdAt: string;
   subcategory?: string;
 }
-
-// Condition options for filtering
-export const conditions = [
-  { id: "all", name: "all_conditions" },
-  { id: "nove", name: "new" },
-  { id: "jako_nove", name: "used_like_new" },
-  { id: "velmi_dobre", name: "used_very_good" },
-  { id: "dobre", name: "used_good" },
-  { id: "horsi", name: "used_fair" }
-];
 
 // Sort options
 export const sortOptions = [
@@ -48,9 +41,9 @@ export const allListings: Listing[] = [
     location: "Praha",
     postalCode: "110 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Toyota+Camry",
-    category: "doprava",
+    category: "transport",
     condition: "used_very_good",
-    conditionId: "velmi_dobre",
+    conditionId: "used_very_good",
     createdAt: "2023-10-15",
   },
   {
@@ -60,9 +53,9 @@ export const allListings: Listing[] = [
     location: "Brno",
     postalCode: "602 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=iPhone+14",
-    category: "elektronika",
+    category: "electronics",
     condition: "used_like_new",
-    conditionId: "jako_nove",
+    conditionId: "used_like_new",
     createdAt: "2023-10-12",
   },
   {
@@ -72,9 +65,9 @@ export const allListings: Listing[] = [
     location: "Ostrava",
     postalCode: "702 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Pohovka",
-    category: "domacnost",
+    category: "household",
     condition: "used_good",
-    conditionId: "dobre",
+    conditionId: "used_good",
     createdAt: "2023-10-10",
   },
   {
@@ -84,9 +77,9 @@ export const allListings: Listing[] = [
     location: "Plzeň",
     postalCode: "301 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Horské+kolo",
-    category: "sport-hobby",
+    category: "sport_hobby",
     condition: "used_very_good",
-    conditionId: "velmi_dobre",
+    conditionId: "used_very_good",
     createdAt: "2023-10-08",
   },
   {
@@ -96,9 +89,9 @@ export const allListings: Listing[] = [
     location: "Liberec",
     postalCode: "460 01",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Šaty",
-    category: "moda",
+    category: "fashion",
     condition: "new",
-    conditionId: "nove",
+    conditionId: "new",
     createdAt: "2023-10-05",
   },
   {
@@ -108,9 +101,9 @@ export const allListings: Listing[] = [
     location: "Olomouc",
     postalCode: "779 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=PlayStation+5",
-    category: "elektronika",
+    category: "electronics",
     condition: "used_like_new",
-    conditionId: "jako_nove",
+    conditionId: "used_like_new",
     createdAt: "2023-10-03",
   },
   {
@@ -120,9 +113,9 @@ export const allListings: Listing[] = [
     location: "Praha",
     postalCode: "140 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dětská+postýlka",
-    category: "deti",
+    category: "children",
     condition: "used_good",
-    conditionId: "dobre",
+    conditionId: "used_good",
     createdAt: "2023-10-01",
   },
   {
@@ -132,9 +125,9 @@ export const allListings: Listing[] = [
     location: "Praha",
     postalCode: "120 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=MacBook+Pro",
-    category: "elektronika",
+    category: "electronics",
     condition: "used_like_new",
-    conditionId: "jako_nove",
+    conditionId: "used_like_new",
     createdAt: "2023-09-28",
   },
   {
@@ -144,9 +137,9 @@ export const allListings: Listing[] = [
     location: "Brno",
     postalCode: "639 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Zahradní+nábytek",
-    category: "zahrada-dilna",
+    category: "garden_workshop",
     condition: "used_good",
-    conditionId: "dobre",
+    conditionId: "used_good",
     createdAt: "2023-09-25",
   },
   {
@@ -156,9 +149,9 @@ export const allListings: Listing[] = [
     location: "Praha",
     postalCode: "160 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Koloběžka",
-    category: "sport-hobby",
+    category: "sport_hobby",
     condition: "used_very_good",
-    conditionId: "velmi_dobre",
+    conditionId: "used_very_good",
     createdAt: "2023-09-22",
   },
   {
@@ -168,9 +161,9 @@ export const allListings: Listing[] = [
     location: "Ostrava",
     postalCode: "710 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Zimní+bunda",
-    category: "moda",
+    category: "fashion",
     condition: "used_good",
-    conditionId: "dobre",
+    conditionId: "used_good",
     createdAt: "2023-09-20",
   },
   {
@@ -180,9 +173,9 @@ export const allListings: Listing[] = [
     location: "Plzeň",
     postalCode: "326 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Kuchyňský+robot",
-    category: "domacnost",
+    category: "household",
     condition: "used_fair",
-    conditionId: "horsi",
+    conditionId: "used_fair",
     createdAt: "2023-09-18",
   },
   {
@@ -192,9 +185,9 @@ export const allListings: Listing[] = [
     location: "Praha",
     postalCode: "190 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dámské+kolo",
-    category: "sport-hobby",
+    category: "sport_hobby",
     condition: "used_very_good",
-    conditionId: "velmi_dobre",
+    conditionId: "used_very_good",
     createdAt: "2023-09-16",
   },
   {
@@ -204,9 +197,9 @@ export const allListings: Listing[] = [
     location: "Brno",
     postalCode: "612 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Herní+PC",
-    category: "elektronika",
+    category: "electronics",
     condition: "used_like_new",
-    conditionId: "jako_nove",
+    conditionId: "used_like_new",
     createdAt: "2023-09-14",
   },
   {
@@ -216,9 +209,9 @@ export const allListings: Listing[] = [
     location: "Ostrava",
     postalCode: "700 30",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dětské+oblečení",
-    category: "deti",
+    category: "children",
     condition: "used_good",
-    conditionId: "dobre",
+    conditionId: "used_good",
     createdAt: "2023-09-12",
   },
   {
@@ -228,9 +221,9 @@ export const allListings: Listing[] = [
     location: "Praha",
     postalCode: "170 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=IKEA+pohovka",
-    category: "domacnost",
+    category: "household",
     condition: "used_good",
-    conditionId: "dobre",
+    conditionId: "used_good",
     createdAt: "2023-09-10",
   },
   {
@@ -240,9 +233,9 @@ export const allListings: Listing[] = [
     location: "Brno",
     postalCode: "602 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Dámské+lodičky",
-    category: "moda",
+    category: "fashion",
     condition: "used_like_new",
-    conditionId: "jako_nove",
+    conditionId: "used_like_new",
     createdAt: "2023-09-08",
   },
   {
@@ -252,9 +245,9 @@ export const allListings: Listing[] = [
     location: "Plzeň",
     postalCode: "301 00",
     image: "https://placehold.co/600x400/e6f7ef/10b981/png?text=Vrtačka+Bosch",
-    category: "domacnost",
+    category: "household",
     condition: "used_fair",
-    conditionId: "horsi",
+    conditionId: "used_fair",
     createdAt: "2023-09-06",
   },
 ];
@@ -302,7 +295,7 @@ export const generateMockListings = (category: string, subcategory: string | nul
     }
     
     // Use default values if no condition was found
-    const conditionId = randomCondition?.id || "dobre";
+    const conditionId = randomCondition?.id || "used_good";
     
     // Try to get a relevant title for the category
     let titleOptions = defaultTitles;
@@ -333,138 +326,3 @@ export const generateMockListings = (category: string, subcategory: string | nul
   
   return mockListings;
 };
-
-// Categories data structure
-export const categories = [
-  {
-    id: "doprava",
-    name: "Doprava",
-    href: "/category/doprava",
-    subcategories: [
-      { id: "automobily", name: "Automobily", href: "/category/doprava/automobily" },
-      { id: "motorky", name: "Motorky", href: "/category/doprava/motorky" },
-      { id: "nakladni-vozidla", name: "Nákladní vozidla", href: "/category/doprava/nakladni-vozidla" },
-      { id: "autobusy", name: "Autobusy", href: "/category/doprava/autobusy" },
-      { id: "privesy-navesy", name: "Přívěsy a návěsy", href: "/category/doprava/privesy-navesy" },
-      { id: "nahradni-dily", name: "Náhradní díly", href: "/category/doprava/nahradni-dily" },
-      { id: "pneumatiky-disky", name: "Pneumatiky a disky", href: "/category/doprava/pneumatiky-disky" },
-      { id: "autoprislusenstvi", name: "Autopříslušenství", href: "/category/doprava/autoprislusenstvi" },
-      { id: "lode-cluny", name: "Lodě a čluny", href: "/category/doprava/lode-cluny" },
-      { id: "kola", name: "Kola a elektrokola", href: "/category/doprava/kola" },
-    ],
-  },
-  {
-    id: "elektronika",
-    name: "Elektronika",
-    href: "/category/elektronika",
-    subcategories: [
-      { id: "mobilni-telefony", name: "Mobilní telefony", href: "/category/elektronika/mobilni-telefony" },
-      { id: "tablety", name: "Tablety", href: "/category/elektronika/tablety" },
-      { id: "notebooky", name: "Notebooky", href: "/category/elektronika/notebooky" },
-      { id: "pocitace", name: "Počítače", href: "/category/elektronika/pocitace" },
-      { id: "tv-audio-video", name: "TV, audio, video", href: "/category/elektronika/tv-audio-video" },
-      { id: "fotoaparaty", name: "Fotoaparáty a kamery", href: "/category/elektronika/fotoaparaty" },
-      { id: "herni-konzole", name: "Herní konzole a hry", href: "/category/elektronika/herni-konzole" },
-      { id: "pc-prislusenstvi", name: "PC příslušenství", href: "/category/elektronika/pc-prislusenstvi" },
-      { id: "smart-hodinky", name: "Chytré hodinky a náramky", href: "/category/elektronika/smart-hodinky" },
-      { id: "sitove-prvky", name: "Síťové prvky a routery", href: "/category/elektronika/sitove-prvky" },
-    ],
-  },
-  {
-    id: "domacnost",
-    name: "Domácnost",
-    href: "/category/domacnost",
-    subcategories: [
-      { id: "nabytek", name: "Nábytek", href: "/category/domacnost/nabytek" },
-      { id: "bila-technika", name: "Bílá technika", href: "/category/domacnost/bila-technika" },
-      { id: "kuchynske-spotrebice", name: "Kuchyňské spotřebiče", href: "/category/domacnost/kuchynske-spotrebice" },
-      { id: "domaci-spotrebice", name: "Domácí spotřebiče", href: "/category/domacnost/domaci-spotrebice" },
-      { id: "dekorace", name: "Dekorace", href: "/category/domacnost/dekorace" },
-      { id: "osvetleni", name: "Osvětlení", href: "/category/domacnost/osvetleni" },
-      { id: "domaci-potreby", name: "Domácí potřeby", href: "/category/domacnost/domaci-potreby" },
-      { id: "cistici-technika", name: "Čisticí technika", href: "/category/domacnost/cistici-technika" },
-      { id: "koupelna", name: "Koupelna a WC", href: "/category/domacnost/koupelna" },
-    ],
-  },
-  {
-    id: "zahrada-dilna",
-    name: "Zahrada a dílna",
-    href: "/category/zahrada-dilna",
-    subcategories: [
-      { id: "zahradni-naradi", name: "Zahradní nářadí", href: "/category/zahrada-dilna/zahradni-naradi" },
-      { id: "stroje-sekacky", name: "Stroje a sekačky", href: "/category/zahrada-dilna/stroje-sekacky" },
-      { id: "zahradni-nabytek", name: "Nábytek na zahradu", href: "/category/zahrada-dilna/zahradni-nabytek" },
-      { id: "rostliny", name: "Rostliny a květiny", href: "/category/zahrada-dilna/rostliny" },
-      { id: "grily", name: "Grily a vybavení", href: "/category/zahrada-dilna/grily" },
-      { id: "naradi", name: "Nářadí a vybavení dílny", href: "/category/zahrada-dilna/naradi" },
-      { id: "stavebni-material", name: "Stavební materiál", href: "/category/zahrada-dilna/stavebni-material" },
-    ],
-  },
-  {
-    id: "moda",
-    name: "Móda",
-    href: "/category/moda",
-    subcategories: [
-      { id: "muzi", name: "Oblečení - muži", href: "/category/moda/muzi" },
-      { id: "zeny", name: "Oblečení - ženy", href: "/category/moda/zeny" },
-      { id: "deti", name: "Dětské oblečení", href: "/category/moda/deti" },
-      { id: "obuv", name: "Obuv", href: "/category/moda/obuv" },
-      { id: "doplnky", name: "Doplňky", href: "/category/moda/doplnky" },
-      { id: "sperky-hodinky", name: "Šperky a hodinky", href: "/category/moda/sperky-hodinky" },
-      { id: "kabelky-tasky", name: "Kabelky a tašky", href: "/category/moda/kabelky-tasky" },
-    ],
-  },
-  {
-    id: "sport-hobby",
-    name: "Sport a hobby",
-    href: "/category/sport-hobby",
-    subcategories: [
-      { id: "fitness", name: "Fitness a posilování", href: "/category/sport-hobby/fitness" },
-      { id: "cyklistika", name: "Cyklistika", href: "/category/sport-hobby/cyklistika" },
-      { id: "zimni-sporty", name: "Zimní sporty", href: "/category/sport-hobby/zimni-sporty" },
-      { id: "micove-hry", name: "Míčové hry", href: "/category/sport-hobby/micove-hry" },
-      { id: "kempovani", name: "Kempování a turistika", href: "/category/sport-hobby/kempovani" },
-      { id: "rybareni", name: "Rybaření", href: "/category/sport-hobby/rybareni" },
-      { id: "strelectvi", name: "Střelectví a airsoft", href: "/category/sport-hobby/strelectvi" },
-      { id: "hudebni-nastroje", name: "Hudební nástroje", href: "/category/sport-hobby/hudebni-nastroje" },
-      { id: "modelarstvi", name: "Modelářství", href: "/category/sport-hobby/modelarstvi" },
-    ],
-  },
-  {
-    id: "deti",
-    name: "Děti",
-    href: "/category/deti",
-    subcategories: [
-      { id: "hracky", name: "Hračky", href: "/category/deti/hracky" },
-      { id: "kocarky", name: "Kočárky", href: "/category/deti/kocarky" },
-      { id: "nabytek", name: "Dětský nábytek", href: "/category/deti/nabytek" },
-      { id: "obleceni", name: "Dětské oblečení", href: "/category/deti/obleceni" },
-      { id: "autosedacky", name: "Autosedačky", href: "/category/deti/autosedacky" },
-      { id: "vybaveni", name: "Potřebné vybavení", href: "/category/deti/vybaveni" },
-    ],
-  },
-  {
-    id: "zvirata",
-    name: "Zvířata",
-    href: "/category/zvirata",
-    subcategories: [
-      { id: "psi", name: "Psi", href: "/category/zvirata/psi" },
-      { id: "kocky", name: "Kočky", href: "/category/zvirata/kocky" },
-      { id: "hlodavci", name: "Hlodavci", href: "/category/zvirata/hlodavci" },
-      { id: "teraristika", name: "Teraristika", href: "/category/zvirata/teraristika" },
-      { id: "akvarium", name: "Akvária a ryby", href: "/category/zvirata/akvarium" },
-      { id: "potreby", name: "Krmivo a potřeby", href: "/category/zvirata/potreby" },
-    ],
-  },
-  {
-    id: "kultura-vzdelavani",
-    name: "Kultura a vzdělávání",
-    href: "/category/kultura-vzdelavani",
-    subcategories: [
-      { id: "knihy", name: "Knihy", href: "/category/kultura-vzdelavani/knihy" },
-      { id: "ucebnice", name: "Učebnice", href: "/category/kultura-vzdelavani/ucebnice" },
-      { id: "cd-dvd", name: "CD, DVD, Blu-ray", href: "/category/kultura-vzdelavani/cd-dvd" },
-      { id: "obrazy", name: "Plakáty a obrazy", href: "/category/kultura-vzdelavani/obrazy" },
-    ],
-  },
-];

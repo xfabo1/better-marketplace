@@ -20,20 +20,27 @@ const LanguageContext = createContext<LanguageContextType>({
 export const useLanguage = () => useContext(LanguageContext);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
+  // Always initialize with default language to avoid hydration mismatch
   const [language, setLanguageState] = useState<Language>(defaultLanguage);
+  const [isClient, setIsClient] = useState(false);
 
-  // Initialize language from localStorage if available
+  // Use useEffect to safely access localStorage only on the client
   useEffect(() => {
+    setIsClient(true);
+    
+    // Now that we're on the client, we can safely access localStorage
     const storedLanguage = localStorage.getItem('language') as Language | null;
     if (storedLanguage && ['cs', 'sk', 'en'].includes(storedLanguage)) {
       setLanguageState(storedLanguage);
     }
   }, []);
 
-  // Update localStorage when language changes
+  // Make sure localStorage is updated when language changes
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('language', lang);
+    if (isClient) {
+      localStorage.setItem('language', lang);
+    }
   };
 
   // Translation function
