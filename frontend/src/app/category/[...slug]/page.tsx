@@ -10,6 +10,7 @@ import SearchBar from "@/components/SearchBar";
 import { Listing, sortOptions, generateMockListings, dateFilterOptions } from "@/data/mockData";
 import { conditions } from "@/data/conditions";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { categories, Category, Subcategory } from "@/data/categories";
 
 export default function CategoryPage() {
   const params = useParams();
@@ -41,10 +42,10 @@ export default function CategoryPage() {
 
     // Set the category and subcategory names for display
     setCategoryName(formatCategoryName(mainCategory));
-    setCategoryId(convertToEnglishId(mainCategory));
+    setCategoryId(getEnglishId(mainCategory));
     if (subCategory) {
       setSubcategoryName(formatCategoryName(subCategory));
-      setSubcategoryId(convertToEnglishId(subCategory));
+      setSubcategoryId(getEnglishId(subCategory));
     }
 
     // Fetch listings based on category/subcategory
@@ -62,24 +63,34 @@ export default function CategoryPage() {
     setIsFiltersOpen(false);
   }, [params]);
 
-  // Convert Czech/Slovak slugs to English IDs
-  const convertToEnglishId = (slug: string) => {
-    // Simple mapping for demonstration purposes
-    const czechToEnglishMap: Record<string, string> = {
-      'doprava': 'transport',
-      'elektronika': 'electronics',
-      'domacnost': 'household',
-      'zahrada-dilna': 'garden_workshop',
-      'moda': 'fashion',
-      'sport-hobby': 'sport_hobby',
-      'deti': 'children',
-      'zvirata': 'animals',
-      'nabytek': 'furniture',
-      'kultura-vzdelavani': 'culture_education',
-      // Add other mappings as needed for subcategories
-    };
+  // Get the English ID of a category or subcategory based on the slug
+  const getEnglishId = (slug: string): string => {
+    // Check if it's a main category
+    const category = categories.find(cat => {
+      const slugPart = cat.href.split('/').pop();
+      return slugPart === slug;
+    });
     
-    return czechToEnglishMap[slug] || slug;
+    if (category) {
+      return category.id;
+    }
+    
+    // Check if it's a subcategory
+    for (const cat of categories) {
+      if (cat.subcategories) {
+        const subcategory = cat.subcategories.find(subcat => {
+          const slugPart = subcat.href.split('/').pop();
+          return slugPart === slug;
+        });
+        
+        if (subcategory) {
+          return subcategory.id;
+        }
+      }
+    }
+    
+    // If not found, return the original slug
+    return slug;
   };
 
   const formatCategoryName = (slug: string) => {
@@ -510,7 +521,7 @@ export default function CategoryPage() {
                         <div className="p-2 flex-grow flex flex-col">
                           <div className="flex justify-between items-center mb-1">
                             <div className="text-xs text-primary font-medium truncate max-w-[70%]">
-                              {t(convertToEnglishId(listing.category))}
+                              {t(getEnglishId(listing.category))}
                             </div>
                             <div className="text-xs text-gray-500 hidden sm:block">{formatDate(listing.createdAt)}</div>
                           </div>

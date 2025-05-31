@@ -13,7 +13,8 @@ const mockUserData = {
   email: "jan.novak@example.com",
   phone: "+420 123 456 789",
   registeredAt: "2021-05-15",
-  location: "Praha",
+  country: "cz",
+  showCrossCountryListings: true,
   stats: {
     totalListings: 18,
     activeListing: 12,
@@ -22,7 +23,7 @@ const mockUserData = {
 };
 
 export default function ProfilePage() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { t } = useLanguage();
   const [userData, setUserData] = useState(mockUserData);
 
@@ -30,15 +31,26 @@ export default function ProfilePage() {
   useEffect(() => {
     // Simulate API call
     const fetchUserData = async () => {
-      // In a real app, you would fetch the user data based on the authenticated user
-      // For now, we'll just use the mock data
-      setUserData(mockUserData);
+      // If we have user data from the auth context, merge it with mock data
+      if (user) {
+        setUserData({
+          ...mockUserData,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          country: user.country,
+          showCrossCountryListings: user.showCrossCountryListings
+        });
+      } else {
+        // Otherwise just use the mock data
+        setUserData(mockUserData);
+      }
     };
 
     if (isAuthenticated) {
       fetchUserData();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user]);
 
   // Format date function
   const formatDate = (dateString: string) => {
@@ -110,8 +122,8 @@ export default function ProfilePage() {
                       <p className="mt-1 text-sm text-gray-900">{userData.phone}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-500">{t('location')}</p>
-                      <p className="mt-1 text-sm text-gray-900">{userData.location}</p>
+                      <p className="text-sm font-medium text-gray-500">{t('country')}</p>
+                      <p className="mt-1 text-sm text-gray-900">{userData.country === 'cz' ? t('czech_republic') : t('slovakia')}</p>
                     </div>
                   </div>
                 </div>
@@ -121,6 +133,14 @@ export default function ProfilePage() {
                     <div>
                       <p className="text-sm font-medium text-gray-500">{t('registration')}</p>
                       <p className="mt-1 text-sm text-gray-900">{formatDate(userData.registeredAt)}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">
+                        {userData.country === 'cz' ? t('show_slovak_listings') : t('show_czech_listings')}
+                      </p>
+                      <p className="mt-1 text-sm text-gray-900">
+                        {userData.showCrossCountryListings ? t('yes') : t('no')}
+                      </p>
                     </div>
                   </div>
                 </div>

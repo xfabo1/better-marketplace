@@ -259,16 +259,22 @@ export const skTranslations = {
   "no_longer_available": "Už nie je dostupné",
   
   // Login and Register
-  "login_to_account": "Prihlásiť sa k účtu",
+  "login_to_account": "Prihláste sa do svojho účtu",
   "no_account": "Nemáte účet?",
   "create_account": "Vytvoriť nový účet",
   "already_have_account": "Už máte účet?",
-  "your_name": "Vaše meno a priezvisko",
+  "your_name": "Vaše celé meno",
   "email_address": "E-mailová adresa",
   "password": "Heslo",
   "remember_me": "Zapamätať si ma",
-  "forgot_password": "Zabudnuté heslo?",
+  "forgot_password": "Zabudli ste heslo?",
   "logging_in": "Prihlasovanie...",
   "registering": "Registrácia...",
-  "or_continue_with": "Alebo pokračovať s"
+  "or_continue_with": "Alebo pokračovať s",
+  "country": "Krajina",
+  "show_czech_listings": "Zobrazovať inzeráty z Českej republiky",
+  "show_slovak_listings": "Zobrazovať inzeráty zo Slovenska",
+  "cross_country_listings_info": "Toto nastavenie môžete kedykoľvek zmeniť vo vašom profile. Ovplyvňuje, či uvidíte inzeráty z druhej krajiny.",
+  "yes": "Áno",
+  "no": "Nie"
 };

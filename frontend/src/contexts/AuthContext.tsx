@@ -9,14 +9,17 @@ type User = {
   email: string;
   phone: string;
   location: string;
+  country: "cz" | "sk";
+  showCrossCountryListings: boolean;
 } | null;
 
 // Auth context type
 type AuthContextType = {
   user: User;
   isAuthenticated: boolean;
-  login: (email: string, password?: string) => Promise<void>;
+  login: (email: string, password?: string, country?: "cz" | "sk", showCrossCountryListings?: boolean) => Promise<void>;
   logout: () => void;
+  updateUserSettings: (settings: { country?: "cz" | "sk", showCrossCountryListings?: boolean }) => void;
   isLoading: boolean;
 };
 
@@ -26,6 +29,7 @@ const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   login: async () => {},
   logout: () => {},
+  updateUserSettings: () => {},
   isLoading: true,
 });
 
@@ -59,7 +63,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   // Login function - accepts any credentials and logs in as Jan Novák
-  const login = async (email: string) => {
+  const login = async (email: string, password?: string, country?: "cz" | "sk", showCrossCountryListings?: boolean) => {
     setIsLoading(true);
     
     try {
@@ -68,7 +72,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         name: "Jan Novák",
         email: email, // Use the provided email
         phone: "+420 123 456 789",
-        location: "Praha"
+        location: "Praha",
+        country: country || "cz", // Default to Czech Republic if not provided
+        showCrossCountryListings: showCrossCountryListings !== undefined ? showCrossCountryListings : true // Default to true if not provided
       };
       
       // Only access localStorage on the client
@@ -114,12 +120,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  // Update user settings function
+  const updateUserSettings = (settings: { country?: "cz" | "sk", showCrossCountryListings?: boolean }) => {
+    if (!user) return;
+
+    try {
+      // Only access localStorage on the client
+      if (isClient) {
+        const updatedUser = {
+          ...user,
+          ...settings
+        };
+        
+        // Store updated user in localStorage
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        
+        // Update state
+        setUser(updatedUser);
+      }
+    } catch (error) {
+      console.error('Error updating user settings:', error);
+    }
+  };
+
   // Context value
   const value = {
     user,
     isAuthenticated: !!user,
     login,
     logout,
+    updateUserSettings,
     isLoading,
   };
 

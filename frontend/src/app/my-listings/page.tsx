@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { categories, Category, Subcategory } from "@/data/categories";
 
 // Mock data for user's listings
 const mockListings = [
@@ -69,20 +70,48 @@ export default function MyListingsPage() {
 
   // Add this helper function to map category slugs to proper translation keys
   const getCategoryTranslationKey = (category: string): string => {
-    // Map of possible category slugs to their translation keys
-    const categoryMap: Record<string, string> = {
-      "zahrada-dilna": "garden_workshop",
-      "doprava": "transport",
-      "elektronika": "electronics", 
-      "domacnost": "household",
-      "moda": "fashion",
-      "sport-hobby": "sport_hobby",
-      "deti": "children",
-      "zvirata": "animals",
-      "kultura-vzdelavani": "culture_education",
-    };
+    // Check if it's a main category
+    const mainCategory = categories.find(cat => cat.id === category);
+    if (mainCategory) {
+      return category;
+    }
     
-    return categoryMap[category] || category;
+    // Check if it's a subcategory
+    for (const cat of categories) {
+      if (cat.subcategories) {
+        const subcategory = cat.subcategories.find(subcat => subcat.id === category);
+        if (subcategory) {
+          return category;
+        }
+      }
+    }
+    
+    // Check if it's a slug that needs to be converted to id
+    const slugCategory = categories.find(cat => {
+      const slugPart = cat.href.split('/').pop();
+      return slugPart === category;
+    });
+    
+    if (slugCategory) {
+      return slugCategory.id;
+    }
+    
+    // Check if it's a subcategory slug
+    for (const cat of categories) {
+      if (cat.subcategories) {
+        const slugSubcategory = cat.subcategories.find(subcat => {
+          const slugPart = subcat.href.split('/').pop();
+          return slugPart === category;
+        });
+        
+        if (slugSubcategory) {
+          return slugSubcategory.id;
+        }
+      }
+    }
+    
+    // If not found, return the original category
+    return category;
   };
 
   return (
