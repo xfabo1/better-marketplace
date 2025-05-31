@@ -276,5 +276,10 @@ export const enTranslations = {
   "show_slovak_listings": "Show listings from Slovakia",
   "cross_country_listings_info": "This setting can be changed anytime in your profile. It affects whether you see listings from the other country.",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "preferred_currency": "Preferred Currency",
+  "currency": "Currency",
+  "currency_info": "This currency will be used when creating your listings.",
+  "czech_koruna": "Czech Koruna (Kč)",
+  "euro": "Euro (€)"
 };

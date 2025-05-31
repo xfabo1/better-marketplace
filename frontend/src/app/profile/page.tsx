@@ -15,6 +15,7 @@ const mockUserData = {
   registeredAt: "2021-05-15",
   country: "cz",
   showCrossCountryListings: true,
+  currency: "czk",
   stats: {
     totalListings: 18,
     activeListing: 12,
@@ -39,7 +40,8 @@ export default function ProfilePage() {
           email: user.email,
           phone: user.phone,
           country: user.country,
-          showCrossCountryListings: user.showCrossCountryListings
+          showCrossCountryListings: user.showCrossCountryListings,
+          currency: user.currency
         });
       } else {
         // Otherwise just use the mock data
@@ -56,10 +58,10 @@ export default function ProfilePage() {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('cs-CZ', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).replace(/\s/g, '');
   };
 
   if (!isAuthenticated) {
@@ -140,6 +142,14 @@ export default function ProfilePage() {
                       </p>
                       <p className="mt-1 text-sm text-gray-900">
                         {userData.showCrossCountryListings ? t('yes') : t('no')}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">{t('preferred_currency') || "Preferovaná měna"}</p>
+                      <p className="mt-1 text-sm text-gray-900">
+                        {userData.currency === 'czk' 
+                          ? (t('czech_koruna') || "Česká koruna (Kč)")
+                          : (t('euro') || "Euro (€)")}
                       </p>
                     </div>
                   </div>

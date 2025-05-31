@@ -11,15 +11,20 @@ type User = {
   location: string;
   country: "cz" | "sk";
   showCrossCountryListings: boolean;
+  currency: "czk" | "eur";
 } | null;
 
 // Auth context type
 type AuthContextType = {
   user: User;
   isAuthenticated: boolean;
-  login: (email: string, password?: string, country?: "cz" | "sk", showCrossCountryListings?: boolean) => Promise<void>;
+  login: (email: string, password?: string, country?: "cz" | "sk", showCrossCountryListings?: boolean, currency?: "czk" | "eur") => Promise<void>;
   logout: () => void;
-  updateUserSettings: (settings: { country?: "cz" | "sk", showCrossCountryListings?: boolean }) => void;
+  updateUserSettings: (settings: { 
+    country?: "cz" | "sk", 
+    showCrossCountryListings?: boolean,
+    currency?: "czk" | "eur"
+  }) => void;
   isLoading: boolean;
 };
 
@@ -63,7 +68,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   // Login function - accepts any credentials and logs in as Jan Novák
-  const login = async (email: string, password?: string, country?: "cz" | "sk", showCrossCountryListings?: boolean) => {
+  const login = async (email: string, password?: string, country?: "cz" | "sk", showCrossCountryListings?: boolean, currency?: "czk" | "eur") => {
     setIsLoading(true);
     
     try {
@@ -74,7 +79,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         phone: "+420 123 456 789",
         location: "Praha",
         country: country || "cz", // Default to Czech Republic if not provided
-        showCrossCountryListings: showCrossCountryListings !== undefined ? showCrossCountryListings : true // Default to true if not provided
+        showCrossCountryListings: showCrossCountryListings !== undefined ? showCrossCountryListings : true, // Default to true if not provided
+        currency: currency || (country === "sk" ? "eur" : "czk") // Default currency based on country
       };
       
       // Only access localStorage on the client
@@ -121,7 +127,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   // Update user settings function
-  const updateUserSettings = (settings: { country?: "cz" | "sk", showCrossCountryListings?: boolean }) => {
+  const updateUserSettings = (settings: { 
+    country?: "cz" | "sk", 
+    showCrossCountryListings?: boolean,
+    currency?: "czk" | "eur"
+  }) => {
     if (!user) return;
 
     try {
