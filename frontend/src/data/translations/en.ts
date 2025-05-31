@@ -270,5 +270,11 @@ export const enTranslations = {
   "forgot_password": "Forgot password?",
   "logging_in": "Logging in...",
   "registering": "Registering...",
-  "or_continue_with": "Or continue with"
+  "or_continue_with": "Or continue with",
+  "country": "Country",
+  "show_czech_listings": "Show listings from Czech Republic",
+  "show_slovak_listings": "Show listings from Slovakia",
+  "cross_country_listings_info": "This setting can be changed anytime in your profile. It affects whether you see listings from the other country.",
+  "yes": "Yes",
+  "no": "No"
 };

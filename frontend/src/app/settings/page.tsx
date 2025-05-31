@@ -4,12 +4,14 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Component that uses useSearchParams
 function SettingsContent() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<'profile' | 'security'>('profile');
   const { t } = useLanguage();
+  const { user, updateUserSettings } = useAuth();
   
   // Set active tab based on URL parameter if present
   useEffect(() => {
@@ -25,21 +27,40 @@ function SettingsContent() {
   const [userData, setUserData] = useState({
     email: "jan.novak@example.com",
     phone: "+420 123 456 789",
-    location: t('czech_republic')
+    country: "cz", // Default to Czech Republic
+    showCrossCountryListings: true // Default to showing cross-country listings
   });
 
-  // Available locations
-  const locations = [
-    { value: t('czech_republic'), label: t('czech_republic') },
-    { value: t('slovakia'), label: t('slovakia') }
+  // Available countries
+  const countries = [
+    { value: "cz", label: t('czech_republic') },
+    { value: "sk", label: t('slovakia') }
   ];
 
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would call your API to update the user profile
-    console.log("Profile update submitted:", userData);
+    // Update user settings using the AuthContext function
+    updateUserSettings({
+      country: userData.country as "cz" | "sk",
+      showCrossCountryListings: userData.showCrossCountryListings
+    });
     alert(t('profile_updated'));
   };
+
+  // Load user data from auth context on component mount
+  useEffect(() => {
+    if (user) {
+      setUserData(prevState => ({
+        ...prevState,
+        email: user.email || prevState.email,
+        phone: user.phone || prevState.phone,
+        country: user.country || prevState.country,
+        showCrossCountryListings: user.showCrossCountryListings !== undefined 
+          ? user.showCrossCountryListings 
+          : prevState.showCrossCountryListings
+      }));
+    }
+  }, [user]);
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,22 +138,44 @@ function SettingsContent() {
                   </div>
                   
                   <div className="mb-4">
-                    <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('location')}
+                    <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+                      {t('country')}
                     </label>
                     <select
-                      id="location"
+                      id="country"
                       className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
-                      value={userData.location}
-                      onChange={(e) => setUserData({...userData, location: e.target.value})}
+                      value={userData.country}
+                      onChange={(e) => setUserData({...userData, country: e.target.value})}
                     >
-                      {locations.map((location) => (
-                        <option key={location.value} value={location.value}>
-                          {location.label}
+                      {countries.map((country) => (
+                        <option key={country.value} value={country.value}>
+                          {country.label}
                         </option>
                       ))}
                     </select>
                     <p className="mt-1 text-xs text-gray-500">{t('location_restricted')}</p>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <div className="flex items-start">
+                      <div className="flex items-center h-5">
+                        <input
+                          id="showCrossCountryListings"
+                          name="showCrossCountryListings"
+                          type="checkbox"
+                          className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                          checked={userData.showCrossCountryListings}
+                          onChange={(e) => setUserData({...userData, showCrossCountryListings: e.target.checked})}
+                        />
+                      </div>
+                      <div className="ml-3">
+                        <label htmlFor="showCrossCountryListings" className="text-sm text-gray-700">
+                          {userData.country === 'cz' 
+                            ? t('show_slovak_listings') 
+                            : t('show_czech_listings')}
+                        </label>
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="pt-4">

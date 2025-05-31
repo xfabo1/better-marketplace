@@ -259,16 +259,22 @@ export const csTranslations = {
   "no_longer_available": "Již není dostupné",
   
   // Login and Register
-  "login_to_account": "Přihlásit se k účtu",
+  "login_to_account": "Přihlaste se ke svému účtu",
   "no_account": "Nemáte účet?",
   "create_account": "Vytvořit nový účet",
   "already_have_account": "Již máte účet?",
-  "your_name": "Vaše jméno a příjmení",
+  "your_name": "Vaše celé jméno",
   "email_address": "E-mailová adresa",
   "password": "Heslo",
   "remember_me": "Zapamatovat si mě",
   "forgot_password": "Zapomenuté heslo?",
   "logging_in": "Přihlašování...",
   "registering": "Registrace...",
-  "or_continue_with": "Nebo pokračovat s"
+  "or_continue_with": "Nebo pokračovat s",
+  "country": "Země",
+  "show_czech_listings": "Zobrazovat inzeráty z České republiky",
+  "show_slovak_listings": "Zobrazovat inzeráty ze Slovenska",
+  "cross_country_listings_info": "Toto nastavení můžete kdykoliv změnit v profilu. Ovlivňuje, zda uvidíte inzeráty z druhé země.",
+  "yes": "Ano",
+  "no": "Ne"
 };
