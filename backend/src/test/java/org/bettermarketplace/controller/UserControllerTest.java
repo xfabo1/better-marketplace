@@ -12,10 +12,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.bettermarketplace.api.UserController;
-import org.bettermarketplace.api.dto.CreateUserDto;
+import org.bettermarketplace.api.dto.RegisterUserDto;
 import org.bettermarketplace.api.dto.UserDto;
 import org.bettermarketplace.config.ObjectMapperConfiguration;
+import org.bettermarketplace.config.TestSecurityConfig;
 import org.bettermarketplace.mapper.UserMapper;
+import org.bettermarketplace.model.Country;
 import org.bettermarketplace.model.User;
 import org.bettermarketplace.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(UserController.class)
-@Import(ObjectMapperConfiguration.class)
+@Import({ObjectMapperConfiguration.class, TestSecurityConfig.class})
 public class UserControllerTest {
 
 	private static final UserMapper MAPPER = UserMapper.INSTANCE;
@@ -49,9 +51,12 @@ public class UserControllerTest {
 
 	@Test
 	void insertUser_validBody_userCreated() throws Exception {
-		var createUserDto = CreateUserDto.builder()
+		var createUserDto = RegisterUserDto.builder()
 				.email("random@gmail.com")
 				.username("test")
+				.allowDifferentCountryItems(true)
+				.country(Country.CZ)
+				.password("password")
 				.build();
 		var user = MAPPER.from(createUserDto);
 		when(userService.insertUser(createUserDto)).thenReturn(user);

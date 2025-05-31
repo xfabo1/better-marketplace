@@ -2,7 +2,7 @@ package org.bettermarketplace.api;
 
 import java.util.List;
 
-import org.bettermarketplace.api.dto.CreateUserDto;
+import org.bettermarketplace.api.dto.RegisterUserDto;
 import org.bettermarketplace.api.dto.UserDto;
 import org.bettermarketplace.mapper.UserMapper;
 import org.bettermarketplace.service.UserService;
@@ -51,8 +51,8 @@ public class UserController {
 	}
 
 	@PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDto> createUser(@Valid @RequestBody CreateUserDto createUserDto) {
-		var user = userService.insertUser(createUserDto);
+	public ResponseEntity<UserDto> createUser(@Valid @RequestBody RegisterUserDto registerUserDto) {
+		var user = userService.insertUser(registerUserDto);
 		return ResponseEntity.status(201).body(MAPPER.from(user));
 	}
 

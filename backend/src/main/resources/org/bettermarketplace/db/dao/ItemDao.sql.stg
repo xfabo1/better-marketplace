@@ -1,0 +1,10 @@
+findItem() ::= <<
+  SELECT *
+  FROM item
+>>
+
+findItem(id) ::= <<
+  SELECT *
+  FROM item
+  WHERE id=:id
+>>

@@ -2,7 +2,7 @@ package org.bettermarketplace.service;
 
 import java.util.stream.Stream;
 
-import org.bettermarketplace.api.dto.CreateUserDto;
+import org.bettermarketplace.api.dto.RegisterUserDto;
 import org.bettermarketplace.db.dao.UserDao;
 import org.bettermarketplace.mapper.UserMapper;
 import org.bettermarketplace.model.User;
@@ -21,8 +21,8 @@ public class UserService {
 		this.userDao = userDao;
 	}
 
-	public User insertUser(CreateUserDto createUserDto) {
-		var id = userDao.insertUser(MAPPER.from(createUserDto));
+	public User insertUser(RegisterUserDto registerUserDto) {
+		var id = userDao.insertUser(MAPPER.from(registerUserDto));
 		var user = userDao.getUser(id);
 		return user.map(MAPPER::from).orElse(null);
 	}
