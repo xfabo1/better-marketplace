@@ -1,7 +1,6 @@
 server:
   servlet:
     context-path: '/api/better-marketplace'
-  port: 8080
 
 spring:
   liquibase:

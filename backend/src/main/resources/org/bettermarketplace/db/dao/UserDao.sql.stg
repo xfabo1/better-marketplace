@@ -18,3 +18,17 @@ deleteUser(id) ::= <<
   FROM marketplace_user
   WHERE id=:id
 >>
+
+
+getUserByEmail(email) ::= <<
+  SELECT *
+  FROM marketplace_user
+  WHERE email=:email
+>>
+
+
+getUserByUsername(username) ::= <<
+  SELECT *
+  FROM marketplace_user
+  WHERE username=:username
+>>
