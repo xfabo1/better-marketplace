@@ -28,7 +28,8 @@ function SettingsContent() {
     email: "jan.novak@example.com",
     phone: "+420 123 456 789",
     country: "cz", // Default to Czech Republic
-    showCrossCountryListings: true // Default to showing cross-country listings
+    showCrossCountryListings: true, // Default to showing cross-country listings
+    currency: "czk" // Default to Czech Koruna
   });
 
   // Available countries
@@ -37,12 +38,19 @@ function SettingsContent() {
     { value: "sk", label: t('slovakia') }
   ];
 
+  // Available currencies
+  const currencies = [
+    { value: "czk", label: t('czech_koruna') || "Česká koruna (Kč)" },
+    { value: "eur", label: t('euro') || "Euro (€)" }
+  ];
+
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Update user settings using the AuthContext function
     updateUserSettings({
       country: userData.country as "cz" | "sk",
-      showCrossCountryListings: userData.showCrossCountryListings
+      showCrossCountryListings: userData.showCrossCountryListings,
+      currency: userData.currency as "czk" | "eur"
     });
     alert(t('profile_updated'));
   };
@@ -57,7 +65,8 @@ function SettingsContent() {
         country: user.country || prevState.country,
         showCrossCountryListings: user.showCrossCountryListings !== undefined 
           ? user.showCrossCountryListings 
-          : prevState.showCrossCountryListings
+          : prevState.showCrossCountryListings,
+        currency: user.currency || prevState.currency
       }));
     }
   }, [user]);
@@ -176,6 +185,25 @@ function SettingsContent() {
                         </label>
                       </div>
                     </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-1">
+                      {t('preferred_currency') || "Preferovaná měna"}
+                    </label>
+                    <select
+                      id="currency"
+                      className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
+                      value={userData.currency}
+                      onChange={(e) => setUserData({...userData, currency: e.target.value})}
+                    >
+                      {currencies.map((currency) => (
+                        <option key={currency.value} value={currency.value}>
+                          {currency.label}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="mt-1 text-xs text-gray-500">{t('currency_info') || "Tato měna bude použita pro vytváření vašich inzerátů."}</p>
                   </div>
                   
                   <div className="pt-4">

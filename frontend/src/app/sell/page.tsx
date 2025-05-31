@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 
 // Mock categories for the form
@@ -37,11 +38,14 @@ const PRICE_MAX_VALUE = 10000000; // 10 million Kč
 function SellForm() {
   const router = useRouter();
   const { t } = useLanguage();
+  const { user } = useAuth();
+  const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     category: "",
     condition: "",
     price: "",
+    currency: "czk", // Default to Czech Koruna
     description: "",
     location: "",
     contactPhone: "",
@@ -50,6 +54,21 @@ function SellForm() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Set mounted to true when component mounts on the client
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Load user's preferred currency on component mount
+  useEffect(() => {
+    if (mounted && user && user.currency) {
+      setFormData(prevState => ({
+        ...prevState,
+        currency: user.currency
+      }));
+    }
+  }, [user, mounted]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -156,6 +175,31 @@ function SellForm() {
     }
   };
 
+  // Show simplified view during server-side rendering to avoid hydration mismatch
+  if (!mounted) {
+    return (
+      <main className="flex-grow py-8">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6 mb-6">
+            <h1 className="text-2xl font-medium text-gray-900 mb-6">
+              Vytvořit inzerát
+            </h1>
+            {/* Simplified form skeleton during SSR */}
+            <div className="space-y-6">
+              <div className="mb-4">
+                <div className="block text-sm font-medium text-gray-700 mb-1">
+                  Název inzerátu *
+                </div>
+                <div className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm"></div>
+              </div>
+              {/* Additional simplified form fields could be added here */}
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="flex-grow py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -242,28 +286,45 @@ function SellForm() {
               )}
             </div>
             
-            <div className="mb-4">
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                {t('price')} (Kč) *
-              </label>
-              <input
-                type="number"
-                id="price"
-                name="price"
-                className={`block w-full px-4 py-3 rounded-md border ${
-                  errors.price 
-                    ? 'border-red-300 focus:border-red-500' 
-                    : 'border-gray-300 focus:border-primary'
-                } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
-                value={formData.price}
-                onChange={handleChange}
-                placeholder="0"
-                min="0"
-                max={PRICE_MAX_VALUE}
-              />
-              {errors.price && (
-                <p className="mt-2 text-sm text-red-600">{errors.price}</p>
-              )}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="mb-4">
+                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('price')} *
+                </label>
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  className={`block w-full px-4 py-3 rounded-md border ${
+                    errors.price 
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-gray-300 focus:border-primary'
+                  } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
+                  value={formData.price}
+                  onChange={handleChange}
+                  min="0"
+                  step="1"
+                />
+                {errors.price && (
+                  <p className="mt-2 text-sm text-red-600">{errors.price}</p>
+                )}
+              </div>
+              
+              <div className="mb-4">
+                <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('currency') || "Měna"}
+                </label>
+                <select
+                  id="currency"
+                  name="currency"
+                  className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
+                  value={formData.currency}
+                  onChange={handleChange}
+                >
+                  <option value="czk">{t('czech_koruna') || "Česká koruna (Kč)"}</option>
+                  <option value="eur">{t('euro') || "Euro (€)"}</option>
+                </select>
+              </div>
             </div>
             
             <div className="mb-4">
@@ -273,7 +334,7 @@ function SellForm() {
               <textarea
                 id="description"
                 name="description"
-                rows={6}
+                rows={5}
                 className={`block w-full px-4 py-3 rounded-md border ${
                   errors.description 
                     ? 'border-red-300 focus:border-red-500' 
@@ -281,7 +342,7 @@ function SellForm() {
                 } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                 value={formData.description}
                 onChange={handleChange}
-                placeholder=""
+                placeholder="Podrobný popis inzerátu..."
                 maxLength={DESCRIPTION_MAX_LENGTH}
               ></textarea>
               {errors.description && (

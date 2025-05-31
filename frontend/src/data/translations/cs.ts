@@ -276,5 +276,10 @@ export const csTranslations = {
   "show_slovak_listings": "Zobrazovat inzeráty ze Slovenska",
   "cross_country_listings_info": "Toto nastavení můžete kdykoliv změnit v profilu. Ovlivňuje, zda uvidíte inzeráty z druhé země.",
   "yes": "Ano",
-  "no": "Ne"
+  "no": "Ne",
+  "preferred_currency": "Preferovaná měna",
+  "currency": "Měna",
+  "currency_info": "Tato měna bude použita při vytváření vašich inzerátů.",
+  "czech_koruna": "Česká koruna (Kč)",
+  "euro": "Euro (€)"
 };

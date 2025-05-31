@@ -16,6 +16,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [country, setCountry] = useState("cz"); // Default country: Czech Republic
   const [showCrossCountryListings, setShowCrossCountryListings] = useState(true); // Default to show cross-country listings
+  const [currency, setCurrency] = useState("czk"); // Default currency: Czech Koruna
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,6 +27,12 @@ export default function RegisterPage() {
       window.location.href = "/";
     }
   }, [isAuthenticated]);
+
+  // Update currency when country changes
+  useEffect(() => {
+    // Set default currency based on selected country
+    setCurrency(country === "sk" ? "eur" : "czk");
+  }, [country]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,11 +45,12 @@ export default function RegisterPage() {
         name,
         email,
         country,
-        showCrossCountryListings
+        showCrossCountryListings,
+        currency
       });
 
       // For demo, just log in after registration without delay
-      await login(email, password, country as "cz" | "sk", showCrossCountryListings);
+      await login(email, password, country as "cz" | "sk", showCrossCountryListings, currency as "czk" | "eur");
     } catch {
       setError("Došlo k chybě při registraci. Zkuste to prosím znovu.");
     } finally {
@@ -182,6 +190,24 @@ export default function RegisterPage() {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('preferred_currency') || "Preferovaná měna"}
+                </label>
+                <select
+                  id="currency"
+                  name="currency"
+                  required
+                  className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                >
+                  <option value="czk">{t('czech_koruna') || "Česká koruna (Kč)"}</option>
+                  <option value="eur">{t('euro') || "Euro (€)"}</option>
+                </select>
+                <p className="mt-1 text-xs text-gray-500">{t('currency_info') || "Tato měna bude použita pro vytváření vašich inzerátů."}</p>
               </div>
             </div>
 
