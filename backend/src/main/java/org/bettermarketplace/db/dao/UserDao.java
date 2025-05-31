@@ -29,6 +29,12 @@ public interface UserDao {
 	@SqlQuery
 	Optional<UserDbo> getUser(@Bind("id") Long id);
 
+	@SqlQuery
+	Optional<UserDbo> getUserByEmail(@Bind("email") String email);
+
+	@SqlQuery
+	Optional<UserDbo> getUserByUsername(@Bind("username") String userName);
+
 	@SqlUpdate
 	void deleteUser(@Bind("id") Long id);
 }
