@@ -6,6 +6,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { registerUser } from "@/api/authApi";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -14,9 +15,9 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [country, setCountry] = useState("cz"); // Default country: Czech Republic
+  const [country, setCountry] = useState("CZ"); // Default country: Czech Republic
   const [showCrossCountryListings, setShowCrossCountryListings] = useState(true); // Default to show cross-country listings
-  const [currency, setCurrency] = useState("czk"); // Default currency: Czech Koruna
+  const [currency, setCurrency] = useState("CZK"); // Default currency: Czech Koruna
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,14 +25,14 @@ export default function RegisterPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      window.location.href = "/";
+      router.push("/");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, router]);
 
   // Update currency when country changes
   useEffect(() => {
     // Set default currency based on selected country
-    setCurrency(country === "sk" ? "eur" : "czk");
+    setCurrency(country === "SK" ? "EUR" : "CZK");
   }, [country]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,19 +41,29 @@ export default function RegisterPage() {
     setIsSubmitting(true);
 
     try {
-      // In a real implementation, we would send the user data to the backend
-      console.log('Registering user with following details:', {
-        name,
+      // Register the user with the backend
+      await registerUser({
+        username: name,
         email,
-        country,
-        showCrossCountryListings,
-        currency
+        password,
+        country: country,
+        displayItemsFromOtherCountry: showCrossCountryListings
       });
-
-      // For demo, just log in after registration without delay
-      await login(email, password, country as "cz" | "sk", showCrossCountryListings, currency as "czk" | "eur");
-    } catch {
-      setError("Došlo k chybě při registraci. Zkuste to prosím znovu.");
+      
+      // After successful registration, log the user in
+      await login(email, password, country as "CZ" | "SK", showCrossCountryListings, currency as "CZK" | "EUR");
+      // Redirect is handled in the login function
+    } catch (error: any) {
+      // Handle specific error messages from the backend
+      if (error.message === "email_used") {
+        setError(t('email_already_used') || "This email is already in use");
+      } else if (error.message === "username_used") {
+        setError(t('username_already_used') || "This username is already in use");
+      } else if (error.message?.includes("Network error")) {
+        setError(t('network_error') || "Network connection error");
+      } else {
+        setError(t('registration_error') || "Registration error. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -143,8 +154,8 @@ export default function RegisterPage() {
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
                 >
-                  <option value="cz">{t('czech_republic') || "Česká republika"}</option>
-                  <option value="sk">{t('slovakia') || "Slovensko"}</option>
+                  <option value="CZ">{t('czech_republic') || "Česká republika"}</option>
+                  <option value="SK">{t('slovakia') || "Slovensko"}</option>
                 </select>
               </div>
 
@@ -162,7 +173,7 @@ export default function RegisterPage() {
                   </div>
                   <div className="ml-3 flex">
                     <label htmlFor="showCrossCountryListings" className="text-sm text-gray-700">
-                      {country === 'cz' 
+                      {country === 'CZ' 
                         ? (t('show_slovak_listings') || "Zobrazovat inzeráty ze Slovenska") 
                         : (t('show_czech_listings') || "Zobrazovat inzeráty z České republiky")}
                     </label>
@@ -204,8 +215,8 @@ export default function RegisterPage() {
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value)}
                 >
-                  <option value="czk">{t('czech_koruna') || "Česká koruna (Kč)"}</option>
-                  <option value="eur">{t('euro') || "Euro (€)"}</option>
+                  <option value="CZK">{t('czech_koruna') || "Česká koruna (Kč)"}</option>
+                  <option value="EUR">{t('euro') || "Euro (€)"}</option>
                 </select>
                 <p className="mt-1 text-xs text-gray-500">{t('currency_info') || "Tato měna bude použita pro vytváření vašich inzerátů."}</p>
               </div>

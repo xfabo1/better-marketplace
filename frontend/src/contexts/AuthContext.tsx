@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { loginUser, logoutUser } from '@/api/authApi';
 
 // User type definition
 type User = {
@@ -9,21 +10,21 @@ type User = {
   email: string;
   phone: string;
   location: string;
-  country: "cz" | "sk";
+  country: "CZ" | "SK";
   showCrossCountryListings: boolean;
-  currency: "czk" | "eur";
+  currency: "CZK" | "EUR";
 } | null;
 
 // Auth context type
 type AuthContextType = {
   user: User;
   isAuthenticated: boolean;
-  login: (email: string, password?: string, country?: "cz" | "sk", showCrossCountryListings?: boolean, currency?: "czk" | "eur") => Promise<void>;
+  login: (email: string, password?: string, country?: "CZ" | "SK", showCrossCountryListings?: boolean, currency?: "CZK" | "EUR") => Promise<void>;
   logout: () => void;
   updateUserSettings: (settings: { 
-    country?: "cz" | "sk", 
+    country?: "CZ" | "SK", 
     showCrossCountryListings?: boolean,
-    currency?: "czk" | "eur"
+    currency?: "CZK" | "EUR"
   }) => void;
   isLoading: boolean;
 };
@@ -67,26 +68,51 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, []);
 
-  // Login function - accepts any credentials and logs in as Jan Novák
-  const login = async (email: string, password?: string, country?: "cz" | "sk", showCrossCountryListings?: boolean, currency?: "czk" | "eur") => {
+  // Login function - connects to the backend API
+  const login = async (email: string, password?: string, country?: "CZ" | "SK", showCrossCountryListings?: boolean, currency?: "CZK" | "EUR") => {
     setIsLoading(true);
     
     try {
-      // For demo purposes, always log in as Jan Novák regardless of credentials
-      const mockUser = {
-        name: "Jan Novák",
-        email: email, // Use the provided email
-        phone: "+420 123 456 789",
-        location: "Praha",
-        country: country || "cz", // Default to Czech Republic if not provided
-        showCrossCountryListings: showCrossCountryListings !== undefined ? showCrossCountryListings : true, // Default to true if not provided
-        currency: currency || (country === "sk" ? "eur" : "czk") // Default currency based on country
+      if (!password) {
+        // For demo purposes (social login), use the mock user
+        const mockUser = {
+          name: "Jan Novák",
+          email: email,
+          phone: "+420 123 456 789",
+          location: "Praha",
+          country: country || "CZ",
+          showCrossCountryListings: showCrossCountryListings !== undefined ? showCrossCountryListings : true,
+          currency: currency || (country === "SK" ? "EUR" : "CZK")
+        };
+        
+        if (isClient) {
+          localStorage.setItem('user', JSON.stringify(mockUser));
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 10);
+        }
+        
+        setUser(mockUser);
+        return;
+      }
+      
+      // Call the backend API for login
+      const response = await loginUser(email, password);
+      
+      // Create a user object from the response
+      const loggedInUser = {
+        name: email.split('@')[0], // Temporary name from email
+        email: email,
+        phone: "",
+        location: "",
+        country: country || "CZ",
+        showCrossCountryListings: showCrossCountryListings !== undefined ? showCrossCountryListings : true,
+        currency: currency || (country === "SK" ? "EUR" : "CZK")
       };
       
-      // Only access localStorage on the client
+      // Store user in localStorage
       if (isClient) {
-        // Store user in localStorage
-        localStorage.setItem('user', JSON.stringify(mockUser));
+        localStorage.setItem('user', JSON.stringify(loggedInUser));
         
         // Wait a tiny bit to ensure localStorage is fully updated
         setTimeout(() => {
@@ -95,7 +121,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
       
       // Update state immediately
-      setUser(mockUser);
+      setUser(loggedInUser);
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -107,6 +133,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Logout function
   const logout = () => {
     try {
+      // Call the backend API for logout
+      logoutUser().catch(err => console.error('Error during API logout:', err));
+      
       // Only access localStorage on the client
       if (isClient) {
         // Remove user from localStorage
@@ -128,9 +157,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Update user settings function
   const updateUserSettings = (settings: { 
-    country?: "cz" | "sk", 
+    country?: "CZ" | "SK", 
     showCrossCountryListings?: boolean,
-    currency?: "czk" | "eur"
+    currency?: "CZK" | "EUR"
   }) => {
     if (!user) return;
 

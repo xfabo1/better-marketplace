@@ -281,5 +281,15 @@ export const csTranslations = {
   "currency": "Měna",
   "currency_info": "Tato měna bude použita při vytváření vašich inzerátů.",
   "czech_koruna": "Česká koruna (Kč)",
-  "euro": "Euro (€)"
+  "euro": "Euro (€)",
+  
+  // Authentication errors
+  "invalid_credentials": "Nesprávné přihlašovací údaje",
+  "check_credentials": "Zkontrolujte prosím své přihlašovací údaje a zkuste to znovu.",
+  "email_already_used": "Tento email je již používán",
+  "username_already_used": "Toto uživatelské jméno je již používáno",
+  "registration_error": "Chyba při registraci",
+  "network_error": "Chyba připojení k serveru",
+  "server_error": "Chyba serveru",
+  "login_error": "Chyba při přihlášení"
 };
