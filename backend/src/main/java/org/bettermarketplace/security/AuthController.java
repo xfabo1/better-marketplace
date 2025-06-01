@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/auth")
 @Validated
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthController {
 
 	private static final UserMapper MAPPER = UserMapper.INSTANCE;
@@ -58,9 +60,9 @@ public class AuthController {
 
 		Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, token);
 		authCookie.setHttpOnly(true);
-		authCookie.setSecure(true); // Only transmitted over HTTPS
+		authCookie.setSecure(false); // Set to true in production with HTTPS
 		authCookie.setPath("/");
-		authCookie.setAttribute("SameSite", "Strict"); // Protection against CSRF
+		authCookie.setAttribute("SameSite", "Lax"); // Changed from Strict to Lax for better cross-origin experience
 		// Expiration in 7 days
 		authCookie.setMaxAge(7 * 24 * 60 * 60);
 		response.addCookie(authCookie);
@@ -85,7 +87,7 @@ public class AuthController {
 		// Clear the cookie
 		Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, null);
 		authCookie.setHttpOnly(true);
-		authCookie.setSecure(true);
+		authCookie.setSecure(false); // Set to true in production with HTTPS
 		authCookie.setPath("/");
 		authCookie.setMaxAge(0); // Set age to 0 to delete the cookie
 		response.addCookie(authCookie);
@@ -95,22 +97,25 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestBody RegisterUserDto request) {
+		try {
+			if (userRepository.getUserByEmail(request.email()).isPresent()) {
+				return ResponseEntity.status(409).body("email_used");
+			}
 
-		if (userRepository.getUserByEmail(request.email()).isPresent()) {
-			return ResponseEntity.status(409).body("email_used");
+			if (userRepository.getUserByUsername(request.username()).isPresent()) {
+				return ResponseEntity.status(409).body("username_used");
+			}
+
+			var user = MAPPER.from(request);
+			user.setPassword(passwordEncoder.encode(request.password()));
+			user.setCountry(request.country());
+			user.setDisplayItemsFromOtherCountry(request.displayItemsFromOtherCountry());
+
+			userRepository.insertUser(user);
+
+			return ResponseEntity.ok("registered");
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("registration_error: " + e.getMessage());
 		}
-
-		if (userRepository.getUserByUsername(request.username()).isPresent()) {
-			return ResponseEntity.status(409).body("username_used");
-		}
-
-		var user = MAPPER.from(request);
-		user.setPassword(passwordEncoder.encode(request.password()));
-		user.setCountry(request.country());
-		user.setDisplayItemsFromOtherCountry(request.displayItemsFromOtherCountry());
-
-		userRepository.insertUser(user);
-
-		return ResponseEntity.ok("registered");
 	}
 }

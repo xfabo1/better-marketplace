@@ -7,36 +7,74 @@ import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 
+// Define error types for better handling
+type ErrorType = 'credentials' | 'network' | 'server' | 'unknown';
+
+interface FormattedError {
+  type: ErrorType;
+  message: string;
+  details?: string;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const { login, isAuthenticated } = useAuth();
   const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<FormattedError | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      window.location.href = "/";
+      router.push("/");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError(null);
     setIsSubmitting(true);
 
     try {
-      // Handle login
+      // Call login function from AuthContext
       await login(email, password);
-    } catch {
-      setError("Došlo k chybě při přihlášení. Zkuste to prosím znovu.");
+      // Redirect is handled in the login function
+    } catch (err: any) {
+      console.error("Login error:", err);
+      
+      // Format error message based on error type
+      if (err.message === 'invalid_credentials') {
+        setError({
+          type: 'credentials',
+          message: t('invalid_credentials') || "Invalid credentials",
+          details: t('check_credentials') || "Please check your login credentials and try again."
+        });
+      } else if (err.message?.includes("Network error")) {
+        setError({
+          type: 'network',
+          message: t('network_error') || "Network connection error",
+          details: "Check your internet connection or try again later."
+        });
+      } else if (err.status >= 500) {
+        setError({
+          type: 'server',
+          message: t('server_error') || "Server error",
+          details: `Server returned error: ${err.status} ${err.statusText || ''}`
+        });
+      } else {
+        setError({
+          type: 'unknown',
+          message: t('login_error') || "Login error",
+          details: err.message || "Please try again later."
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -97,8 +135,19 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-                {error}
+              <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                <div className="flex">
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800">
+                      {error.message}
+                    </h3>
+                    {error.details && (
+                      <div className="mt-2 text-sm text-red-700">
+                        <p>{error.details}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
 

@@ -1,5 +1,7 @@
 package org.bettermarketplace.api.dto;
 
+import lombok.Builder;
+
 @Builder
-public record UserDetailsUpdateDto {
+public record UserDetailsUpdateDto() {
 }

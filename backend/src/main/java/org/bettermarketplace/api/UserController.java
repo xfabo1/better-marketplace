@@ -36,7 +36,7 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDto> getUser(HttpServletRequest request, @PathVariable("id") Long id) {
+	public ResponseEntity<UserDto> getUser(@PathVariable("id") Long id) {
 		var user = userService.getUser(id);
 		if (user == null) {
 			return ResponseEntity.notFound().build();

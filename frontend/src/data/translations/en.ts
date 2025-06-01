@@ -281,5 +281,15 @@ export const enTranslations = {
   "currency": "Currency",
   "currency_info": "This currency will be used when creating your listings.",
   "czech_koruna": "Czech Koruna (Kč)",
-  "euro": "Euro (€)"
+  "euro": "Euro (€)",
+  
+  // Authentication errors
+  "invalid_credentials": "Invalid credentials",
+  "check_credentials": "Please check your login credentials and try again.",
+  "email_already_used": "Email is already in use",
+  "username_already_used": "Username is already in use",
+  "registration_error": "Registration error",
+  "network_error": "Network connection error",
+  "server_error": "Server error",
+  "login_error": "Login error"
 };

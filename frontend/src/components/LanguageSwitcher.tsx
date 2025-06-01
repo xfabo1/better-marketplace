@@ -14,17 +14,17 @@ const languages: LanguageOption[] = [
   {
     code: 'cs',
     name: 'Čeština',
-    flag: '🇨🇿'
+    flag: 'CS'
   },
   {
     code: 'sk',
     name: 'Slovenčina',
-    flag: '🇸🇰'
+    flag: 'SK'
   },
   {
     code: 'en',
     name: 'English',
-    flag: '🇺🇸'
+    flag: 'EN'
   }
 ];
 
@@ -59,7 +59,7 @@ export default function LanguageSwitcher() {
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center">
-          <span className="mr-1 text-lg">{currentLanguage.flag}</span>
+          <span className="mr-1 text-sm font-medium">{currentLanguage.flag}</span>
         </div>
         <svg className="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -77,7 +77,7 @@ export default function LanguageSwitcher() {
                 }`}
                 onClick={() => handleLanguageChange(lang.code)}
               >
-                <span className="mr-2">{lang.flag}</span>
+                <span className="mr-2 text-sm font-medium">{lang.flag}</span>
                 <span>{lang.name}</span>
               </button>
             ))}
