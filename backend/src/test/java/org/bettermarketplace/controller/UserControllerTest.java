@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.bettermarketplace.api.UserController;
-import org.bettermarketplace.api.dto.RegisterUserDto;
+import org.bettermarketplace.api.dto.user.RegisterUserDto;
 import org.bettermarketplace.api.dto.UserDto;
 import org.bettermarketplace.config.ObjectMapperConfiguration;
 import org.bettermarketplace.config.TestSecurityConfig;
@@ -54,7 +54,7 @@ public class UserControllerTest {
 		var createUserDto = RegisterUserDto.builder()
 				.email("random@gmail.com")
 				.username("test")
-				.allowDifferentCountryItems(true)
+				.displayItemsFromOtherCountry(true)
 				.country(Country.CZ)
 				.password("password")
 				.build();

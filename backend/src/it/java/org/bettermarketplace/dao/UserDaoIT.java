@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.bettermarketplace.configuration.PostgisTest;
 import org.bettermarketplace.db.dao.UserDao;
 import org.bettermarketplace.db.entity.UserDbo;
+import org.bettermarketplace.model.Country;
 import org.bettermarketplace.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class UserDaoIT extends PostgisTest {
 		var user = User.builder()
 				.username("test")
 				.email("random@gmail.com")
+				.password("password")
+				.country(Country.CZ)
+				.displayItemsFromOtherCountry(true)
 				.build();
 
 		var id = userDao.insertUser(user);
