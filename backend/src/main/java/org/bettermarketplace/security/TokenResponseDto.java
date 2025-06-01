@@ -1,4 +1,4 @@
-package org.bettermarketplace.api.dto;
+package org.bettermarketplace.security;
 
 import lombok.Builder;
 
