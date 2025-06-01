@@ -1,5 +1,6 @@
 package org.bettermarketplace.config;
 
+import org.bettermarketplace.db.dao.ItemDao;
 import org.bettermarketplace.db.dao.LocationDao;
 import org.bettermarketplace.db.dao.UserDao;
 import org.jdbi.v3.core.Jdbi;
@@ -17,5 +18,10 @@ public class DaoConfiguration {
 	@Bean
 	public UserDao userDao(Jdbi jdbi) {
 		return jdbi.onDemand(UserDao.class);
+	}
+
+	@Bean
+	public ItemDao itemDao(Jdbi jdbi) {
+		return jdbi.onDemand(ItemDao.class);
 	}
 }

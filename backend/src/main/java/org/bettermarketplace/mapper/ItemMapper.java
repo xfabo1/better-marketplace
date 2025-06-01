@@ -1,0 +1,14 @@
+package org.bettermarketplace.mapper;
+
+import org.bettermarketplace.api.dto.item.ItemFullDetailsDto;
+import org.bettermarketplace.model.Item;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+@Mapper(componentModel = "spring")
+public interface ItemMapper {
+
+	ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
+
+	ItemFullDetailsDto from(Item item);
+}

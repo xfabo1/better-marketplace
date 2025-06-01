@@ -1,5 +1,6 @@
 package org.bettermarketplace.db.entity;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 import org.bettermarketplace.model.Currency;
@@ -12,7 +13,8 @@ public record ItemDbo(
 		Long id,
 		String name,
 		String description,
-		String price,
+		String imageUrl,
+		BigDecimal price,
 		@ColumnName("marketplace_user_id")
 		Long userId,
 		Currency currency,
