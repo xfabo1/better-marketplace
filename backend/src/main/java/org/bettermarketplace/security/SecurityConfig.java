@@ -1,8 +1,6 @@
-package org.bettermarketplace.config;
+package org.bettermarketplace.security;
 
 import org.bettermarketplace.service.CustomUserDetailsService;
-import org.bettermarketplace.service.TokenService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -43,7 +41,8 @@ public class SecurityConfig {
 
 	@Bean
 	public AuthenticationManager authenticationManager() {
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(userDetailsService);
 		authProvider.setPasswordEncoder(passwordEncoder());
 		return new ProviderManager(authProvider);
 	}
@@ -53,15 +52,16 @@ public class SecurityConfig {
 		return http
 				.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/api/better-marketplace/auth/login", "/api/better-marketplace/auth/register").permitAll()
-						.requestMatchers(HttpMethod.GET, "/api/better-marketplace/**").permitAll()
-						.requestMatchers(HttpMethod.POST, "/api/better-marketplace/**")
+						.requestMatchers("/auth/login",
+						                 "/auth/register").permitAll()
+						.requestMatchers(HttpMethod.GET, "/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/**")
 						.hasAuthority("SCOPE_write")
-						.requestMatchers(HttpMethod.DELETE, "/api/better-marketplace/**")
+						.requestMatchers(HttpMethod.DELETE, "/**")
 						.hasAuthority("SCOPE_write")
-						.requestMatchers(HttpMethod.PUT, "/api/better-marketplace/**")
+						.requestMatchers(HttpMethod.PUT, "/**")
 						.hasAuthority("SCOPE_write")
-						.requestMatchers(HttpMethod.PATCH, "/api/better-marketplace/**")
+						.requestMatchers(HttpMethod.PATCH, "/**")
 						.hasAuthority("SCOPE_write")
 						.anyRequest()
 						.authenticated())

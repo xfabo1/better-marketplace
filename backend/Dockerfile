@@ -1,4 +1,4 @@
-FROM maven:3.9.9-eclipse-temurin-23 AS build
+FROM eclipse-temurin:23-jdk-alpine-3.21 AS build
 WORKDIR /app
 
 COPY mvnw .
@@ -10,7 +10,7 @@ RUN \
  ./mvnw clean package
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
-FROM eclipse-temurin:23-jre-alpine
+FROM eclipse-temurin:23-jre-alpine-3.21
 
 ARG DEPENDENCY=/app/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
