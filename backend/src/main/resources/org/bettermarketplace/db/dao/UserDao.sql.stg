@@ -1,5 +1,6 @@
 insertUser(userObject) ::= <<
-  INSERT INTO marketplace_user(username,email) VALUES (:userObject.username, :userObject.email)
+  INSERT INTO marketplace_user(username,email,password,display_other_country_items,country)
+  VALUES (:userObject.username, :userObject.email, :userObject.password, :userObject.displayItemsFromOtherCountry, :userObject.country)
 >>
 
 getUser(id) ::= <<

@@ -19,6 +19,12 @@ spring:
           connectTimeout: 5000
           readTimeout: 10000
           loggerLevel: basic
+app:
+  security:
+    token:
+      expiration-hours: 168
+
+
 
 clients:
   open-data-client:
