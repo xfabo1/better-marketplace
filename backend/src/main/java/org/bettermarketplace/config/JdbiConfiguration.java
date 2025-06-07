@@ -9,6 +9,7 @@ import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.Slf4JSqlLogger;
 import org.jdbi.v3.jackson2.Jackson2Plugin;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
+import org.jdbi.v3.core.enums.EnumStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
@@ -24,6 +25,10 @@ public class JdbiConfiguration {
 		jdbi.installPlugin(new Jackson2Plugin());
 		jdbi.setSqlLogger(new Slf4JSqlLogger());
 		rowMappers.forEach(jdbi::registerRowMapper);
+
+		jdbi.getConfig().get(org.jdbi.v3.core.enums.Enums.class)
+			.setEnumStrategy(EnumStrategy.BY_NAME);
+
 		return jdbi;
 	}
 }
