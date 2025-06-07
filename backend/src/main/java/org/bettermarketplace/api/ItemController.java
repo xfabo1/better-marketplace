@@ -1,5 +1,6 @@
 package org.bettermarketplace.api;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.bettermarketplace.api.dto.item.CreateItemDto;
@@ -51,6 +52,45 @@ public class ItemController {
 		this.locationService = locationService;
 		this.userService = userService;
 		this.tokenService = tokenService;
+	}
+
+	@GetMapping
+	public ResponseEntity<List<ItemFullDetailsDto>> getAllItems() {
+		List<ItemDbo> items = itemService.findItems();
+		
+		if (items.isEmpty()) {
+			return ResponseEntity.ok(List.of());
+		}
+		
+		// For simplicity, we'll return basic item information without fetching user and location details
+		List<ItemFullDetailsDto> itemDtos = items.stream()
+				.map(item -> {
+					// Try to get user and location, but don't fail if not found
+					var userOpt = userService.getUser(item.userId());
+					var locationOpt = locationService.findLocation(item.locationId());
+					
+					if (userOpt.isEmpty() || locationOpt.isEmpty()) {
+						// Create a basic item without full details
+						var basicItem = Item.builder()
+								.id(item.id())
+								.name(item.name())
+								.price(item.price())
+								.currency(item.currency())
+								.description(item.description())
+								.imageUrl(item.imageUrl())
+								.locationId(item.locationId())
+								.creatorId(item.userId())
+								.build();
+						return ITEM_MAPPER.from(basicItem);
+					}
+					
+					// Create a full item with user details
+					var fullItem = combineLocationAndUserWithItem(item, locationOpt.get(), userOpt.get());
+					return ITEM_MAPPER.from(fullItem);
+				})
+				.toList();
+		
+		return ResponseEntity.ok(itemDtos);
 	}
 
 	@GetMapping("/item/{id}")

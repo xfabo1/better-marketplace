@@ -37,7 +37,7 @@ public interface ItemDao {
 			@Bind("description") String description,
 			@Bind("currency") Currency currency,
 			@Bind("price") BigDecimal price,
-			@Bind("location") String location,
+			@Bind("locationId") Long locationId,
 			@Bind("imageUrl") String imageUrl,
 			@Bind("email") String email,
 			@Bind("phoneNumber") String phoneNumber,
