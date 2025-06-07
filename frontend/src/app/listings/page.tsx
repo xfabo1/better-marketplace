@@ -6,13 +6,32 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { allListings, sortOptions, dateFilterOptions } from "@/data/mockData";
+import { sortOptions, dateFilterOptions } from "@/data/mockData";
 import { conditions } from "@/data/conditions";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { categories, Category, Subcategory } from "@/data/categories";
+import { getItems } from "@/api/itemApi";
 
 // Items per page
 const ITEMS_PER_PAGE = 9;
+
+// Interface for Item from backend
+interface Item {
+  id: number;
+  name: string;
+  price: number;
+  currency: string;
+  description: string;
+  imageUrl: string;
+  locationId: number;
+  creatorId: number;
+  // Frontend specific fields that we'll add after fetching
+  location?: string;
+  postalCode?: string;
+  conditionId?: string;
+  createdAt?: string;
+  title?: string;
+}
 
 export default function ListingsPage() {
   const searchParams = useSearchParams();
@@ -28,6 +47,9 @@ export default function ListingsPage() {
   const [dateFilter, setDateFilter] = useState("all");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [listings, setListings] = useState<Item[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Apply URL parameters on component mount
   useEffect(() => {
@@ -48,12 +70,44 @@ export default function ListingsPage() {
     }
   }, [searchParams]);
 
+  // Fetch items from backend
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const items = await getItems();
+        
+        // Transform backend items to match frontend listing structure
+        const transformedItems = items.map((item: Item) => ({
+          ...item,
+          title: item.name,
+          // For now, use placeholder values for fields not available in the backend
+          location: "Unknown", // This should come from locationId
+          postalCode: "000 00",
+          conditionId: "used", // Default condition
+          createdAt: new Date().toISOString() // Default to current date
+        }));
+        
+        setListings(transformedItems);
+      } catch (error) {
+        console.error("Error fetching items:", error);
+        setError("Failed to load listings. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
+
   // Filter listings based on selected filters
-  const filteredListings = allListings.filter((listing) => {
+  const filteredListings = listings.filter((listing) => {
     // Filter by location (city name or postal code)
-    if (locationQuery) {
+    if (locationQuery && listing.location) {
       const locationMatches = listing.location.toLowerCase().includes(locationQuery.toLowerCase());
-      const postalCodeMatches = listing.postalCode.includes(locationQuery);
+      const postalCodeMatches = listing.postalCode?.includes(locationQuery) || false;
       if (!locationMatches && !postalCodeMatches) {
         return false;
       }
@@ -65,7 +119,7 @@ export default function ListingsPage() {
     }
     
     // Filter by search query
-    if (searchQuery && !listing.title.toLowerCase().includes(searchQuery.toLowerCase())) {
+    if (searchQuery && !listing.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
     
@@ -79,7 +133,7 @@ export default function ListingsPage() {
     }
     
     // Filter by date
-    if (dateFilter !== "all") {
+    if (dateFilter !== "all" && listing.createdAt) {
       const today = new Date();
       const listingDate = new Date(listing.createdAt);
       
@@ -113,9 +167,9 @@ export default function ListingsPage() {
   const sortedListings = [...filteredListings].sort((a, b) => {
     switch (sortBy) {
       case "newest":
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        return new Date(b.createdAt || "").getTime() - new Date(a.createdAt || "").getTime();
       case "oldest":
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        return new Date(a.createdAt || "").getTime() - new Date(b.createdAt || "").getTime();
       case "price_asc":
         return a.price - b.price;
       case "price_desc":
@@ -461,8 +515,8 @@ export default function ListingsPage() {
                     <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
                       <div className="relative h-32 w-full">
                         <Image
-                          src={listing.image}
-                          alt={listing.title}
+                          src={listing.imageUrl}
+                          alt={listing.title || "Listing"}
                           fill
                           sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                           className="object-cover"
@@ -471,18 +525,18 @@ export default function ListingsPage() {
                       <div className="p-2 flex-grow flex flex-col">
                         <div className="flex justify-between items-center mb-1">
                           <div className="text-xs text-primary font-medium truncate max-w-[70%]">
-                            {t(getCategoryTranslationKey(listing.category))}
+                            {t(getCategoryTranslationKey(listing.name))}
                           </div>
-                          <div className="text-xs text-gray-500 hidden sm:block">{formatDate(listing.createdAt)}</div>
+                          <div className="text-xs text-gray-500 hidden sm:block">{formatDate(listing.createdAt || "")}</div>
                         </div>
                         <h3 className="text-xs font-medium text-gray-900 group-hover:text-primary transition-colors duration-200 mb-1 line-clamp-2">
-                          {listing.title}
+                          {listing.title || "Untitled Listing"}
                         </h3>
                         <div className="text-xs text-gray-600 mb-1 hidden sm:block">
-                          {t(listing.conditionId)}
+                          {t(listing.conditionId || "Used")}
                         </div>
                         <div className="mt-auto flex justify-between items-center">
-                          <span className="text-sm font-bold text-gray-900">{listing.price.toLocaleString()} Kč</span>
+                          <span className="text-sm font-bold text-gray-900">{listing.price.toLocaleString()} {listing.currency}</span>
                           <span className="text-xs text-gray-500 truncate max-w-[40%]">{listing.location}</span>
                         </div>
                       </div>

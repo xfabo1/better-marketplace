@@ -1,52 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { getItemById } from "@/api/itemApi";
 
-// Mock data for a single listing
-const mockListing = {
-  id: "1",
-  title: "iPhone 14 Pro Max - Jako nový",
-  price: 22000,
-  description: `
-    Prodám iPhone 14 Pro Max, 256GB, barva Deep Purple.
-    
-    Telefon je v perfektním stavu, bez škrábanců či jiných vad. Byl vždy v ochranném pouzdře a s ochranným sklem.
-    
-    Telefon byl zakoupen v prosinci 2022, je tedy stále v záruce.
-    
-    Součástí je originální balení, nabíječka, kabel a nepoužitá sluchátka.
-    
-    Důvod prodeje je přechod na jiný model.
-    
-    Možnost osobního předání v Brně nebo zaslání přes zásilkovnu.
-  `,
-  category: "mobile_phones",
-  condition: "Použité - jako nové",
-  conditionId: "used_like_new",
-  location: "Brno",
-  postalCode: "602 00",
-  createdAt: "2023-10-12",
-  seller: {
-    name: "Jan Novák",
-    memberSince: "2021-05",
-    otherListings: 5,
-  },
-  contactPhone: "+420 123 456 789",
-  contactEmail: "jan.novak@example.com",
-  images: [
-    "https://placehold.co/800x600/e6f7ef/10b981/png?text=iPhone+14+Pro+Max+1",
-    "https://placehold.co/800x600/e6f7ef/10b981/png?text=iPhone+14+Pro+Max+2",
-    "https://placehold.co/800x600/e6f7ef/10b981/png?text=iPhone+14+Pro+Max+3",
-    "https://placehold.co/800x600/e6f7ef/10b981/png?text=iPhone+14+Pro+Max+4",
-  ],
-};
+// Interface for Item from backend
+interface Item {
+  id: number;
+  name: string;
+  price: number;
+  currency: string;
+  description: string;
+  imageUrl: string;
+  locationId: number;
+  creatorId: number;
+}
 
-// Similar listings data
+// Mock data for similar listings (to be replaced with API call later)
 const similarListings = [
   {
     id: "2",
@@ -79,20 +53,108 @@ export default function ListingDetailPage() {
   const { t } = useLanguage();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showContactInfo, setShowContactInfo] = useState(false);
+  const [item, setItem] = useState<Item | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // In a real app, you would fetch the listing data based on the id
-  // For now, we'll just use the mock data
-  const listing = mockListing;
+  // Enhanced listing with frontend-specific fields
+  const [listing, setListing] = useState<any>(null);
+
+  // Fetch item data from backend
+  useEffect(() => {
+    const fetchItem = async () => {
+      if (!id) return;
+      
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const itemData = await getItemById(id.toString());
+        setItem(itemData);
+        
+        // Transform backend item to match frontend listing structure
+        setListing({
+          ...itemData,
+          title: itemData.name,
+          category: "other", // Default category
+          condition: "Used", // Default condition
+          conditionId: "used", // Default condition ID
+          location: "Unknown", // This should come from locationId
+          postalCode: "000 00",
+          createdAt: new Date().toISOString(), // Default to current date
+          seller: {
+            name: "Unknown Seller",
+            memberSince: "2023-01",
+            otherListings: 0,
+          },
+          contactPhone: "+420 000 000 000",
+          contactEmail: "example@example.com",
+          images: [
+            itemData.imageUrl || "https://placehold.co/800x600/e6f7ef/10b981/png?text=No+Image",
+            "https://placehold.co/800x600/e6f7ef/10b981/png?text=Placeholder+2",
+            "https://placehold.co/800x600/e6f7ef/10b981/png?text=Placeholder+3",
+          ],
+        });
+      } catch (error) {
+        console.error("Error fetching item:", error);
+        setError("Failed to load listing. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchItem();
+  }, [id]);
 
   // Format the date
-  const formattedDate = new Date(listing.createdAt).toLocaleDateString(
-    "cs-CZ",
-    {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }
-  ).replace(/\s/g, '');
+  const formattedDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString(
+      "cs-CZ",
+      {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }
+    ).replace(/\s/g, '');
+  };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-gray-50">
+        <Header />
+        <main className="flex-grow flex items-center justify-center">
+          <div className="text-center p-8">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+              <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+            </div>
+            <p className="mt-4 text-gray-600">{t('loading_listing')}</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error || !listing) {
+    return (
+      <div className="flex flex-col min-h-screen bg-gray-50">
+        <Header />
+        <main className="flex-grow flex items-center justify-center">
+          <div className="text-center p-8">
+            <h1 className="text-2xl font-medium text-gray-900 mb-4">{t('listing_not_found')}</h1>
+            <p className="text-gray-600 mb-6">{error || t('listing_error')}</p>
+            <Link
+              href="/listings"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            >
+              {t('back_to_listings')}
+            </Link>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -103,11 +165,11 @@ export default function ListingDetailPage() {
           {/* Breadcrumbs */}
           <div className="mb-4 text-sm text-gray-500">
             <Link href="/" className="hover:text-primary">
-              Domů
+              {t('home')}
             </Link>{" "}
             &gt;{" "}
             <Link href="/listings" className="hover:text-primary">
-              Inzeráty
+              {t('listings')}
             </Link>{" "}
             &gt;{" "}
             <Link
@@ -139,7 +201,7 @@ export default function ListingDetailPage() {
                 {/* Thumbnails */}
                 {listing.images.length > 1 && (
                   <div className="flex p-4 gap-2 overflow-x-auto">
-                    {listing.images.map((image, index) => (
+                    {listing.images.map((image: string, index: number) => (
                       <button
                         key={index}
                         onClick={() => setActiveImageIndex(index)}
@@ -174,11 +236,11 @@ export default function ListingDetailPage() {
                     <span className="mx-2">•</span>
                     <span>{listing.location}</span>
                     <span className="mx-2">•</span>
-                    <span>{t('added')}: {formattedDate}</span>
+                    <span>{t('added')}: {formattedDate(listing.createdAt)}</span>
                   </div>
 
                   <div className="text-3xl font-bold text-gray-900 mb-6">
-                    {listing.price.toLocaleString()} Kč
+                    {listing.price.toLocaleString()} {listing.currency}
                   </div>
 
                   <div className="mb-6">
@@ -195,7 +257,7 @@ export default function ListingDetailPage() {
                     <div className="prose prose-sm max-w-none text-gray-700">
                       {listing.description
                         .split("\n")
-                        .map((paragraph, index) => (
+                        .map((paragraph: string, index: number) => (
                           <p key={index} className="mb-4">
                             {paragraph}
                           </p>
@@ -252,40 +314,36 @@ export default function ListingDetailPage() {
                   <h2 className="text-lg font-medium text-gray-900 mb-4">
                     {t('seller_info')}
                   </h2>
-                  <div className="mb-4">
-                    <div className="font-medium">{listing.seller.name}</div>
-                    <div className="text-sm text-gray-500">
-                      {t('member_since')} {listing.seller.memberSince}
+                  <div className="flex items-center mb-4">
+                    <div className="bg-gray-200 rounded-full h-12 w-12 flex items-center justify-center text-gray-500">
+                      <span className="text-xl font-medium">{listing.seller.name.charAt(0)}</span>
                     </div>
-                    <div className="text-sm text-gray-500">
-                      {listing.seller.otherListings} {t('active')} {t('listing_many').toLowerCase()}
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-gray-900">{listing.seller.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {t('member_since')} {listing.seller.memberSince}
+                      </p>
                     </div>
                   </div>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {listing.seller.otherListings} {t('other_listings')}
+                  </p>
+                  <button
+                    onClick={() => setShowContactInfo(!showContactInfo)}
+                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                  >
+                    {showContactInfo ? t('hide_contact') : t('show_contact')}
+                  </button>
                   
-                  {!showContactInfo ? (
-                    <button
-                      onClick={() => setShowContactInfo(true)}
-                      className="w-full px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                    >
-                      {t('contact_seller')}
-                    </button>
-                  ) : (
-                    <div className="space-y-3">
+                  {showContactInfo && (
+                    <div className="mt-4 space-y-3">
                       <div>
-                        <div className="text-sm font-medium text-gray-500">
-                          {t('phone')}
-                        </div>
-                        <a href={`tel:${listing.contactPhone}`} className="text-primary hover:underline">
-                          {listing.contactPhone}
-                        </a>
+                        <p className="text-xs font-medium text-gray-500">{t('phone')}</p>
+                        <p className="text-sm text-gray-900">{listing.contactPhone}</p>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-500">
-                          {t('email')}
-                        </div>
-                        <a href={`mailto:${listing.contactEmail}`} className="text-primary hover:underline">
-                          {listing.contactEmail}
-                        </a>
+                        <p className="text-xs font-medium text-gray-500">{t('email')}</p>
+                        <p className="text-sm text-gray-900">{listing.contactEmail}</p>
                       </div>
                     </div>
                   )}
@@ -295,37 +353,30 @@ export default function ListingDetailPage() {
               <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
                 <div className="p-6">
                   <h2 className="text-lg font-medium text-gray-900 mb-4">
-                    {t('location_info')}
+                    {t('location')}
                   </h2>
-                  <div>
-                    <div className="font-medium">{listing.location}</div>
-                    <div className="text-sm text-gray-500">{listing.postalCode}</div>
+                  <div className="bg-gray-100 h-48 rounded-lg flex items-center justify-center">
+                    <p className="text-gray-500">{t('map_placeholder')}</p>
                   </div>
+                  <p className="mt-3 text-sm text-gray-600">
+                    {listing.location}, {listing.postalCode}
+                  </p>
                 </div>
               </div>
               
               <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="p-6 space-y-4">
-                  <button className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                    <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                    </svg>
-                    {t('share')}
-                  </button>
-                  
-                  <button className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                    <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    {t('favorite')}
-                  </button>
-                  
-                  <button className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                    <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-                    </svg>
-                    {t('report_item')}
-                  </button>
+                <div className="p-6">
+                  <h2 className="text-lg font-medium text-gray-900 mb-4">
+                    {t('actions')}
+                  </h2>
+                  <div className="space-y-3">
+                    <button className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                      {t('save_to_favorites')}
+                    </button>
+                    <button className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                      {t('report_listing')}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

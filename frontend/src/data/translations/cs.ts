@@ -32,6 +32,11 @@ export const csTranslations = {
   "animals": "Zvířata",
   "culture_education": "Kultura a vzdělávání",
   
+  // Form fields
+  "subcategory": "Podkategorie",
+  "select_subcategory": "Vyberte podkategorii",
+  "select_subcategory_error": "Vyberte podkategorii",
+  
   // Subcategories - Transport
   "cars": "Automobily",
   "motorcycles": "Motorky",
@@ -242,6 +247,13 @@ export const csTranslations = {
   "image_hint": "Nahrajte až 5 fotografií ve formátu JPG nebo PNG.",
   "cancel": "Zrušit",
   "submitting": "Odesílání...",
+  
+  // Form placeholders
+  "description_placeholder": "Podrobný popis inzerátu...",
+  "location_placeholder": "Praha, Brno, ...",
+  "title_placeholder": "Např. iPhone 12 Pro Max, 256GB, Pacific Blue",
+  "phone_placeholder": "+420 123 456 789",
+  "email_placeholder": "email@example.cz",
   
   // Item details
   "description": "Popis",

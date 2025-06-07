@@ -7,18 +7,20 @@ import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
+import { createItem } from "@/api/itemApi";
+import { categories } from "@/data/categories";
 
 // Mock categories for the form
-const categories = [
-  { id: "electronics", name: "electronics" },
-  { id: "transport", name: "transport" },
-  { id: "household", name: "household" },
-  { id: "fashion", name: "fashion" },
-  { id: "sport_hobby", name: "sport_hobby" },
-  { id: "children", name: "children" },
-  { id: "animals", name: "animals" },
-  { id: "garden_workshop", name: "garden_workshop" }
-];
+// const categories = [
+//   { id: "electronics", name: "electronics" },
+//   { id: "transport", name: "transport" },
+//   { id: "household", name: "household" },
+//   { id: "fashion", name: "fashion" },
+//   { id: "sport_hobby", name: "sport_hobby" },
+//   { id: "children", name: "children" },
+//   { id: "animals", name: "animals" },
+//   { id: "garden_workshop", name: "garden_workshop" }
+// ];
 
 // Condition options for the form
 const conditions = [
@@ -43,6 +45,7 @@ function SellForm() {
   const [formData, setFormData] = useState({
     title: "",
     category: "",
+    subcategory: "",
     condition: "",
     price: "",
     currency: "czk", // Default to Czech Koruna
@@ -54,11 +57,20 @@ function SellForm() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [availableSubcategories, setAvailableSubcategories] = useState<any[]>([]);
 
   // Set mounted to true when component mounts on the client
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Redirect unauthenticated users to login page
+  useEffect(() => {
+    if (mounted && !user) {
+      console.log("User not authenticated, redirecting to login page");
+      router.push("/login?redirect=/sell");
+    }
+  }, [mounted, user, router]);
 
   // Load user's preferred currency on component mount
   useEffect(() => {
@@ -69,6 +81,22 @@ function SellForm() {
       }));
     }
   }, [user, mounted]);
+
+  // Update available subcategories when category changes
+  useEffect(() => {
+    if (formData.category) {
+      const selectedCategory = categories.find(cat => cat.id === formData.category);
+      if (selectedCategory && selectedCategory.subcategories) {
+        setAvailableSubcategories(selectedCategory.subcategories);
+        // Reset subcategory when category changes
+        setFormData(prev => ({ ...prev, subcategory: "" }));
+      } else {
+        setAvailableSubcategories([]);
+      }
+    } else {
+      setAvailableSubcategories([]);
+    }
+  }, [formData.category]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -115,6 +143,10 @@ function SellForm() {
       newErrors.category = t('select_category_error');
     }
     
+    if (formData.category && availableSubcategories.length > 0 && !formData.subcategory) {
+      newErrors.subcategory = t('select_subcategory_error') || "Please select a subcategory";
+    }
+    
     if (!formData.condition) {
       newErrors.condition = t('select_condition_error');
     }
@@ -159,17 +191,31 @@ function SellForm() {
     setIsSubmitting(true);
     
     try {
-      // Here you would call your API to create the listing
-      console.log("Submitting listing:", formData);
+      // Call the API to create the item
+      const itemData = {
+        name: formData.title,
+        price: parseFloat(formData.price),
+        currency: formData.currency.toUpperCase(),
+        description: formData.description,
+        imageUrl: formData.images.length > 0 
+          ? URL.createObjectURL(formData.images[0]) 
+          : "https://placehold.co/800x600/e6f7ef/10b981/png?text=No+Image",
+        locationId: 1, // Use a default locationId of 1
+        email: formData.contactEmail || user?.email || "",
+        phoneNumber: formData.contactPhone || user?.phone || "",
+        // Include subcategory in the request
+        category: formData.category,
+        subcategory: formData.subcategory
+      };
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const itemId = await createItem(itemData);
+      console.log("Created item with ID:", itemId);
       
       // Redirect to my listings page after successful submission
       router.push("/my-listings");
     } catch (error) {
       console.error("Error creating listing:", error);
-      alert("Došlo k chybě při vytváření inzerátu. Zkuste to prosím znovu.");
+      alert(t('error_creating_listing'));
     } finally {
       setIsSubmitting(false);
     }
@@ -182,13 +228,13 @@ function SellForm() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6 mb-6">
             <h1 className="text-2xl font-medium text-gray-900 mb-6">
-              Vytvořit inzerát
+              {t('create_listing')}
             </h1>
             {/* Simplified form skeleton during SSR */}
             <div className="space-y-6">
               <div className="mb-4">
                 <div className="block text-sm font-medium text-gray-700 mb-1">
-                  Název inzerátu *
+                  {t('listing_title')} *
                 </div>
                 <div className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm"></div>
               </div>
@@ -224,7 +270,7 @@ function SellForm() {
                 } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                 value={formData.title}
                 onChange={handleChange}
-                placeholder="Např. iPhone 12 Pro Max, 256GB, Pacific Blue"
+                placeholder={t('title_placeholder') || "E.g. iPhone 12 Pro Max, 256GB, Pacific Blue"}
                 maxLength={TITLE_MAX_LENGTH}
               />
               {errors.title && (
@@ -250,7 +296,7 @@ function SellForm() {
                 <option value="">{t('select_category')}</option>
                 {categories.map(category => (
                   <option key={category.id} value={category.id}>
-                    {t(category.name)}
+                    {t(category.id)}
                   </option>
                 ))}
               </select>
@@ -258,6 +304,36 @@ function SellForm() {
                 <p className="mt-2 text-sm text-red-600">{errors.category}</p>
               )}
             </div>
+            
+            {/* Subcategory dropdown - only shown when a category is selected */}
+            {formData.category && availableSubcategories.length > 0 && (
+              <div className="mb-4">
+                <label htmlFor="subcategory" className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('subcategory') || "Podkategorie"} *
+                </label>
+                <select
+                  id="subcategory"
+                  name="subcategory"
+                  className={`block w-full px-4 py-3 rounded-md border ${
+                    errors.subcategory 
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-gray-300 focus:border-primary'
+                  } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
+                  value={formData.subcategory}
+                  onChange={handleChange}
+                >
+                  <option value="">{t('select_subcategory') || "Vyberte podkategorii"}</option>
+                  {availableSubcategories.map(subcategory => (
+                    <option key={subcategory.id} value={subcategory.id}>
+                      {t(subcategory.id)}
+                    </option>
+                  ))}
+                </select>
+                {errors.subcategory && (
+                  <p className="mt-2 text-sm text-red-600">{errors.subcategory}</p>
+                )}
+              </div>
+            )}
             
             <div className="mb-4">
               <label htmlFor="condition" className="block text-sm font-medium text-gray-700 mb-1">
@@ -342,7 +418,7 @@ function SellForm() {
                 } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Podrobný popis inzerátu..."
+                placeholder={t('description_placeholder') || "Detailed description of your listing..."}
                 maxLength={DESCRIPTION_MAX_LENGTH}
               ></textarea>
               {errors.description && (
@@ -365,7 +441,7 @@ function SellForm() {
                 } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                 value={formData.location}
                 onChange={handleChange}
-                placeholder="Praha, Brno, ..."
+                placeholder={t('location_placeholder') || "Prague, Brno, ..."}
               />
               {errors.location && (
                 <p className="mt-2 text-sm text-red-600">{errors.location}</p>
@@ -447,7 +523,7 @@ function SellForm() {
                     } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                     value={formData.contactPhone}
                     onChange={handleChange}
-                    placeholder="+420 123 456 789"
+                    placeholder={t('phone_placeholder') || "+420 123 456 789"}
                   />
                   {errors.contactPhone && (
                     <p className="mt-2 text-sm text-red-600">{errors.contactPhone}</p>
@@ -469,7 +545,7 @@ function SellForm() {
                     } shadow-sm text-gray-900 focus:outline-none sm:text-sm`}
                     value={formData.contactEmail}
                     onChange={handleChange}
-                    placeholder="email@example.com"
+                    placeholder={t('email_placeholder') || "email@example.com"}
                   />
                   {errors.contactEmail && (
                     <p className="mt-2 text-sm text-red-600">{errors.contactEmail}</p>

@@ -21,6 +21,11 @@ export const enTranslations = {
   // Sidebar
   "categories": "Categories",
   
+  // Form fields
+  "subcategory": "Subcategory",
+  "select_subcategory": "Select Subcategory",
+  "select_subcategory_error": "Please select a subcategory",
+  
   // Category names
   "transport": "Transport",
   "electronics": "Electronics",
@@ -242,6 +247,13 @@ export const enTranslations = {
   "image_hint": "Upload up to 5 images in JPG or PNG format.",
   "cancel": "Cancel",
   "submitting": "Submitting...",
+  
+  // Form placeholders
+  "description_placeholder": "Detailed description of your listing...",
+  "location_placeholder": "Prague, Brno, ...",
+  "title_placeholder": "E.g. iPhone 12 Pro Max, 256GB, Pacific Blue",
+  "phone_placeholder": "+44 123 456 789",
+  "email_placeholder": "email@example.com",
   
   // Item details
   "description": "Description",

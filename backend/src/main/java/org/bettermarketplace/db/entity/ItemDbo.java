@@ -23,6 +23,8 @@ public record ItemDbo(
 		Currency currency,
 		@ColumnName("location_id")
 		Long locationId,
+		String category,
+		String subcategory,
 		@ColumnName("created_at")
 		Instant createdAt,
 		@ColumnName("updated_at")
