@@ -13,6 +13,7 @@ public class UserAuthDetails {
 
 	private final String username;
 	private final String email;
+	private final Long userId;
 	private final String[] roles;
 	private final Instant tokenExpiration;
 }

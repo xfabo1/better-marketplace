@@ -9,7 +9,7 @@ import lombok.Builder;
 
 @Builder
 public record UserDbo(Long id,
-					  @ColumnName("display_other_country_items")
+					  @ColumnName("display_items_from_other_country")
 					  boolean displayItemsFromOtherCountry,
 					  Country country,
 					  String password,

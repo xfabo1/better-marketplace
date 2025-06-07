@@ -1,6 +1,10 @@
 package org.bettermarketplace.api;
 
+import java.util.Objects;
+
+import org.bettermarketplace.api.dto.item.CreateItemDto;
 import org.bettermarketplace.api.dto.item.ItemFullDetailsDto;
+import org.bettermarketplace.api.dto.item.UpdateItemDto;
 import org.bettermarketplace.db.dao.ItemDao;
 import org.bettermarketplace.db.dao.LocationDao;
 import org.bettermarketplace.db.dao.UserDao;
@@ -8,17 +12,24 @@ import org.bettermarketplace.db.entity.ItemDbo;
 import org.bettermarketplace.db.entity.LocationDbo;
 import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.mapper.ItemMapper;
-import org.bettermarketplace.mapper.LocationMapper;
-import org.bettermarketplace.mapper.UserMapper;
 import org.bettermarketplace.model.Item;
+import org.bettermarketplace.security.CookieUtil;
+import org.bettermarketplace.security.TokenService;
+import org.bettermarketplace.service.ItemService;
+import org.bettermarketplace.service.LocationService;
+import org.bettermarketplace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -28,29 +39,29 @@ import lombok.extern.slf4j.Slf4j;
 public class ItemController {
 
 	private static final ItemMapper ITEM_MAPPER = ItemMapper.INSTANCE;
-	private static final UserMapper USER_MAPPER = UserMapper.INSTANCE;
-	private static final LocationMapper LOCATION_MAPPER = LocationMapper.INSTANCE;
 
-	private final ItemDao itemDao;
-	private final UserDao userDao;
-	private final LocationDao locationDao;
+	private final TokenService tokenService;
+	private final ItemService itemService;
+	private final UserService userService;
+	private final LocationService locationService;
 
 	@Autowired
-	public ItemController(ItemDao itemDao, LocationDao locationDao, UserDao userDao) {
-		this.itemDao = itemDao;
-		this.locationDao = locationDao;
-		this.userDao = userDao;
+	public ItemController(ItemService itemService, LocationService locationService, UserService userService, TokenService tokenService) {
+		this.itemService = itemService;
+		this.locationService = locationService;
+		this.userService = userService;
+		this.tokenService = tokenService;
 	}
 
 	@GetMapping("/item/{id}")
 	public ResponseEntity<ItemFullDetailsDto> getItemById(@PathVariable("id") Long id) {
-		var itemDbo = itemDao.findItem(id);
+		var itemDbo = itemService.findItem(id);
 
 		if (itemDbo.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
 
-		var userDbo = userDao.getUser(itemDbo.get().userId());
+		var userDbo = userService.getUser(itemDbo.get().userId());
 
 		// If this happens, there is some error in the logic as this should be created all together
 		if (userDbo.isEmpty()) {
@@ -58,7 +69,7 @@ public class ItemController {
 			return ResponseEntity.status(500).build();
 		}
 
-		var locationDbo = locationDao.findLocation(itemDbo.get().locationId());
+		var locationDbo = locationService.findLocation(itemDbo.get().locationId());
 
 		// Ths is the same situation as above and this should never happen
 		if (locationDbo.isEmpty()) {
@@ -71,6 +82,34 @@ public class ItemController {
 		return ResponseEntity.ok(ITEM_MAPPER.from(item));
 	}
 
+
+	@PostMapping("/item")
+	public ResponseEntity<Long> createItem(@RequestBody CreateItemDto createItemDto, HttpServletRequest request) {
+		try {
+			var token = CookieUtil.extractTokenFromCookie(request);
+
+			var userAuthDetails = tokenService.getUserDetails(token);
+
+			var item = ITEM_MAPPER.from(createItemDto, userAuthDetails.getUserId());
+
+			var itemId = itemService.insertItem(item);
+			return ResponseEntity.status(201).body(itemId);
+		} catch (Exception e) {
+			return ResponseEntity.status(500).build();
+		}
+	}
+
+	@PutMapping("/item/{id}")
+	public ResponseEntity<Void> updateItem(@PathVariable("id") Long id, @RequestBody UpdateItemDto updateItemDto, HttpServletRequest request) {
+		var token = CookieUtil.extractTokenFromCookie(request);
+		var userAuthDetails = tokenService.getUserDetails(token);
+		if (!Objects.equals(userAuthDetails.getUserId(), id)) {
+			return ResponseEntity.status(401).build();
+		}
+
+		return ResponseEntity.ok().build();
+	}
+
 	private Item combineLocationAndUserWithItem(ItemDbo itemDbo, LocationDbo locationDbo, UserDbo userDbo) {
 		return Item.builder()
 				.id(itemDbo.id())
@@ -79,8 +118,8 @@ public class ItemController {
 				.currency(itemDbo.currency())
 				.description(itemDbo.description())
 				.imageUrl(itemDbo.imageUrl())
-				.location(LOCATION_MAPPER.from(locationDbo))
-				.creator(USER_MAPPER.from(userDbo))
+				.locationId(locationDbo.id())
+				.creatorId(userDbo.id())
 				.build();
 	}
 }
