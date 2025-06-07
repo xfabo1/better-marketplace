@@ -23,14 +23,18 @@ public class TokenService {
 	@Value("${app.security.token.refresh-before-minutes:30}")
 	private int refreshBeforeMinutes = 30;
 
-	public String generateToken(String username, String email, String... roles) {
+	public UserAuthDetails getUserDetails(String token) {
+		return tokenToUserDetails.get(token);
+	}
+
+	public String generateToken(String username, String email, Long userId, String... roles) {
 		byte[] randomBytes = new byte[32];
 		secureRandom.nextBytes(randomBytes);
 		String token = Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
 
 		Instant expiration = Instant.now().plus(tokenExpirationHours, ChronoUnit.HOURS);
 
-		UserAuthDetails details = new UserAuthDetails(username, email, roles, expiration);
+		UserAuthDetails details = new UserAuthDetails(username, email, userId, roles, expiration);
 		tokenToUserDetails.put(token, details);
 		return token;
 	}
@@ -43,7 +47,7 @@ public class TokenService {
 
 		tokenToUserDetails.remove(oldToken);
 
-		return generateToken(oldDetails.getUsername(), oldDetails.getEmail(), oldDetails.getRoles());
+		return generateToken(oldDetails.getUsername(), oldDetails.getEmail(), oldDetails.getUserId(), oldDetails.getRoles());
 	}
 
 	public UserAuthDetails validateToken(String token) {

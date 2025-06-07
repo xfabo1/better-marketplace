@@ -2,6 +2,11 @@ server:
   servlet:
     context-path: '/api/better-marketplace'
 
+logging:
+  level:
+    jdbi:
+      sql: DEBUG
+
 spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml

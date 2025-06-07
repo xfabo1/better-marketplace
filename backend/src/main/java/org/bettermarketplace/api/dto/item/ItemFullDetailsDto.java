@@ -21,5 +21,6 @@ public record ItemFullDetailsDto(
 		String postalCode,
 		Country country,
 		String locationName,
-		Instant createdAt
+		Instant createdAt,
+		Instant updatedAt
 ) {}

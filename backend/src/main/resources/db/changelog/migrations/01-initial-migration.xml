@@ -32,7 +32,7 @@
             <column name="password" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="display_other_country_items" type="boolean" defaultValue="true"/>
+            <column name="display_items_from_other_country" type="boolean" defaultValue="true"/>
             <column name="created_at" type="timestamp" defaultValue="now()"/>
             <column name="updated_at" type="timestamp" defaultValue="now()"/>
             <column name="deleted_at" type="timestamp"/>

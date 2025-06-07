@@ -1,6 +1,20 @@
-insertUser(userObject) ::= <<
-  INSERT INTO marketplace_user(username,email,password,display_other_country_items,country)
-  VALUES (:userObject.username, :userObject.email, :userObject.password, :userObject.displayItemsFromOtherCountry, :userObject.country)
+insertUser(registerUserObject, password) ::= <<
+  INSERT INTO marketplace_user(
+    username,
+    email,
+    password,
+    display_items_from_other_country,
+    country,
+    created_at
+  )
+  VALUES (
+    :registerUserObject.username,
+    :registerUserObject.email,
+    :password,
+    :registerUserObject.displayItemsFromOtherCountry,
+    :registerUserObject.country,
+    CURRENT_TIMESTAMP
+  )
 >>
 
 getUser(id) ::= <<
@@ -33,3 +47,17 @@ getUserByUsername(username) ::= <<
   FROM marketplace_user
   WHERE username=:username
 >>
+
+updateUser(password, displayItemsFromOtherCountry, country, id) ::= <<
+  UPDATE marketplace_user
+  SET
+  <if(password)>
+    password = :password,<endif>
+  <if(displayItemsFromOtherCountry)>
+    display_items_from_other_country = :displayItemsFromOtherCountry,<endif>
+  <if(country)>
+    country = :country,<endif>
+    updated_at = CURRENT_TIMESTAMP
+  WHERE id = :id
+>>
+

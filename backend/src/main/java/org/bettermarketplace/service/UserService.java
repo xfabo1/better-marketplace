@@ -1,11 +1,11 @@
 package org.bettermarketplace.service;
 
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import org.bettermarketplace.api.dto.user.RegisterUserDto;
 import org.bettermarketplace.db.dao.UserDao;
+import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.mapper.UserMapper;
-import org.bettermarketplace.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,22 +21,23 @@ public class UserService {
 		this.userDao = userDao;
 	}
 
-	public User insertUser(RegisterUserDto registerUserDto) {
-		var id = userDao.insertUser(MAPPER.from(registerUserDto));
-		var user = userDao.getUser(id);
-		return user.map(MAPPER::from).orElse(null);
+	public Long insertUser(RegisterUserDto registerUserDto, String password) {
+		return userDao.insertUser(registerUserDto, password);
 	}
 
-	public User getUser(Long id) {
-		var userDbo = userDao.getUser(id);
-		return userDbo.map(MAPPER::from).orElse(null);
-	}
-
-	public Stream<User> getUsers() {
-		return userDao.getUsers().stream().map(MAPPER::from);
+	public Optional<UserDbo> getUser(Long id) {
+		return userDao.getUser(id);
 	}
 
 	public void deleteUser(Long id) {
 		userDao.deleteUser(id);
+	}
+
+	public Optional<UserDbo> getUserByEmail(String email) {
+		return userDao.getUserByEmail(email);
+	}
+
+	public Optional<UserDbo> getUserByUsername(String username) {
+		return userDao.getUserByUsername(username);
 	}
 }

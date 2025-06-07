@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.bettermarketplace.db.entity.LocationDbo;
 import org.bettermarketplace.model.Location;
+import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
