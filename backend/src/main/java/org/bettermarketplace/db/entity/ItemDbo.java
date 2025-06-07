@@ -14,6 +14,9 @@ public record ItemDbo(
 		String name,
 		String description,
 		String imageUrl,
+		String email,
+		@ColumnName("phone_number")
+		String phoneNumber,
 		BigDecimal price,
 		@ColumnName("marketplace_user_id")
 		Long userId,

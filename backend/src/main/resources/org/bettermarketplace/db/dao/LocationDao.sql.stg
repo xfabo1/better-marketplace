@@ -14,3 +14,14 @@ findLocation(id) ::= <<
   FROM location
   WHERE id=:id
 >>
+
+insertLocation(location) ::= <<
+  INSERT INTO location(postal_code, country_code, name, latitude, longitude)
+  VALUES (:location.postalCode, :location.countryCode, :location.placeName, :location.latitude, :location.longitude)
+>>
+
+deleteLocation(id) ::= <<
+  DELETE
+  FROM location
+  WHERE id=:id
+>>

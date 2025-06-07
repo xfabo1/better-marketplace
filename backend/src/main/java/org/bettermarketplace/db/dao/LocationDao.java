@@ -13,6 +13,7 @@ import org.jdbi.v3.sqlobject.customizer.BindMethods;
 import org.jdbi.v3.sqlobject.statement.BatchChunkSize;
 import org.jdbi.v3.sqlobject.statement.SqlBatch;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateSqlLocator;
 
 @UseStringTemplateSqlLocator
@@ -28,4 +29,10 @@ public interface LocationDao {
 	@SqlBatch
 	@BatchChunkSize(1000)
 	int[] insertLocations(@BindBean("location") List<Location> locations);
+
+	@SqlUpdate
+	Long insertLocation(@BindBean("location") Location locationObject);
+
+	@SqlUpdate
+	void deleteLocation(@Bind("id") Long id);
 }
