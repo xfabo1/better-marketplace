@@ -7,9 +7,9 @@ import java.util.Optional;
 
 import org.bettermarketplace.api.dto.user.LoginRequest;
 import org.bettermarketplace.api.dto.user.RegisterUserDto;
-import org.bettermarketplace.db.dao.UserDao;
 import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.mapper.UserMapper;
+import org.bettermarketplace.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
@@ -33,18 +33,18 @@ public class AuthController {
 	private static final UserMapper MAPPER = UserMapper.INSTANCE;
 
 	private final TokenService tokenService;
-	private final UserDao userRepository;
+	private final UserService userService;
 	private final PasswordEncoder passwordEncoder;
 
-	public AuthController(TokenService tokenService, UserDao userRepository, PasswordEncoder passwordEncoder) {
+	public AuthController(TokenService tokenService, UserService userService, PasswordEncoder passwordEncoder) {
 		this.tokenService = tokenService;
-		this.userRepository = userRepository;
+		this.userService = userService;
 		this.passwordEncoder = passwordEncoder;
 	}
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse response) {
-		Optional<UserDbo> userDbo = userRepository.getUserByEmail(request.email());
+		Optional<UserDbo> userDbo = userService.getUserByEmail(request.email());
 
 		if (userDbo.isEmpty()) {
 			return ResponseEntity.status(401).body("Invalid email or password");
@@ -56,15 +56,15 @@ public class AuthController {
 			return ResponseEntity.status(401).body("Invalid email or password");
 		}
 
-		String token = tokenService.generateToken(user.getUsername(), user.getEmail(), "SCOPE_read", "SCOPE_write");
+		String token = tokenService.generateToken(user.getUsername(), user.getEmail(), user.getId(), "SCOPE_read", "SCOPE_write");
 
 		Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, token);
 		authCookie.setHttpOnly(true);
 		authCookie.setSecure(false); // Set to true in production with HTTPS
 		authCookie.setPath("/");
 		authCookie.setAttribute("SameSite", "Lax"); // Changed from Strict to Lax for better cross-origin experience
-		// Expiration in 7 days
-		authCookie.setMaxAge(7 * 24 * 60 * 60);
+		// Expiration in 30 days
+		authCookie.setMaxAge(30 * 24 * 60 * 60);
 		response.addCookie(authCookie);
 
 		TokenResponse tokenResponse = TokenResponse.builder()
@@ -96,22 +96,19 @@ public class AuthController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<String> register(@RequestBody RegisterUserDto request) {
+	public ResponseEntity<String> register(@RequestBody RegisterUserDto registerUserDto) {
 		try {
-			if (userRepository.getUserByEmail(request.email()).isPresent()) {
+			if (userService.getUserByEmail(registerUserDto.email()).isPresent()) {
 				return ResponseEntity.status(409).body("email_used");
 			}
 
-			if (userRepository.getUserByUsername(request.username()).isPresent()) {
+			if (userService.getUserByUsername(registerUserDto.username()).isPresent()) {
 				return ResponseEntity.status(409).body("username_used");
 			}
 
-			var user = MAPPER.from(request);
-			user.setPassword(passwordEncoder.encode(request.password()));
-			user.setCountry(request.country());
-			user.setDisplayItemsFromOtherCountry(request.displayItemsFromOtherCountry());
+			var password = passwordEncoder.encode(registerUserDto.password());
 
-			userRepository.insertUser(user);
+			userService.insertUser(registerUserDto, password);
 
 			return ResponseEntity.ok("registered");
 		} catch (Exception e) {

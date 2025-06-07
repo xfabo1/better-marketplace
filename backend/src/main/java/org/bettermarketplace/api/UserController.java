@@ -1,6 +1,6 @@
 package org.bettermarketplace.api;
 
-import org.bettermarketplace.api.dto.UserDto;
+import org.bettermarketplace.api.dto.user.UserDto;
 import org.bettermarketplace.mapper.UserMapper;
 import org.bettermarketplace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Validated
 @RestController
@@ -37,10 +35,12 @@ public class UserController {
 
 	@GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserDto> getUser(@PathVariable("id") Long id) {
-		var user = userService.getUser(id);
-		if (user == null) {
+		var userDbo = userService.getUser(id);
+		if (userDbo.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
+
+		var user = MAPPER.from(userDbo.get());
 
 		return ResponseEntity.ok(MAPPER.from(user));
 	}

@@ -8,3 +8,42 @@ findItem(id) ::= <<
   FROM item
   WHERE id=:id
 >>
+
+insertItem(itemObject, id) ::= <<
+  INSERT INTO item(
+    id,
+    created_at,
+    marketplace_user_id,
+    description,
+    name,
+    price,
+    currency,
+    location_id,
+    image_url)
+  VALUES (
+    :id,
+    CURRENT_TIMESTAMP,
+    :itemObject.userId,
+    :itemObject.description,
+    :itemObject.name,
+    :itemObject.price,
+    :itemObject.currency,
+    :itemObject.locationId,
+    :itemObject.imageUrl
+  )
+>>
+
+updateItem(updateItemObject, id) ::= <<
+  UPDATE item
+  SET
+      <if(updateItemObject.name)>name = :updateItemObject.name,<endif>
+      <if(updateItemObject.description)>description = :updateItemObject.description,<endif>
+      <if(updateItemObject.currency)>currency = :updateItemObject.currency,<endif>
+      <if(updateItemObject.price)>price = :updateItemObject.price,<endif>
+      <if(updateItemObject.location)>location = :updateItemObject.location,<endif>
+      <if(updateItemObject.imageStorageUrl)>image_storage_url = :updateItemObject.imageStorageUrl,<endif>
+      <if(updateItemObject.email)>email = :updateItemObject.email,<endif>
+      <if(updateItemObject.phoneNumber)>phone_number = :updateItemObject.phoneNumber,<endif>
+      updated_at = CURRENT_TIMESTAMP
+  WHERE id = :id
+>>

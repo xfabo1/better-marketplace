@@ -1,6 +1,7 @@
 package org.bettermarketplace.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,10 @@ public class Item {
 	private String imageUrl;
 	private BigDecimal price;
 	private Currency currency;
-	private Location location;
-	private User creator;
+	private String email;
+	private String phoneNumber;
+	private Long locationId;
+	private Long creatorId;
+	private Instant createdAt;
+	private Instant updatedAt;
 }

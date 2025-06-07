@@ -1,20 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import SearchBar from "@/components/SearchBar";
 import { Listing, sortOptions, generateMockListings, dateFilterOptions } from "@/data/mockData";
 import { conditions } from "@/data/conditions";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categories, Category, Subcategory } from "@/data/categories";
+import { categories } from "@/data/categories";
 
 export default function CategoryPage() {
   const params = useParams();
-  const router = useRouter();
   const { t } = useLanguage();
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
