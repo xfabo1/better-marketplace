@@ -21,6 +21,11 @@ export const skTranslations = {
   // Sidebar
   "categories": "Kategórie",
   
+  // Form fields
+  "subcategory": "Podkategória",
+  "select_subcategory": "Vyberte podkategóriu",
+  "select_subcategory_error": "Vyberte podkategóriu",
+  
   // Category names
   "transport": "Doprava",
   "electronics": "Elektronika",
@@ -242,6 +247,13 @@ export const skTranslations = {
   "image_hint": "Nahrajte až 5 fotografií vo formáte JPG alebo PNG.",
   "cancel": "Zrušiť",
   "submitting": "Odosielanie...",
+  
+  // Form placeholders
+  "description_placeholder": "Podrobný popis inzerátu...",
+  "location_placeholder": "Bratislava, Košice, ...",
+  "title_placeholder": "Napr. iPhone 12 Pro Max, 256GB, Pacific Blue",
+  "phone_placeholder": "+421 123 456 789",
+  "email_placeholder": "email@example.sk",
   
   // Item details
   "description": "Popis",

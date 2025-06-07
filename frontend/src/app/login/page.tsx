@@ -22,8 +22,22 @@ export default function LoginPage() {
   const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<FormattedError | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Get the redirect URL from query parameters
+  const [redirectUrl, setRedirectUrl] = useState("/");
+  
+  useEffect(() => {
+    // Parse the URL for the redirect parameter
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get('redirect');
+    if (redirect) {
+      setRedirectUrl(redirect);
+    }
+  }, []);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -37,10 +51,30 @@ export default function LoginPage() {
     setError(null);
     setIsSubmitting(true);
 
+    if (!email) {
+      setError({
+        type: 'unknown',
+        message: t('email_required') || "E-mail is required",
+        details: ""
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      // Call login function from AuthContext
-      await login(email, password);
-      // Redirect is handled in the login function
+      setIsLoading(true);
+      
+      // For the real API, we need the password
+      if (password) {
+        await login(email, password);
+        // Redirect to the redirect URL or homepage
+        router.push(redirectUrl);
+      } else {
+        // For social/demo login, no password is needed
+        await login(email);
+        // Redirect to the redirect URL or homepage
+        router.push(redirectUrl);
+      }
     } catch (err: any) {
       console.error("Login error:", err);
       
@@ -72,6 +106,7 @@ export default function LoginPage() {
       }
     } finally {
       setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -158,6 +193,8 @@ export default function LoginPage() {
                   name="remember-me"
                   type="checkbox"
                   className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                   {t('remember_me') || "Zapamatovat si mě"}
