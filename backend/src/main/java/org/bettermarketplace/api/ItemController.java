@@ -89,10 +89,7 @@ public class ItemController {
 			var token = CookieUtil.extractTokenFromCookie(request);
 
 			var userAuthDetails = tokenService.getUserDetails(token);
-
-			var item = ITEM_MAPPER.from(createItemDto, userAuthDetails.getUserId());
-
-			var itemId = itemService.insertItem(item);
+			var itemId = itemService.insertItem(createItemDto, userAuthDetails.getUserId());
 			return ResponseEntity.status(201).body(itemId);
 		} catch (Exception e) {
 			return ResponseEntity.status(500).build();
@@ -101,13 +98,20 @@ public class ItemController {
 
 	@PutMapping("/item/{id}")
 	public ResponseEntity<Void> updateItem(@PathVariable("id") Long id, @RequestBody UpdateItemDto updateItemDto, HttpServletRequest request) {
-		var token = CookieUtil.extractTokenFromCookie(request);
-		var userAuthDetails = tokenService.getUserDetails(token);
-		if (!Objects.equals(userAuthDetails.getUserId(), id)) {
-			return ResponseEntity.status(401).build();
-		}
+		try {
+			var token = CookieUtil.extractTokenFromCookie(request);
+			var userAuthDetails = tokenService.getUserDetails(token);
+			if (!Objects.equals(userAuthDetails.getUserId(), id)) {
+				return ResponseEntity.status(401).build();
+			}
 
-		return ResponseEntity.ok().build();
+			itemService.updateItem(updateItemDto, id);
+
+			return ResponseEntity.status(201).build();
+		} catch (Exception e) {
+			log.error("Error while updating item with ID {}", id, e);
+			return ResponseEntity.status(500).build();
+		}
 	}
 
 	private Item combineLocationAndUserWithItem(ItemDbo itemDbo, LocationDbo locationDbo, UserDbo userDbo) {

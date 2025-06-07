@@ -12,9 +12,8 @@ public record CreateItemDto(
 	String description,
 	Currency currency,
 	BigDecimal price,
-	String locationId,
+	Long locationId,
 	String imageUrl,
 	String email,
-	String phoneNumber
-) {
+	String phoneNumber) {
 }

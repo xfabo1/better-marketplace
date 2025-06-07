@@ -13,7 +13,7 @@ public record UpdateItemDto(
 		Currency currency,
 		BigDecimal price,
 		String location,
-		String imageStorageUrl,
+		String imageUrl,
 		String email,
 		String phoneNumber) {
 }

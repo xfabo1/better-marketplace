@@ -1,4 +1,4 @@
-findItem() ::= <<
+findItems() ::= <<
   SELECT *
   FROM item
 >>
@@ -11,8 +11,9 @@ findItem(id) ::= <<
 
 insertItem(itemObject, id) ::= <<
   INSERT INTO item(
-    id,
     created_at,
+    email,
+    phone_number,
     marketplace_user_id,
     description,
     name,
@@ -21,9 +22,10 @@ insertItem(itemObject, id) ::= <<
     location_id,
     image_url)
   VALUES (
-    :id,
     CURRENT_TIMESTAMP,
-    :itemObject.userId,
+    :itemObject.email,
+    :itemObject.phoneNumber,
+    :id,
     :itemObject.description,
     :itemObject.name,
     :itemObject.price,
@@ -33,17 +35,23 @@ insertItem(itemObject, id) ::= <<
   )
 >>
 
-updateItem(updateItemObject, id) ::= <<
+updateItem(name, description, currency, price, location, imageUrl, email, phoneNumber, id) ::= <<
   UPDATE item
   SET
-      <if(updateItemObject.name)>name = :updateItemObject.name,<endif>
-      <if(updateItemObject.description)>description = :updateItemObject.description,<endif>
-      <if(updateItemObject.currency)>currency = :updateItemObject.currency,<endif>
-      <if(updateItemObject.price)>price = :updateItemObject.price,<endif>
-      <if(updateItemObject.location)>location = :updateItemObject.location,<endif>
-      <if(updateItemObject.imageStorageUrl)>image_storage_url = :updateItemObject.imageStorageUrl,<endif>
-      <if(updateItemObject.email)>email = :updateItemObject.email,<endif>
-      <if(updateItemObject.phoneNumber)>phone_number = :updateItemObject.phoneNumber,<endif>
+      <if(name)>name = :name,<endif>
+      <if(description)>description = :description,<endif>
+      <if(currency)>currency = :currency,<endif>
+      <if(price)>price = :price,<endif>
+      <if(location)>location = :location,<endif>
+      <if(imageUrl)>image_url = :imageUrl,<endif>
+      <if(email)>email = :email,<endif>
+      <if(phoneNumber)>phone_number = :phoneNumber,<endif>
       updated_at = CURRENT_TIMESTAMP
   WHERE id = :id
+>>
+
+deleteItem(id) ::= <<
+  DELETE
+  FROM item
+  WHERE id=:id
 >>
