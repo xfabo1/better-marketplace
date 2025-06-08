@@ -297,11 +297,13 @@ export const enTranslations = {
   
   // Authentication errors
   "invalid_credentials": "Invalid credentials",
-  "check_credentials": "Please check your login credentials and try again.",
-  "email_already_used": "Email is already in use",
-  "username_already_used": "Username is already in use",
+  "check_credentials": "Please check your credentials and try again.",
+  "email_already_used": "This email is already in use",
+  "username_already_used": "This username is already in use",
   "registration_error": "Registration error",
   "network_error": "Network connection error",
   "server_error": "Server error",
-  "login_error": "Login error"
+  "login_error": "Login error",
+  "auth_error_message": "Authentication error occurred. Please log in again. If the problem persists, there might be an issue on our side.",
+  "network_error_details": "Check your internet connection or try again later."
 };
