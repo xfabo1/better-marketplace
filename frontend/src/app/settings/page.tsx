@@ -4,55 +4,43 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { countries } from "@/data/countries";
 import { useAuth } from "@/contexts/AuthContext";
 
 // Component that uses useSearchParams
 function SettingsContent() {
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState<'profile' | 'security'>('profile');
+  const [activeTab, setActiveTab] = useState<"profile" | "security">("profile");
   const { t } = useLanguage();
   const { user, updateUserSettings } = useAuth();
-  
+
   // Set active tab based on URL parameter if present
   useEffect(() => {
-    const tab = searchParams.get('tab');
-    if (tab === 'security') {
-      setActiveTab('security');
+    const tab = searchParams.get("tab");
+    if (tab === "security") {
+      setActiveTab("security");
     } else {
-      setActiveTab('profile');
+      setActiveTab("profile");
     }
   }, [searchParams]);
-  
+
   // Mock user data
   const [userData, setUserData] = useState({
     email: "jan.novak@example.com",
     phone: "+420 123 456 789",
-    country: "cz", // Default to Czech Republic
+    country: "CZ", // Default to Czech Republic
     showCrossCountryListings: true, // Default to showing cross-country listings
-    currency: "czk" // Default to Czech Koruna
+    currency: "CZK", // Default to Czech Koruna
   });
-
-  // Available countries
-  const countries = [
-    { value: "cz", label: t('czech_republic') },
-    { value: "sk", label: t('slovakia') }
-  ];
-
-  // Available currencies
-  const currencies = [
-    { value: "czk", label: t('czech_koruna') || "Česká koruna (Kč)" },
-    { value: "eur", label: t('euro') || "Euro (€)" }
-  ];
 
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Update user settings using the AuthContext function
     updateUserSettings({
-      country: userData.country as "cz" | "sk",
+      country: userData.country as "CZ" | "SK",
       showCrossCountryListings: userData.showCrossCountryListings,
-      currency: userData.currency as "czk" | "eur"
     });
-    alert(t('profile_updated'));
+    alert(t("profile_updated"));
   };
 
   // Load user data from auth context on component mount
@@ -63,10 +51,10 @@ function SettingsContent() {
         email: user.email || prevState.email,
         phone: user.phone || prevState.phone,
         country: user.country || prevState.country,
-        showCrossCountryListings: user.showCrossCountryListings !== undefined 
-          ? user.showCrossCountryListings 
-          : prevState.showCrossCountryListings,
-        currency: user.currency || prevState.currency
+        showCrossCountryListings:
+          user.showCrossCountryListings !== undefined
+            ? user.showCrossCountryListings
+            : prevState.showCrossCountryListings,
       }));
     }
   }, [user]);
@@ -74,51 +62,48 @@ function SettingsContent() {
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would call your API to update the password
-    console.log("Password update submitted");
-    alert(t('password_changed'));
+    alert(t("password_changed"));
   };
 
   return (
     <main className="flex-grow py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-medium text-gray-900 mb-6">
-          {t('account_settings')}
-        </h1>
-        
+        <h1 className="text-2xl font-medium text-gray-900 mb-6">{t("account_settings")}</h1>
+
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
           <div className="border-b border-gray-200">
             <nav className="flex">
               <button
-                onClick={() => setActiveTab('profile')}
+                onClick={() => setActiveTab("profile")}
                 className={`px-6 py-4 text-sm font-medium whitespace-nowrap ${
-                  activeTab === 'profile'
-                    ? 'border-b-2 border-primary text-primary'
-                    : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  activeTab === "profile"
+                    ? "border-b-2 border-primary text-primary"
+                    : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                {t('personal_info')}
+                {t("personal_info")}
               </button>
               <button
-                onClick={() => setActiveTab('security')}
+                onClick={() => setActiveTab("security")}
                 className={`px-6 py-4 text-sm font-medium whitespace-nowrap ${
-                  activeTab === 'security'
-                    ? 'border-b-2 border-primary text-primary'
-                    : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  activeTab === "security"
+                    ? "border-b-2 border-primary text-primary"
+                    : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                {t('security')}
+                {t("security")}
               </button>
             </nav>
           </div>
-          
+
           <div className="p-6">
-            {activeTab === 'profile' && (
+            {activeTab === "profile" && (
               <div>
-                <h2 className="text-xl font-medium text-gray-900 mb-6">{t('personal_info')}</h2>
+                <h2 className="text-xl font-medium text-gray-900 mb-6">{t("personal_info")}</h2>
                 <form onSubmit={handleProfileSubmit} className="space-y-6 max-w-2xl">
                   <div className="mb-4">
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('email')}
+                      {t("email")}
                     </label>
                     <input
                       type="email"
@@ -128,12 +113,12 @@ function SettingsContent() {
                       disabled
                       readOnly
                     />
-                    <p className="mt-1 text-xs text-gray-500">{t('email_cannot_change')}</p>
+                    <p className="mt-1 text-xs text-gray-500">{t("email_cannot_change")}</p>
                   </div>
-                  
+
                   <div className="mb-4">
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('phone')}
+                      {t("phone")}
                     </label>
                     <input
                       type="tel"
@@ -143,28 +128,31 @@ function SettingsContent() {
                       disabled
                       readOnly
                     />
-                    <p className="mt-1 text-xs text-gray-500">{t('phone_cannot_change')}</p>
+                    <p className="mt-1 text-xs text-gray-500">{t("phone_cannot_change")}</p>
                   </div>
-                  
+
                   <div className="mb-4">
-                    <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('country')}
+                    <label
+                      htmlFor="country"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      {t("country")}
                     </label>
                     <select
                       id="country"
                       className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                       value={userData.country}
-                      onChange={(e) => setUserData({...userData, country: e.target.value})}
+                      onChange={e => setUserData({ ...userData, country: e.target.value })}
                     >
-                      {countries.map((country) => (
+                      {countries.map(country => (
                         <option key={country.value} value={country.value}>
-                          {country.label}
+                          {t(country.label)}
                         </option>
                       ))}
                     </select>
-                    <p className="mt-1 text-xs text-gray-500">{t('location_restricted')}</p>
+                    <p className="mt-1 text-xs text-gray-500">{t("location_restricted")}</p>
                   </div>
-                  
+
                   <div className="mb-4">
                     <div className="flex items-start">
                       <div className="flex items-center h-5">
@@ -174,57 +162,43 @@ function SettingsContent() {
                           type="checkbox"
                           className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                           checked={userData.showCrossCountryListings}
-                          onChange={(e) => setUserData({...userData, showCrossCountryListings: e.target.checked})}
+                          onChange={e =>
+                            setUserData({ ...userData, showCrossCountryListings: e.target.checked })
+                          }
                         />
                       </div>
                       <div className="ml-3">
                         <label htmlFor="showCrossCountryListings" className="text-sm text-gray-700">
-                          {userData.country === 'cz' 
-                            ? t('show_slovak_listings') 
-                            : t('show_czech_listings')}
+                          {userData.country === "cz"
+                            ? t("show_slovak_listings")
+                            : t("show_czech_listings")}
                         </label>
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="mb-4">
-                    <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('preferred_currency') || "Preferovaná měna"}
-                    </label>
-                    <select
-                      id="currency"
-                      className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
-                      value={userData.currency}
-                      onChange={(e) => setUserData({...userData, currency: e.target.value})}
-                    >
-                      {currencies.map((currency) => (
-                        <option key={currency.value} value={currency.value}>
-                          {currency.label}
-                        </option>
-                      ))}
-                    </select>
-                    <p className="mt-1 text-xs text-gray-500">{t('currency_info') || "Tato měna bude použita pro vytváření vašich inzerátů."}</p>
-                  </div>
-                  
+
                   <div className="pt-4">
                     <button
                       type="submit"
                       className="w-full sm:w-auto inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
                     >
-                      {t('save_changes')}
+                      {t("save_changes")}
                     </button>
                   </div>
                 </form>
               </div>
             )}
-            
-            {activeTab === 'security' && (
+
+            {activeTab === "security" && (
               <div>
-                <h2 className="text-xl font-medium text-gray-900 mb-6">{t('security')}</h2>
+                <h2 className="text-xl font-medium text-gray-900 mb-6">{t("security")}</h2>
                 <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-2xl">
                   <div className="mb-4">
-                    <label htmlFor="current-password" className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('current_password')}
+                    <label
+                      htmlFor="current-password"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      {t("current_password")}
                     </label>
                     <input
                       type="password"
@@ -232,10 +206,13 @@ function SettingsContent() {
                       className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                     />
                   </div>
-                  
+
                   <div className="mb-4">
-                    <label htmlFor="new-password" className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('new_password')}
+                    <label
+                      htmlFor="new-password"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      {t("new_password")}
                     </label>
                     <input
                       type="password"
@@ -243,10 +220,13 @@ function SettingsContent() {
                       className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                     />
                   </div>
-                  
+
                   <div className="mb-4">
-                    <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('confirm_password')}
+                    <label
+                      htmlFor="confirm-password"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      {t("confirm_password")}
                     </label>
                     <input
                       type="password"
@@ -254,13 +234,13 @@ function SettingsContent() {
                       className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                     />
                   </div>
-                  
+
                   <div className="pt-4">
                     <button
                       type="submit"
                       className="w-full sm:w-auto inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
                     >
-                      {t('change_password')}
+                      {t("change_password")}
                     </button>
                   </div>
                 </form>
@@ -311,4 +291,4 @@ export default function SettingsPage() {
       </Suspense>
     </div>
   );
-} 
+}

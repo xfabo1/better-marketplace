@@ -8,8 +8,6 @@ const API_BASE_URL = 'http://localhost:8080/api/better-marketplace';
  */
 export async function loginUser(email: string, password: string) {
   try {
-    console.log(`Attempting to login with email: ${email} to ${API_BASE_URL}/auth/login`);
-    
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: {
@@ -19,15 +17,6 @@ export async function loginUser(email: string, password: string) {
       mode: 'cors', // Explicitly set CORS mode
       body: JSON.stringify({ email, password }),
     });
-
-    console.log(`Login response status: ${response.status} ${response.statusText}`);
-    
-    // Log response headers for debugging
-    const headers: Record<string, string> = {};
-    response.headers.forEach((value, key) => {
-      headers[key] = value;
-    });
-    console.log('Response headers:', headers);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -40,23 +29,16 @@ export async function loginUser(email: string, password: string) {
       if (response.status === 401) {
         error.message = 'invalid_credentials';
       }
-      
-      (error as any).status = response.status;
-      (error as any).statusText = response.statusText;
+
       throw error;
     }
 
     const data = await response.json();
-    console.log('Login successful, received data:', data);
     return data;
   } catch (error) {
-    console.error('Login error details:', error);
-    
     // If it's a network error, provide a more user-friendly message
     if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-      const networkError = new Error('Network error: Unable to connect to the server');
-      console.error('Network error details:', error);
-      throw networkError;
+      throw Error('Network error: Unable to connect to the server');
     }
     
     throw error;
@@ -74,7 +56,6 @@ export async function registerUser(userData: {
   displayItemsFromOtherCountry: boolean;
 }) {
   try {
-    console.log(`Attempting to register user: ${userData.email} to ${API_BASE_URL}/auth/register`);
     
     // Ensure country is uppercase
     const requestData = {
@@ -92,11 +73,9 @@ export async function registerUser(userData: {
       body: JSON.stringify(requestData),
     });
 
-    console.log(`Register response status: ${response.status} ${response.statusText}`);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`Registration failed with status ${response.status}:`, errorText);
       
       // Handle specific error cases
       if (errorText === 'email_used') {
@@ -104,26 +83,18 @@ export async function registerUser(userData: {
       } else if (errorText === 'username_used') {
         throw new Error('username_used');
       } else {
-        const error = new Error(errorText || 'Registration failed');
-        (error as any).status = response.status;
-        (error as any).statusText = response.statusText;
-        throw error;
+        throw Error(errorText || 'Registration failed');
       }
     }
 
     const result = await response.text();
-    console.log('Registration successful:', result);
     return result;
   } catch (error) {
-    console.error('Registration error details:', error);
     
-    // If it's a network error, provide a more user-friendly message
     if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-      const networkError = new Error('Network error: Unable to connect to the server');
-      console.error('Network error details:', error);
-      throw networkError;
+       throw Error('Network error: Unable to connect to the server');
     }
-    
+
     throw error;
   }
 }
@@ -132,27 +103,16 @@ export async function registerUser(userData: {
  * Logout the current user
  */
 export async function logoutUser() {
-  try {
-    console.log(`Attempting to logout at ${API_BASE_URL}/auth/logout`);
-    
     const response = await fetch(`${API_BASE_URL}/auth/logout`, {
       method: 'POST',
       credentials: 'include', // Important for cookies
       mode: 'cors', // Explicitly set CORS mode
     });
 
-    console.log(`Logout response status: ${response.status} ${response.statusText}`);
-
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`Logout failed with status ${response.status}:`, errorText);
       throw new Error(errorText || 'Logout failed');
     }
 
-    console.log('Logout successful');
     return true;
-  } catch (error) {
-    console.error('Logout error details:', error);
-    throw error;
-  }
 } 

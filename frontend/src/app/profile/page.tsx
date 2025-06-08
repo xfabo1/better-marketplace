@@ -15,12 +15,11 @@ const mockUserData = {
   registeredAt: "2021-05-15",
   country: "cz",
   showCrossCountryListings: true,
-  currency: "czk",
   stats: {
     totalListings: 18,
     activeListing: 12,
-    soldListings: 6
-  }
+    soldListings: 6,
+  },
 };
 
 export default function ProfilePage() {
@@ -41,7 +40,6 @@ export default function ProfilePage() {
           phone: user.phone,
           country: user.country,
           showCrossCountryListings: user.showCrossCountryListings,
-          currency: user.currency
         });
       } else {
         // Otherwise just use the mock data
@@ -57,11 +55,13 @@ export default function ProfilePage() {
   // Format date function
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('cs-CZ', {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }).replace(/\s/g, '');
+    return date
+      .toLocaleDateString("cs-CZ", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+      .replace(/\s/g, "");
   };
 
   if (!isAuthenticated) {
@@ -70,13 +70,15 @@ export default function ProfilePage() {
         <Header />
         <main className="flex-grow flex items-center justify-center">
           <div className="text-center p-8">
-            <h1 className="text-2xl font-medium text-gray-900 mb-4">{t('login_to_view_profile')}</h1>
-            <p className="text-gray-600 mb-6">{t('profile_login_message')}</p>
+            <h1 className="text-2xl font-medium text-gray-900 mb-4">
+              {t("login_to_view_profile")}
+            </h1>
+            <p className="text-gray-600 mb-6">{t("profile_login_message")}</p>
             <Link
               href="/login"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
-              {t('login')}
+              {t("login")}
             </Link>
           </div>
         </main>
@@ -87,69 +89,69 @@ export default function ProfilePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />
-      
+
       <main className="flex-grow py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Profile header */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
             <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
               <div>
-                <h1 className="text-2xl font-medium text-gray-900">{t('profile')}</h1>
+                <h1 className="text-2xl font-medium text-gray-900">{t("profile")}</h1>
                 <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                  {t('member_since')} {formatDate(userData.registeredAt)}
+                  {t("member_since")} {formatDate(userData.registeredAt)}
                 </p>
               </div>
               <Link
                 href="/settings"
                 className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
               >
-                {t('edit_profile')}
+                {t("edit_profile")}
               </Link>
             </div>
             <div className="border-t border-gray-200">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
                 <div className="px-4 py-4 border-b md:border-b-0 md:border-r border-gray-200">
-                  <h3 className="text-base font-medium text-gray-900 mb-3">{t('personal_info')}</h3>
+                  <h3 className="text-base font-medium text-gray-900 mb-3">{t("personal_info")}</h3>
                   <div className="space-y-3">
                     <div>
-                      <p className="text-sm font-medium text-gray-500">{t('name')}</p>
+                      <p className="text-sm font-medium text-gray-500">{t("name")}</p>
                       <p className="mt-1 text-sm text-gray-900">{userData.name}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-500">{t('email')}</p>
+                      <p className="text-sm font-medium text-gray-500">{t("email")}</p>
                       <p className="mt-1 text-sm text-gray-900">{userData.email}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-500">{t('phone')}</p>
+                      <p className="text-sm font-medium text-gray-500">{t("phone")}</p>
                       <p className="mt-1 text-sm text-gray-900">{userData.phone}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-500">{t('country')}</p>
-                      <p className="mt-1 text-sm text-gray-900">{userData.country === 'cz' ? t('czech_republic') : t('slovakia')}</p>
+                      <p className="text-sm font-medium text-gray-500">{t("country")}</p>
+                      <p className="mt-1 text-sm text-gray-900">
+                        {userData.country === "cz" ? t("czech_republic") : t("slovakia")}
+                      </p>
                     </div>
                   </div>
                 </div>
                 <div className="px-4 py-4">
-                  <h3 className="text-base font-medium text-gray-900 mb-3">{t('account_settings')}</h3>
+                  <h3 className="text-base font-medium text-gray-900 mb-3">
+                    {t("account_settings")}
+                  </h3>
                   <div className="space-y-3">
                     <div>
-                      <p className="text-sm font-medium text-gray-500">{t('registration')}</p>
-                      <p className="mt-1 text-sm text-gray-900">{formatDate(userData.registeredAt)}</p>
+                      <p className="text-sm font-medium text-gray-500">{t("registration")}</p>
+                      <p className="mt-1 text-sm text-gray-900">
+                        {formatDate(userData.registeredAt)}
+                      </p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-500">
-                        {userData.country === 'cz' ? t('show_slovak_listings') : t('show_czech_listings')}
+                        {userData.country === "cz"
+                          ? t("show_slovak_listings")
+                          : t("show_czech_listings")}
                       </p>
                       <p className="mt-1 text-sm text-gray-900">
-                        {userData.showCrossCountryListings ? t('yes') : t('no')}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">{t('preferred_currency') || "Preferovaná měna"}</p>
-                      <p className="mt-1 text-sm text-gray-900">
-                        {userData.currency === 'czk' 
-                          ? (t('czech_koruna') || "Česká koruna (Kč)")
-                          : (t('euro') || "Euro (€)")}
+                        {userData.showCrossCountryListings ? t("yes") : t("no")}
                       </p>
                     </div>
                   </div>
@@ -157,32 +159,36 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
-          
+
           {/* Statistics */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:px-6">
-              <h2 className="text-lg font-medium text-gray-900">{t('overview')}</h2>
-              <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                {t('activity_stats')}
-              </p>
+              <h2 className="text-lg font-medium text-gray-900">{t("overview")}</h2>
+              <p className="mt-1 max-w-2xl text-sm text-gray-500">{t("activity_stats")}</p>
             </div>
-            
+
             <div className="border-t border-gray-200">
               <div className="p-6">
                 <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">{t('my_listings')}</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">{t("my_listings")}</h3>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <p className="text-sm text-gray-500">{t('total')}</p>
-                      <p className="text-2xl font-bold text-gray-900">{userData.stats.totalListings}</p>
+                      <p className="text-sm text-gray-500">{t("total")}</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {userData.stats.totalListings}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">{t('active')}</p>
-                      <p className="text-2xl font-bold text-gray-900">{userData.stats.activeListing}</p>
+                      <p className="text-sm text-gray-500">{t("active")}</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {userData.stats.activeListing}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">{t('sold')}</p>
-                      <p className="text-2xl font-bold text-gray-900">{userData.stats.soldListings}</p>
+                      <p className="text-sm text-gray-500">{t("sold")}</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {userData.stats.soldListings}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -193,4 +199,4 @@ export default function ProfilePage() {
       </main>
     </div>
   );
-} 
+}
