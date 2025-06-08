@@ -16,8 +16,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [country, setCountry] = useState("CZ"); // Default country: Czech Republic
-  const [showCrossCountryListings, setShowCrossCountryListings] = useState(true); // Default to show cross-country listings
-  const [currency, setCurrency] = useState("CZK"); // Default currency: Czech Koruna
+  const [showCrossCountryListings, setShowCrossCountryListings] = useState(false); // Default to show cross-country listings
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,12 +27,6 @@ export default function RegisterPage() {
       router.push("/");
     }
   }, [isAuthenticated, router]);
-
-  // Update currency when country changes
-  useEffect(() => {
-    // Set default currency based on selected country
-    setCurrency(country === "SK" ? "EUR" : "CZK");
-  }, [country]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +44,7 @@ export default function RegisterPage() {
       });
       
       // After successful registration, log the user in
-      await login(email, password, country as "CZ" | "SK", showCrossCountryListings, currency as "CZK" | "EUR");
+      await login(email, password, country as "CZ" | "SK", showCrossCountryListings);
       // Redirect is handled in the login function
     } catch (error: any) {
       // Handle specific error messages from the backend
@@ -202,24 +195,6 @@ export default function RegisterPage() {
                   </div>
                 </div>
               </div>
-
-              <div className="mb-4">
-                <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('preferred_currency') || "Preferovaná měna"}
-                </label>
-                <select
-                  id="currency"
-                  name="currency"
-                  required
-                  className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
-                  value={currency}
-                  onChange={(e) => setCurrency(e.target.value)}
-                >
-                  <option value="CZK">{t('czech_koruna') || "Česká koruna (Kč)"}</option>
-                  <option value="EUR">{t('euro') || "Euro (€)"}</option>
-                </select>
-                <p className="mt-1 text-xs text-gray-500">{t('currency_info') || "Tato měna bude použita pro vytváření vašich inzerátů."}</p>
-              </div>
             </div>
 
             {error && (
@@ -249,7 +224,7 @@ export default function RegisterPage() {
             </div>
           </form>
           
-          <div className="mt-6">
+{/*           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300"></div>
@@ -259,7 +234,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
+             <div className="mt-6 grid grid-cols-2 gap-3">
               <div>
                 <a
                   href="#"
@@ -292,7 +267,7 @@ export default function RegisterPage() {
                 </a>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

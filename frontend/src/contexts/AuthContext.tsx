@@ -3,30 +3,29 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginUser, logoutUser } from '@/api/authApi';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // User type definition
 type User = {
   name: string;
   email: string;
   phone: string;
-  location: string;
   country: "CZ" | "SK";
   showCrossCountryListings: boolean;
-  currency: "CZK" | "EUR";
 } | null;
 
 // Auth context type
 type AuthContextType = {
   user: User;
   isAuthenticated: boolean;
-  login: (email: string, password?: string, country?: "CZ" | "SK", showCrossCountryListings?: boolean, currency?: "CZK" | "EUR") => Promise<void>;
+  login: (email: string, password?: string, country?: "CZ" | "SK", showCrossCountryListings?: boolean) => Promise<void>;
   logout: () => void;
   updateUserSettings: (settings: { 
     country?: "CZ" | "SK", 
-    showCrossCountryListings?: boolean,
-    currency?: "CZK" | "EUR"
+    showCrossCountryListings?: boolean
   }) => void;
   isLoading: boolean;
+  handleAuthError: (error: any) => void;
 };
 
 // Create context with default values
@@ -37,6 +36,7 @@ const AuthContext = createContext<AuthContextType>({
   logout: () => {},
   updateUserSettings: () => {},
   isLoading: true,
+  handleAuthError: () => {},
 });
 
 // Auth provider props
@@ -50,6 +50,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
+  const { t } = useLanguage();
 
   // First, set isClient to true when component mounts (client-side only)
   useEffect(() => {
@@ -67,6 +68,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLoading(false);
     }
   }, []);
+
+  // Handle authentication errors
+  const handleAuthError = (error: any) => {
+    // Check if it's a 401 error
+    if (error?.response?.status === 401 || error?.status === 401) {
+      // Clear user data
+      setUser(null);
+      if (isClient) {
+        localStorage.removeItem('user');
+      }
+      
+      // Show error message
+      alert(t('auth_error_message') || "Authentication error occurred. Please log in again. If the problem persists, there might be an issue on our side.");
+      
+      // Redirect to login page
+      router.push('/login');
+    }
+  };
 
   // Login function - connects to the backend API
   const login = async (email: string, password?: string, country?: "CZ" | "SK", showCrossCountryListings?: boolean, currency?: "CZK" | "EUR") => {
@@ -104,10 +123,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         name: email.split('@')[0], // Temporary name from email
         email: email,
         phone: "",
-        location: "",
         country: country || "CZ",
         showCrossCountryListings: showCrossCountryListings !== undefined ? showCrossCountryListings : true,
-        currency: currency || (country === "SK" ? "EUR" : "CZK")
       };
       
       // Store user in localStorage
@@ -124,6 +141,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(loggedInUser);
     } catch (error) {
       console.error('Login error:', error);
+      handleAuthError(error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -134,7 +152,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = () => {
     try {
       // Call the backend API for logout
-      logoutUser().catch(err => console.error('Error during API logout:', err));
+      logoutUser().catch(err => {
+        console.error('Error during API logout:', err);
+        handleAuthError(err);
+      });
       
       // Only access localStorage on the client
       if (isClient) {
@@ -152,6 +173,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(null);
     } catch (error) {
       console.error('Logout error:', error);
+      handleAuthError(error);
     }
   };
 
@@ -179,6 +201,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     } catch (error) {
       console.error('Error updating user settings:', error);
+      handleAuthError(error);
     }
   };
 
@@ -190,6 +213,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     logout,
     updateUserSettings,
     isLoading,
+    handleAuthError,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

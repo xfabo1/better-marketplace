@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.bettermarketplace.api.dto.user.LoginRequest;
 import org.bettermarketplace.api.dto.user.RegisterUserDto;
+import org.bettermarketplace.api.dto.user.UserDto;
 import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.mapper.UserMapper;
 import org.bettermarketplace.service.UserService;
@@ -43,17 +44,17 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse response) {
+	public ResponseEntity<UserDto> login(@RequestBody LoginRequest request, HttpServletResponse response) {
 		Optional<UserDbo> userDbo = userService.getUserByEmail(request.email());
 
 		if (userDbo.isEmpty()) {
-			return ResponseEntity.status(401).body("Invalid email or password");
+			return ResponseEntity.status(401).build();
 		}
 
 		var user = MAPPER.from(userDbo.get());
 
 		if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-			return ResponseEntity.status(401).body("Invalid email or password");
+			return ResponseEntity.status(401).build();
 		}
 
 		String token = tokenService.generateToken(user.getUsername(), user.getEmail(), user.getId(), "SCOPE_read", "SCOPE_write");
@@ -67,16 +68,11 @@ public class AuthController {
 		authCookie.setMaxAge(30 * 24 * 60 * 60);
 		response.addCookie(authCookie);
 
-		TokenResponse tokenResponse = TokenResponse.builder()
-				.token(token)
-				.tokenType("Bearer")
-				.build();
-
-		return ResponseEntity.ok(tokenResponse);
+		return ResponseEntity.ok(MAPPER.from(user));
 	}
 
 	@PostMapping("/logout")
-	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
 		String token = extractTokenFromCookie(request);
 
 		if (StringUtils.hasText(token)) {
@@ -92,7 +88,7 @@ public class AuthController {
 		authCookie.setMaxAge(0); // Set age to 0 to delete the cookie
 		response.addCookie(authCookie);
 
-		return ResponseEntity.ok("Logged out successfully");
+		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/register")

@@ -8,7 +8,6 @@ const API_BASE_URL = 'http://localhost:8080/api/better-marketplace';
  */
 export async function getItems() {
   try {
-    console.log(`Fetching all items from ${API_BASE_URL}/v1/items`);
     
     const response = await fetch(`${API_BASE_URL}/v1/items`, {
       method: 'GET',
@@ -19,7 +18,6 @@ export async function getItems() {
       mode: 'cors', // Explicitly set CORS mode
     });
 
-    console.log(`Get items response status: ${response.status} ${response.statusText}`);
     
     if (!response.ok) {
       const errorText = await response.text();

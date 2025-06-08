@@ -16,7 +16,7 @@ export const csTranslations = {
   
   // Home page
   "find_anything": "Najděte cokoliv potřebujete",
-  "buy_sell_easily": "Nakupujte a prodávejte jednoduše na Lepším Tržišti",
+  "buy_sell_easily": "Nakupujte a prodávejte jednoduše na Better Marketplace",
   
   // Sidebar
   "categories": "Kategorie",
@@ -303,5 +303,7 @@ export const csTranslations = {
   "registration_error": "Chyba při registraci",
   "network_error": "Chyba připojení k serveru",
   "server_error": "Chyba serveru",
-  "login_error": "Chyba při přihlášení"
+  "login_error": "Chyba při přihlášení",
+  "auth_error_message": "Došlo k chybě při ověřování. Prosím, přihlaste se znovu. Pokud problém přetrvává, může být problém na naší straně.",
+  "network_error_details": "Zkontrolujte své připojení k internetu nebo to zkuste znovu později."
 };

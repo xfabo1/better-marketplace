@@ -16,7 +16,7 @@ export const skTranslations = {
   
   // Home page
   "find_anything": "Nájdite čokoľvek potrebujete",
-  "buy_sell_easily": "Nakupujte a predávajte jednoducho na Lepšom Trhovisku",
+  "buy_sell_easily": "Nakupujte a predávajte jednoducho na Better Marketplace",
   
   // Sidebar
   "categories": "Kategórie",
@@ -190,7 +190,7 @@ export const skTranslations = {
   "phone": "Telefón",
   "registration": "Registrácia",
   "overview": "Prehľad",
-  "activity_stats": "Štatistiky vašich aktivít na Lepšom Trhovisku",
+  "activity_stats": "Štatistiky vašich aktivít na Better Marketplace",
   "total": "Celkom",
   "active": "Aktívne",
   "sold": "Predané",
@@ -303,5 +303,7 @@ export const skTranslations = {
   "registration_error": "Chyba pri registrácii",
   "network_error": "Chyba pripojenia k serveru",
   "server_error": "Chyba servera",
-  "login_error": "Chyba pri prihlásení"
+  "login_error": "Chyba pri prihlásení",
+  "auth_error_message": "Nastala chyba pri overovaní. Prosím, prihláste sa znova. Ak problém pretrváva, môže byť problém na našej strane.",
+  "network_error_details": "Skontrolujte svoje internetové pripojenie alebo to skúste znova neskôr."
 };
