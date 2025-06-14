@@ -9,37 +9,44 @@ findItem(id) ::= <<
   WHERE id=:id
 >>
 
-insertItem(itemObject, id) ::= <<
+insertItem(itemObject, userId, longitude, latitude, country) ::= <<
   INSERT INTO item(
     created_at,
     email,
     phone_number,
-    marketplace_user_id,
+    user_id,
     description,
     name,
     price,
     currency,
     location_id,
     image_url,
+    country,
     category,
-    subcategory)
+    subcategory,
+    condition,
+    geom
+  )
   VALUES (
     CURRENT_TIMESTAMP,
     :itemObject.email,
     :itemObject.phoneNumber,
-    :id,
+    :userId,
     :itemObject.description,
     :itemObject.name,
     :itemObject.price,
     :itemObject.currency,
     :itemObject.locationId,
     :itemObject.imageUrl,
+    :country,
     :itemObject.category,
-    :itemObject.subcategory
+    :itemObject.subcategory,
+    :itemObject.condition,
+    ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)
   )
 >>
 
-updateItem(name, description, currency, price, locationId, imageUrl, email, phoneNumber, id) ::= <<
+updateItem(name, description, currency, price, locationId, imageUrl, email, phoneNumber, longitude, latitude, id, country, condition) ::= <<
   UPDATE item
   SET
       <if(name)>name = :name,<endif>
@@ -50,6 +57,9 @@ updateItem(name, description, currency, price, locationId, imageUrl, email, phon
       <if(imageUrl)>image_url = :imageUrl,<endif>
       <if(email)>email = :email,<endif>
       <if(phoneNumber)>phone_number = :phoneNumber,<endif>
+      <if(country)>country = :country,<endif>
+      <if(longitude && latitude)>geom = ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326),<endif>
+      <if(condition)>condition = :condition,<endif>
       updated_at = CURRENT_TIMESTAMP
   WHERE id = :id
 >>
@@ -58,4 +68,105 @@ deleteItem(id) ::= <<
   DELETE
   FROM item
   WHERE id=:id
+>>
+
+findItemsByUpdateTimeAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize) ::= <<
+   SELECT *
+   FROM item
+   WHERE TRUE
+   <if(minPrice)>AND price \>= :minPrice<endif>
+   <if(maxPrice)>AND price \<= :maxPrice<endif>
+   <if(country)> AND country = :country<endif>
+   /* Full-text search with null check */
+   <if(textSearch)>AND search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
+   /* Spatial query with null checks */
+   <if(latitude && longitude && maxMeterDistance)>
+   AND ST_DWithin(
+       geom,
+       ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
+       :maxMeterDistance
+   )
+   <endif>
+   <if(condition)>AND condition = :condition<endif>
+   <if(lastUpdated)>
+   AND updated_at >= :lastUpdated
+   <endif>
+   ORDER BY updated_at ASC
+   LIMIT :pageSize
+>>
+
+findItemsByUpdateTimeDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize) ::= <<
+   SELECT *
+   FROM item
+   WHERE TRUE
+   <if(minPrice)>AND price \>= :minPrice<endif>
+   <if(maxPrice)>AND price \<= :maxPrice<endif>
+   <if(country)> AND country = :country<endif>
+   /* Full-text search with null check */
+   <if(textSearch)>AND search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
+   /* Spatial query with null checks */
+   <if(latitude && longitude && maxMeterDistance)>
+   AND ST_DWithin(
+       geom,
+       ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
+       :maxMeterDistance
+   )
+   <endif>
+   <if(condition)>AND condition = :condition<endif>
+   <if(lastUpdated)>
+   AND updated_at \<= :lastUpdated
+   <endif>
+   ORDER BY updated_at DESC
+   LIMIT :pageSize
+>>
+
+
+findItemsByPriceAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize) ::= <<
+   SELECT *
+   FROM item
+   WHERE TRUE
+   <if(minPrice)>AND price \>= :minPrice<endif>
+   <if(maxPrice)>AND price \<= :maxPrice<endif>
+   <if(country)> AND country = :country<endif>
+   /* Full-text search with null check */
+   <if(textSearch)>AND search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
+   /* Spatial query with null checks */
+   <if(latitude && longitude && maxMeterDistance)>
+   AND ST_DWithin(
+       geom,
+       ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
+       :maxMeterDistance
+   )
+   <endif>
+   <if(condition)>AND condition = :condition<endif>
+   <if(lastPrice)>
+   AND price >= :lastPrice
+   <endif>
+   ORDER BY price ASC
+   LIMIT :pageSize
+>>
+
+findItemsByPriceDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize) ::= <<
+  SELECT *
+  FROM item
+  WHERE TRUE
+  <if(minPrice)>AND price \>= :minPrice<endif>
+  <if(maxPrice)>AND price \<= :maxPrice<endif>
+  <if(country)> AND country = :country<endif>
+  /* Full-text search with null check */
+  <if(textSearch)>AND search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
+  /* Spatial query with null checks */
+  <if(latitude && longitude && maxMeterDistance)>
+  AND ST_DWithin(
+      geom,
+      ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
+      :maxMeterDistance
+  )
+  <endif>
+  <if(condition)>AND condition = :condition<endif>
+  <if(lastPrice)>
+  AND price \<= :lastPrice
+  <endif>
+  ORDER BY price DESC
+  LIMIT :pageSize
 >>

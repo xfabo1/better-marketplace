@@ -12,8 +12,6 @@ public interface ItemMapper {
 
 	ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
 
-	ItemFullDetailsDto from(Item item);
-
 	@Mapping(target = "creatorId", source = "userIdParam")
 	Item from(CreateItemDto createItemDto, Long userIdParam);
 }

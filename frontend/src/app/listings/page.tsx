@@ -1,16 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { getItems } from "@/api/itemApi";
+import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { categories } from "@/data/categories";
+import { conditions } from "@/data/conditions";
+import { dateFilterOptions } from "@/data/dateFilterOptions";
+import { sortOptions } from "@/data/sortOptions";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
-import { sortOptions, dateFilterOptions } from "@/data/mockData";
-import { conditions } from "@/data/conditions";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { categories, Category, Subcategory } from "@/data/categories";
-import { getItems } from "@/api/itemApi";
+import { useEffect, useState } from "react";
 
 // Items per page
 const ITEMS_PER_PAGE = 9;
@@ -36,7 +37,7 @@ interface Item {
 export default function ListingsPage() {
   const searchParams = useSearchParams();
   const { t } = useLanguage();
-  
+
   // Initialize state from URL parameters
   const [locationQuery, setLocationQuery] = useState("");
   const [selectedCondition, setSelectedCondition] = useState("all");
@@ -76,9 +77,9 @@ export default function ListingsPage() {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         const items = await getItems();
-        
+
         // Transform backend items to match frontend listing structure
         const transformedItems = items.map((item: Item) => ({
           ...item,
@@ -87,9 +88,9 @@ export default function ListingsPage() {
           location: "Unknown", // This should come from locationId
           postalCode: "000 00",
           conditionId: "used", // Default condition
-          createdAt: new Date().toISOString() // Default to current date
+          createdAt: new Date().toISOString(), // Default to current date
         }));
-        
+
         setListings(transformedItems);
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -103,7 +104,7 @@ export default function ListingsPage() {
   }, []);
 
   // Filter listings based on selected filters
-  const filteredListings = listings.filter((listing) => {
+  const filteredListings = listings.filter(listing => {
     // Filter by location (city name or postal code)
     if (locationQuery && listing.location) {
       const locationMatches = listing.location.toLowerCase().includes(locationQuery.toLowerCase());
@@ -112,31 +113,31 @@ export default function ListingsPage() {
         return false;
       }
     }
-    
+
     // Filter by condition
     if (selectedCondition !== "all" && listing.conditionId !== selectedCondition) {
       return false;
     }
-    
+
     // Filter by search query
     if (searchQuery && !listing.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
-    
+
     // Filter by price range
     if (minPrice && listing.price < parseInt(minPrice)) {
       return false;
     }
-    
+
     if (maxPrice && listing.price > parseInt(maxPrice)) {
       return false;
     }
-    
+
     // Filter by date
     if (dateFilter !== "all" && listing.createdAt) {
       const today = new Date();
       const listingDate = new Date(listing.createdAt);
-      
+
       if (dateFilter === "today") {
         if (
           today.getDate() !== listingDate.getDate() ||
@@ -159,10 +160,10 @@ export default function ListingsPage() {
         }
       }
     }
-    
+
     return true;
   });
-  
+
   // Sort listings based on selected sort option
   const sortedListings = [...filteredListings].sort((a, b) => {
     switch (sortBy) {
@@ -216,11 +217,13 @@ export default function ListingsPage() {
   // Format date function
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('cs-CZ', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }).replace(/\s/g, '');
+    return date
+      .toLocaleDateString("cs-CZ", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+      .replace(/\s/g, "");
   };
 
   // Add this helper function to map category slugs to proper translation keys
@@ -230,7 +233,7 @@ export default function ListingsPage() {
     if (mainCategory) {
       return category;
     }
-    
+
     // Check if it's a subcategory
     for (const cat of categories) {
       if (cat.subcategories) {
@@ -240,31 +243,31 @@ export default function ListingsPage() {
         }
       }
     }
-    
+
     // Check if it's a slug that needs to be converted to id
     const slugCategory = categories.find(cat => {
-      const slugPart = cat.href.split('/').pop();
+      const slugPart = cat.href.split("/").pop();
       return slugPart === category;
     });
-    
+
     if (slugCategory) {
       return slugCategory.id;
     }
-    
+
     // Check if it's a subcategory slug
     for (const cat of categories) {
       if (cat.subcategories) {
         const slugSubcategory = cat.subcategories.find(subcat => {
-          const slugPart = subcat.href.split('/').pop();
+          const slugPart = subcat.href.split("/").pop();
           return slugPart === category;
         });
-        
+
         if (slugSubcategory) {
           return slugSubcategory.id;
         }
       }
     }
-    
+
     // If not found, return the original category
     return category;
   };
@@ -282,24 +285,24 @@ export default function ListingsPage() {
     const handleLocalSearch = (e: React.FormEvent) => {
       e.preventDefault();
       handleSearch(localSearchQuery);
-      
+
       if (location !== locationQuery) {
         handleLocationChange(location);
       }
-      
+
       if (condition !== selectedCondition) {
         handleConditionChange(condition);
       }
-      
+
       if (localDateFilter !== dateFilter) {
         handleDateFilterChange(localDateFilter);
       }
-      
+
       if (localMinPrice !== minPrice) {
         setMinPrice(localMinPrice);
         setCurrentPage(1);
       }
-      
+
       if (localMaxPrice !== maxPrice) {
         setMaxPrice(localMaxPrice);
         setCurrentPage(1);
@@ -312,33 +315,53 @@ export default function ListingsPage() {
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-grow">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg
+                  className="h-5 w-5 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </div>
               <input
                 type="text"
                 className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-0 transition duration-150 ease-in-out"
-                placeholder={t('search_anything')}
+                placeholder={t("search_anything")}
                 value={localSearchQuery}
-                onChange={(e) => setLocalSearchQuery(e.target.value)}
+                onChange={e => setLocalSearchQuery(e.target.value)}
               />
             </div>
             <button
               type="submit"
               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150 ease-in-out"
             >
-              {t('search')}
+              {t("search")}
             </button>
             <button
               type="button"
               className="inline-flex items-center justify-center px-4 py-3 border border-gray-200 text-sm font-medium rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150 ease-in-out"
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
             >
-              <svg className="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              <svg
+                className="h-5 w-5 mr-2 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                />
               </svg>
-              {t('filters')}
+              {t("filters")}
             </button>
             <div className="relative">
               <button
@@ -346,16 +369,26 @@ export default function ListingsPage() {
                 className="inline-flex items-center justify-center px-4 py-3 border border-gray-200 text-sm font-medium rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150 ease-in-out"
                 onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
               >
-                <svg className="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                <svg
+                  className="h-5 w-5 mr-2 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                  />
                 </svg>
-                {t('newest')}
+                {t("newest")}
               </button>
-              
+
               {isSortMenuOpen && (
                 <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                   <div className="py-1" role="menu" aria-orientation="vertical">
-                    {sortOptions.map((option) => (
+                    {sortOptions.map(option => (
                       <button
                         key={option.value}
                         className={`block px-4 py-2 text-sm text-left w-full ${
@@ -374,81 +407,81 @@ export default function ListingsPage() {
               )}
             </div>
           </div>
-          
+
           {isFiltersOpen && (
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-                  {t('location')}
+                  {t("location")}
                 </label>
                 <input
                   type="text"
                   id="location"
                   className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
-                  placeholder={t('enter_city')}
+                  placeholder={t("enter_city")}
                   value={location}
-                  onChange={(e) => setLocation(e.target.value)}
+                  onChange={e => setLocation(e.target.value)}
                 />
               </div>
-              
+
               <div>
                 <label htmlFor="condition" className="block text-sm font-medium text-gray-700">
-                  {t('condition')}
+                  {t("condition")}
                 </label>
                 <select
                   id="condition"
                   className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                   value={condition}
-                  onChange={(e) => setCondition(e.target.value)}
+                  onChange={e => setCondition(e.target.value)}
                 >
-                  {conditions.map((cond) => (
+                  {conditions.map(cond => (
                     <option key={cond.id} value={cond.id}>
                       {t(cond.name)}
                     </option>
                   ))}
                 </select>
               </div>
-              
+
               <div>
                 <label htmlFor="dateFilter" className="block text-sm font-medium text-gray-700">
-                  {t('date_added')}
+                  {t("date_added")}
                 </label>
                 <select
                   id="dateFilter"
                   className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                   value={localDateFilter}
-                  onChange={(e) => setLocalDateFilter(e.target.value)}
+                  onChange={e => setLocalDateFilter(e.target.value)}
                 >
-                  {dateFilterOptions.map((option) => (
+                  {dateFilterOptions.map(option => (
                     <option key={option.value} value={option.value}>
                       {t(option.label)}
                     </option>
                   ))}
                 </select>
               </div>
-              
+
               <div>
                 <label htmlFor="priceRange" className="block text-sm font-medium text-gray-700">
-                  {t('price_range')}
+                  {t("price_range")}
                 </label>
                 <div className="mt-1 flex items-center space-x-2">
                   <input
                     type="number"
                     id="minPrice"
-                    placeholder={t('from')}
+                    placeholder={t("from")}
                     className="block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                     value={localMinPrice}
-                    onChange={(e) => setLocalMinPrice(e.target.value)}
+                    onChange={e => setLocalMinPrice(e.target.value)}
                     min="0"
                   />
                   <span className="text-gray-500">-</span>
                   <input
                     type="number"
                     id="maxPrice"
-                    placeholder={t('to')}
+                    placeholder={t("to")}
                     className="block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                     value={localMaxPrice}
-                    onChange={(e) => setLocalMaxPrice(e.target.value)}
+                    onChange={e => setLocalMaxPrice(e.target.value)}
                     min="0"
                   />
                 </div>
@@ -463,41 +496,42 @@ export default function ListingsPage() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Header />
-      
+
       <div className="flex-grow flex flex-col md:flex-row">
         <aside className="hidden md:block md:w-64 shrink-0">
           <div className="sticky top-16 h-[calc(100vh-4rem)]">
             <Sidebar />
           </div>
         </aside>
-        
+
         <main className="flex-grow p-4 md:p-8">
           <div className="mb-6">
-            <h1 className="text-2xl font-medium text-gray-900 mb-4">{t('browse_listings')}</h1>
-            
+            <h1 className="text-2xl font-medium text-gray-900 mb-4">{t("browse_listings")}</h1>
+
             <div className="mb-6">
               <CustomSearchBar />
             </div>
-            
+
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
               <div className="mb-4 sm:mb-0">
                 <span className="text-sm text-gray-500">
-                  {filteredListings.length} {filteredListings.length === 1 
-                    ? t('listing_singular') 
-                    : filteredListings.length >= 2 && filteredListings.length <= 4 
-                      ? t('listing_few') 
-                      : t('listing_many')}
+                  {filteredListings.length}{" "}
+                  {filteredListings.length === 1
+                    ? t("listing_singular")
+                    : filteredListings.length >= 2 && filteredListings.length <= 4
+                    ? t("listing_few")
+                    : t("listing_many")}
                 </span>
               </div>
-              
+
               <div className="md:hidden flex items-center">
-                <span className="text-sm text-gray-700 mr-2">{t('sort_by')}:</span>
+                <span className="text-sm text-gray-700 mr-2">{t("sort_by")}:</span>
                 <select
                   value={sortBy}
-                  onChange={(e) => handleSortChange(e.target.value)}
+                  onChange={e => handleSortChange(e.target.value)}
                   className="block w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:border-primary focus:outline-none"
                 >
-                  {sortOptions.map((option) => (
+                  {sortOptions.map(option => (
                     <option key={option.value} value={option.value}>
                       {t(option.label)}
                     </option>
@@ -506,11 +540,11 @@ export default function ListingsPage() {
               </div>
             </div>
           </div>
-          
+
           {paginatedListings.length > 0 ? (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                {paginatedListings.map((listing) => (
+                {paginatedListings.map(listing => (
                   <Link href={`/listing/${listing.id}`} key={listing.id} className="group">
                     <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
                       <div className="relative h-32 w-full">
@@ -527,7 +561,9 @@ export default function ListingsPage() {
                           <div className="text-xs text-primary font-medium truncate max-w-[70%]">
                             {t(getCategoryTranslationKey(listing.name))}
                           </div>
-                          <div className="text-xs text-gray-500 hidden sm:block">{formatDate(listing.createdAt || "")}</div>
+                          <div className="text-xs text-gray-500 hidden sm:block">
+                            {formatDate(listing.createdAt || "")}
+                          </div>
                         </div>
                         <h3 className="text-xs font-medium text-gray-900 group-hover:text-primary transition-colors duration-200 mb-1 line-clamp-2">
                           {listing.title || "Untitled Listing"}
@@ -536,15 +572,19 @@ export default function ListingsPage() {
                           {t(listing.conditionId || "Used")}
                         </div>
                         <div className="mt-auto flex justify-between items-center">
-                          <span className="text-sm font-bold text-gray-900">{listing.price.toLocaleString()} {listing.currency}</span>
-                          <span className="text-xs text-gray-500 truncate max-w-[40%]">{listing.location}</span>
+                          <span className="text-sm font-bold text-gray-900">
+                            {listing.price.toLocaleString()} {listing.currency}
+                          </span>
+                          <span className="text-xs text-gray-500 truncate max-w-[40%]">
+                            {listing.location}
+                          </span>
                         </div>
                       </div>
                     </div>
                   </Link>
                 ))}
               </div>
-              
+
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex justify-center mt-10">
@@ -554,9 +594,9 @@ export default function ListingsPage() {
                       disabled={currentPage === 1}
                       className="px-3 py-1 rounded-md mr-2 text-sm font-medium border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      &laquo; {t('previous')}
+                      &laquo; {t("previous")}
                     </button>
-                    
+
                     <div className="hidden sm:flex">
                       {[...Array(totalPages)].map((_, i) => {
                         const pageNum = i + 1;
@@ -592,19 +632,19 @@ export default function ListingsPage() {
                         return null;
                       })}
                     </div>
-                    
+
                     <div className="sm:hidden">
                       <span className="text-sm text-gray-500">
                         {currentPage} / {totalPages}
                       </span>
                     </div>
-                    
+
                     <button
                       onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                       disabled={currentPage === totalPages}
                       className="px-3 py-1 rounded-md ml-2 text-sm font-medium border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {t('next')} &raquo;
+                      {t("next")} &raquo;
                     </button>
                   </nav>
                 </div>
@@ -625,10 +665,8 @@ export default function ListingsPage() {
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">{t('no_listings')}</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                {t('no_listings_found')}
-              </p>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">{t("no_listings")}</h3>
+              <p className="mt-1 text-sm text-gray-500">{t("no_listings_found")}</p>
               <div className="mt-6">
                 <button
                   onClick={() => {
@@ -643,7 +681,7 @@ export default function ListingsPage() {
                   }}
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
-                  {t('reset_filters')}
+                  {t("reset_filters")}
                 </button>
               </div>
             </div>
@@ -652,4 +690,4 @@ export default function ListingsPage() {
       </div>
     </div>
   );
-} 
+}
