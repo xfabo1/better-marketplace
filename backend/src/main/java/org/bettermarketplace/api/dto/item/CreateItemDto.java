@@ -18,5 +18,6 @@ public record CreateItemDto(
 	String email,
 	String phoneNumber,
 	String category,
-	String subcategory) {
+	String subcategory,
+	String condition) {
 }

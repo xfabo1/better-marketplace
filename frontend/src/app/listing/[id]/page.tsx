@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { getItemById } from "@/api/itemApi";
+import Header from "@/components/Header";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import Header from "@/components/Header";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { getItemById } from "@/api/itemApi";
+import { formatDate } from "@/utils/CommonUtils";
+import { useEffect, useState } from "react";
 
 // Interface for Item from backend
 interface Item {
@@ -96,7 +97,6 @@ export default function ListingDetailPage() {
           ],
         });
       } catch (error) {
-        console.error("Error fetching item:", error);
         setError("Failed to load listing. Please try again later.");
       } finally {
         setIsLoading(false);
@@ -105,18 +105,6 @@ export default function ListingDetailPage() {
 
     fetchItem();
   }, [id]);
-
-  // Format the date
-  const formattedDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(
-      "cs-CZ",
-      {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }
-    ).replace(/\s/g, '');
-  };
 
   // Show loading state
   if (isLoading) {
@@ -236,7 +224,7 @@ export default function ListingDetailPage() {
                     <span className="mx-2">•</span>
                     <span>{listing.location}</span>
                     <span className="mx-2">•</span>
-                    <span>{t('added')}: {formattedDate(listing.createdAt)}</span>
+                    <span>{t('added')}: {formatDate(listing.createdAt)}</span>
                   </div>
 
                   <div className="text-3xl font-bold text-gray-900 mb-6">

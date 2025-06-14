@@ -18,7 +18,7 @@ public record ItemDbo(
 		@ColumnName("phone_number")
 		String phoneNumber,
 		BigDecimal price,
-		@ColumnName("marketplace_user_id")
+		@ColumnName("user_id")
 		Long userId,
 		Currency currency,
 		@ColumnName("location_id")
@@ -29,6 +29,4 @@ public record ItemDbo(
 		Instant createdAt,
 		@ColumnName("updated_at")
 		Instant updatedAt,
-		@ColumnName("deleted_at")
-		Instant deletedAt) {
-}
+		String condition) {}

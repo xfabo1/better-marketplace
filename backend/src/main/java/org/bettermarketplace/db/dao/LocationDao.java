@@ -5,12 +5,11 @@ import java.util.Optional;
 
 import org.bettermarketplace.db.entity.LocationDbo;
 import org.bettermarketplace.model.Location;
-import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
-import org.jdbi.v3.sqlobject.customizer.BindMethods;
 import org.jdbi.v3.sqlobject.statement.BatchChunkSize;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlBatch;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -28,9 +27,11 @@ public interface LocationDao {
 
 	@SqlBatch
 	@BatchChunkSize(1000)
+	@GetGeneratedKeys
 	int[] insertLocations(@BindBean("location") List<Location> locations);
 
 	@SqlUpdate
+	@GetGeneratedKeys
 	Long insertLocation(@BindBean("location") Location locationObject);
 
 	@SqlUpdate

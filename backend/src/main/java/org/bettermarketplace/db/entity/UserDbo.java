@@ -13,8 +13,6 @@ public record UserDbo(Long id,
 					  boolean displayItemsFromOtherCountry,
 					  Country country,
 					  String password,
-					  @ColumnName("deleted_at")
-					  Instant deletedAt,
 					  @ColumnName("created_at")
 					  Instant createdAt,
 					  @ColumnName("updated_at")

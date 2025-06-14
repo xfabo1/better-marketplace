@@ -23,16 +23,20 @@ public class LocationDaoIT extends PostgisTest {
 				Location.builder()
 						.postalCode("111 11")
 						.placeName("Brno")
-						.latitude(11.111f)
-						.longitude(11.111f)
+						.latitude(11.111)
+						.longitude(11.111)
 						.countryCode(Country.CZ)
+						.region("Brno")
+						.city("Brno")
 						.build(),
 				Location.builder()
 						.postalCode("111 11")
 						.placeName("Brno Venkov")
-						.latitude(22.222f)
-						.longitude(22.222f)
+						.latitude(22.222)
+						.longitude(22.222)
 						.countryCode(Country.CZ)
+						.region("Brno")
+						.city("Brno")
 						.build());
 		var insertedNumber = locationDao.insertLocations(records);
 		assertThat(insertedNumber.length).isEqualTo(2);
@@ -40,10 +44,12 @@ public class LocationDaoIT extends PostgisTest {
 		assertThat(locationDao.findLocations()).hasSize(2);
 		assertThat(locationDao.findLocation(1L)).isPresent()
 				.get()
-				.returns(11.111f, LocationDbo::latitude)
-				.returns(11.111f, LocationDbo::longitude)
+				.returns(11.111, LocationDbo::latitude)
+				.returns(11.111, LocationDbo::longitude)
 				.returns("111 11", LocationDbo::postalCode)
-				.returns("Brno", LocationDbo::name)
+				.returns("Brno", LocationDbo::placeName)
+				.returns("Brno", LocationDbo::city)
+				.returns("Brno", LocationDbo::region)
 				.returns("CZ", LocationDbo::countryCode);
 	}
 }

@@ -20,7 +20,6 @@ export async function loginUser(email: string, password: string) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`Login failed with status ${response.status}:`, errorText);
       
       // Create a more detailed error object
       const error = new Error(errorText || 'Login failed');

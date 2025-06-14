@@ -1,6 +1,6 @@
 insertLocations(location) ::= <<
-  INSERT INTO location(postal_code, country_code, name, latitude, longitude)
-  VALUES (:location.postalCode, :location.countryCode, :location.placeName, :location.latitude, :location.longitude)
+  INSERT INTO location(postal_code, country_code, place_name, latitude, longitude, region, city)
+  VALUES (:location.postalCode, :location.countryCode, :location.placeName, :location.latitude, :location.longitude, :location.region, :location.city)
   ON CONFLICT DO NOTHING
 >>
 
@@ -16,8 +16,9 @@ findLocation(id) ::= <<
 >>
 
 insertLocation(location) ::= <<
-  INSERT INTO location(postal_code, country_code, name, latitude, longitude)
-  VALUES (:location.postalCode, :location.countryCode, :location.placeName, :location.latitude, :location.longitude)
+  INSERT INTO location(postal_code, country_code, place_name, latitude, longitude, region, city)
+  VALUES (:location.postalCode, :location.countryCode, :location.placeName, :location.latitude, :location.longitude, :location.region, :location.city)
+  ON CONFLICT DO NOTHING
 >>
 
 deleteLocation(id) ::= <<

@@ -12,9 +12,9 @@ public record PostalCodeDto(
 		String postalCode,
 		@JsonProperty("place_name")
 		String placeName,
-		@JsonProperty("admin name1")
+		@JsonProperty("admin_name1")
 		String region,
-		@JsonProperty("admin name2")
+		@JsonProperty("admin_name2")
 		String city,
 		float latitude,
 		float longitude) {

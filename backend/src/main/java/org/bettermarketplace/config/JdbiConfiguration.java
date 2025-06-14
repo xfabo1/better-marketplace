@@ -7,6 +7,8 @@ import javax.sql.DataSource;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.Slf4JSqlLogger;
+import org.jdbi.v3.core.statement.SqlLogger;
+import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.jackson2.Jackson2Plugin;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.jdbi.v3.core.enums.EnumStrategy;
@@ -29,6 +31,13 @@ public class JdbiConfiguration {
 		jdbi.getConfig().get(org.jdbi.v3.core.enums.Enums.class)
 			.setEnumStrategy(EnumStrategy.BY_NAME);
 
+		jdbi.setSqlLogger(new SqlLogger() {
+			@Override
+			public void logBeforeExecution(StatementContext context) {
+				System.out.println("SQL: " + context.getRenderedSql());
+				System.out.println("Parameters: " + context.getBinding());
+			}
+		});
 		return jdbi;
 	}
 }

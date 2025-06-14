@@ -19,7 +19,6 @@ public class User {
 	private String password;
 	private Country country;
 	private boolean displayItemsFromOtherCountry;
-	private Instant deletedAt;
 	private Instant createdAt;
 	private Instant updatedAt;
 }

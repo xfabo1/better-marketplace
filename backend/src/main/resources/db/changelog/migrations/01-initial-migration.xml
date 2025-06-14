@@ -8,7 +8,11 @@
         <tagDatabase tag="0"/>
     </changeSet>
 
-    <changeSet id="01-02-initial-migration-tables" author="xfabo1">
+    <changeSet id="01-02-add-postgis-extension" author="xfabo1">
+        <sql>CREATE EXTENSION IF NOT EXISTS postgis;</sql>
+    </changeSet>
+
+    <changeSet id="01-03-initial-migration-tables" author="xfabo1">
         <createTable tableName="location">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="location_pk"/>
@@ -17,11 +21,17 @@
             </column>
             <column name="country_code" type="varchar(10)">
             </column>
-            <column name="name" type="varchar(1000)"/>
-            <column name="latitude" type="float">
+            <column name="place_name" type="varchar(1000)"/>
+            <column name="latitude" type="double">
                 <constraints nullable="false"/>
             </column>
-            <column name="longitude" type="float">
+            <column name="longitude" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="region" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -35,7 +45,6 @@
             <column name="display_items_from_other_country" type="boolean" defaultValue="true"/>
             <column name="created_at" type="timestamp" defaultValue="now()"/>
             <column name="updated_at" type="timestamp" defaultValue="now()"/>
-            <column name="deleted_at" type="timestamp"/>
             <column name="username" type="varchar(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
@@ -63,8 +72,8 @@
             <column name="phone_number" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="marketplace_user_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="item_marketplace_user_pk" referencedTableName="marketplace_user" referencedColumnNames="id"/>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="item_user_pk" referencedTableName="marketplace_user" referencedColumnNames="id"/>
             </column>
             <column name="description" type="varchar(2000)"/>
             <column name="name" type="varchar(100)">
@@ -82,17 +91,56 @@
             <column name="image_url" type="varchar(1000)">
                 <constraints nullable="false"/>
             </column>
+            <column name="country" type="varchar(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="varchar(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="subcategory" type="varchar(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="condition" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="geom" type="geometry(Point,4326)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
-    <changeSet id="01-03-create-indexes" author="xfabo1">
-        <createIndex indexName="idx_marketplace_user_email" tableName="marketplace_user">
+
+    <changeSet id="01-04-table-for-tokens" author="xfabo1">
+        <createTable tableName="tokens">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="token" type="varchar(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="user_token_id" referencedColumnNames="id" referencedTableName="marketplace_user"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="01-05-create-indexes" author="xfabo1">
+        <createIndex indexName="idx_user_email" tableName="marketplace_user">
             <column name="email"/>
         </createIndex>
         <createIndex indexName="idx_location_postal_code" tableName="location">
             <column name="postal_code"/>
         </createIndex>
         <createIndex indexName="idx_item_user_id" tableName="item">
-            <column name="marketplace_user_id"/>
+            <column name="user_id"/>
         </createIndex>
+        <createIndex tableName="item" indexName="idx_item_price">
+            <column name="price"/>
+        </createIndex>
+        <createIndex tableName="item" indexName="idx_item_date_updated">
+            <column name="updated_at"/>
+        </createIndex>
+        <sql>
+            CREATE INDEX item_geom_idx ON item USING GIST (geom);
+        </sql>
     </changeSet>
 </databaseChangeLog>

@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { formatDate } from "@/utils/CommonUtils";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 // Mock user data for the profile page
@@ -51,18 +52,6 @@ export default function ProfilePage() {
       fetchUserData();
     }
   }, [isAuthenticated, user]);
-
-  // Format date function
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date
-      .toLocaleDateString("cs-CZ", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
-      .replace(/\s/g, "");
-  };
 
   if (!isAuthenticated) {
     return (

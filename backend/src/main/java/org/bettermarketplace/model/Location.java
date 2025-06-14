@@ -16,8 +16,8 @@ public class Location {
 	private Country countryCode;
 	private String city;
 	private String region;
-	private float latitude;
-    private float longitude;
+	private Double latitude;
+    private Double longitude;
 
 	@Override
 	public String toString() {

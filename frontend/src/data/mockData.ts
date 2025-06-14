@@ -1,6 +1,5 @@
 // Types
 import { conditions } from "./conditions";
-import { categories } from "./categories";
 
 export interface Listing {
   id: number | string;
@@ -15,22 +14,6 @@ export interface Listing {
   createdAt: string;
   subcategory?: string;
 }
-
-// Sort options
-export const sortOptions = [
-  { label: "newest", value: "newest" },
-  { label: "oldest", value: "oldest" },
-  { label: "price_lowest", value: "price_asc" },
-  { label: "price_highest", value: "price_desc" },
-];
-
-// Date filter options
-export const dateFilterOptions = [
-  { label: "all_dates", value: "all" },
-  { label: "today", value: "today" },
-  { label: "this_week", value: "week" },
-  { label: "this_month", value: "month" },
-];
 
 // Mock listings data
 export const allListings: Listing[] = [

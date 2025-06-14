@@ -16,10 +16,6 @@ function ForgotPasswordForm() {
     setError("");
     
     try {
-      // Here you would call your API to send a password reset email
-      console.log("Password reset requested for:", email);
-      
-      // For now, we'll just simulate a successful submission
       setIsSubmitted(true);
     } catch {
       setError("Došlo k chybě při odesílání požadavku. Zkuste to prosím znovu.");

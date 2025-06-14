@@ -9,10 +9,10 @@
             <column header="country code" name="country_code"/>
             <column header="latitude" name="latitude"/>
             <column header="longitude" name="longitude"/>
-            <column header="place name" name="name"/>
-            <column header="admin name1" type="skip"/>
+            <column header="place name" name="place_name"/>
+            <column header="admin name1" name="region"/>
             <column header="admin code1" type="skip"/>
-            <column header="admin name2" type="skip"/>
+            <column header="admin name2" name="city"/>
             <column header="admin name3" type="skip"/>
             <column header="admin code3" type="skip"/>
             <column header="admin code2" type="skip"/>
@@ -24,10 +24,10 @@
             <column header="country code" name="country_code"/>
             <column header="latitude" name="latitude"/>
             <column header="longitude" name="longitude"/>
-            <column header="place name" name="name"/>
-            <column header="admin name1" type="skip"/>
+            <column header="place name" name="place_name"/>
+            <column header="admin name1" name="region"/>
             <column header="admin code1" type="skip"/>
-            <column header="admin name2" type="skip"/>
+            <column header="admin name2" name="city"/>
             <column header="admin name3" type="skip"/>
             <column header="admin code3" type="skip"/>
             <column header="admin code2" type="skip"/>
