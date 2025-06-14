@@ -10,7 +10,10 @@ public record LocationDbo(Long id,
 						  String postalCode,
 						  @ColumnName("country_code")
 						  String countryCode,
-						  String name,
-						  float latitude,
-						  float longitude) {
+						  @ColumnName("place_name")
+						  String placeName,
+						  String region,
+						  String city,
+						  double latitude,
+						  double longitude) {
 }

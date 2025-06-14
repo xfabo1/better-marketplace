@@ -7,13 +7,11 @@ import org.bettermarketplace.model.Currency;
 import lombok.Builder;
 
 @Builder
-public record UpdateItemDto(
+public record PreviewItemDto(
 		String name,
-		String description,
-		Currency currency,
+		String postalCode,
+		String city,
 		BigDecimal price,
-		Long locationId,
-		String imageUrl,
-		String email,
-		String phoneNumber) {
+		Currency currency
+) {
 }

@@ -26,4 +26,7 @@ public class Item {
 	private Long creatorId;
 	private Instant createdAt;
 	private Instant updatedAt;
+	private String category;
+	private String subcategory;
+	private String condition;
 }

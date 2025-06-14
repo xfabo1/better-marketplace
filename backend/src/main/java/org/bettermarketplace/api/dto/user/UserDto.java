@@ -6,8 +6,10 @@ import lombok.Builder;
 
 @Builder
 public record UserDto(
+		Long id,
 		String username,
-	  	String email,
+		String phoneNumber,
+		String email,
 		boolean displayItemsFromOtherCountry,
 		Country country) {
 }

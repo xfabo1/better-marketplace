@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categories, Category, Subcategory } from "@/data/categories";
+import { categories } from "@/data/categories";
+import { formatDate } from "@/utils/CommonUtils";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 
 // Mock data for user's listings
 const mockListings = [
@@ -58,16 +59,6 @@ export default function MyListingsPage() {
     activeTab === 'active' ? listing.status === 'active' : listing.status === 'sold'
   );
   
-  // Format date function
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('cs-CZ', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }).replace(/\s/g, '');
-  };
-
   // Add this helper function to map category slugs to proper translation keys
   const getCategoryTranslationKey = (category: string): string => {
     // Check if it's a main category

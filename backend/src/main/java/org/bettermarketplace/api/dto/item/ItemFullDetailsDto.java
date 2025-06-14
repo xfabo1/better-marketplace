@@ -10,7 +10,7 @@ import lombok.Builder;
 
 @Builder
 public record ItemFullDetailsDto(
-		Long id,
+		String name,
 		String description,
 		String imageUrl,
 		BigDecimal price,
@@ -18,7 +18,6 @@ public record ItemFullDetailsDto(
 		String username,
 		String email,
 		String phoneNumber,
-		String postalCode,
 		Country country,
 		String locationName,
 		Instant createdAt,

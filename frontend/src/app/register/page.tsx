@@ -1,16 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Header from "@/components/Header";
-import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { registerUser } from "@/api/authApi";
+import Header from "@/components/Header";
+import { useLanguage } from "@/contexts/LanguageContext";
+import Link from "next/link";
+import { useState } from "react";
 
 export default function RegisterPage() {
-  const router = useRouter();
-  const { login, isAuthenticated } = useAuth();
   const { t } = useLanguage();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -20,13 +16,6 @@ export default function RegisterPage() {
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/");
-    }
-  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,8 +32,6 @@ export default function RegisterPage() {
         displayItemsFromOtherCountry: showCrossCountryListings
       });
       
-      // After successful registration, log the user in
-      await login(email, password, country as "CZ" | "SK", showCrossCountryListings);
       // Redirect is handled in the login function
     } catch (error: any) {
       // Handle specific error messages from the backend

@@ -180,8 +180,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Update user settings function
   const updateUserSettings = (settings: { 
     country?: "CZ" | "SK", 
-    showCrossCountryListings?: boolean,
-    currency?: "CZK" | "EUR"
+    showCrossCountryListings?: boolean
   }) => {
     if (!user) return;
 

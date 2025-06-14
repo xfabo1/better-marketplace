@@ -40,10 +40,12 @@ public class ItemDaoIT extends PostgisTest {
 	private static final Location LOCATION = Location.builder()
 			.city("Brno")
 			.countryCode(Country.CZ)
-			.placeName("BRno")
-			.latitude(11.11f)
-			.longitude(12.11f)
+			.placeName("Brno")
+			.latitude(11.11)
+			.longitude(12.11)
 			.postalCode("99991")
+			.region("Brno")
+			.city("Brno")
 			.build();
 
 	@Autowired
@@ -71,10 +73,11 @@ public class ItemDaoIT extends PostgisTest {
 				.locationId(locationId)
 				.currency(Currency.CZK)
 				.email(EMAIL)
+				.condition("new")
 				.imageUrl(IMAGE_URL)
 				.phoneNumber(PHONE).build();
 
-		var id = itemDao.insertItem(item, userId);
+		var id = itemDao.insertItem(item, userId, 30.0, 30.1, "CZ");
 
 		var itemDbo = itemDao.findItem(id);
 
@@ -104,9 +107,10 @@ public class ItemDaoIT extends PostgisTest {
 				.currency(Currency.CZK)
 				.email(EMAIL)
 				.imageUrl(IMAGE_URL)
+				.condition("new")
 				.phoneNumber(PHONE).build();
 
-		var id = itemDao.insertItem(item, userId);
+		var id = itemDao.insertItem(item, userId, 30.0, 30.1, "CZ");
 		var itemDbo = itemDao.findItem(id);
 
 		assertThat(itemDbo).isPresent();
@@ -128,7 +132,8 @@ public class ItemDaoIT extends PostgisTest {
 				.build();
 
 		itemDao.updateItem(updateItem.name(), updateItem.description(), updateItem.currency(), updateItem.price(),
-				updateItem.location(), updateItem.imageUrl(), updateItem.email(), updateItem.phoneNumber(), id);
+				updateItem.locationId(), updateItem.imageUrl(), updateItem.email(), updateItem.phoneNumber(), null,
+				null, null, id);
 
 		var updatedItem = itemDao.findItem(id);
 
