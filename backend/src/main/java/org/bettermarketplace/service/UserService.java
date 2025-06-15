@@ -8,6 +8,7 @@ import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -15,14 +16,16 @@ public class UserService {
 	private static final UserMapper MAPPER = UserMapper.INSTANCE;
 
 	private final UserDao userDao;
+	private final ItemService itemService;
 
 	@Autowired
-	public UserService(UserDao userDao) {
+	public UserService(UserDao userDao, ItemService itemService) {
 		this.userDao = userDao;
+		this.itemService = itemService;
 	}
 
-	public Long insertUser(RegisterUserDto registerUserDto, String password) {
-		return userDao.insertUser(registerUserDto, password);
+	public void insertUser(RegisterUserDto registerUserDto, String password) {
+		userDao.insertUser(registerUserDto, password);
 	}
 
 	public Optional<UserDbo> getUser(Long id) {

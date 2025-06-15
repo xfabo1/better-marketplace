@@ -58,9 +58,8 @@ public interface ItemDao {
 			@Bind("country") String country,
 			@Bind("textSearch") String textSearch,
 			@Bind("maxMeterDistance") Double maxMeterDistance,
-			@Bind("lastPrice") BigDecimal lastPrice,
-			@Bind("lastUpdated") Instant lastUpdated,
 			@Bind("condition") String condition,
+			@Bind("offset") int offset,
 			@Bind("pageSize") int pageSize
 	);
 
@@ -74,9 +73,8 @@ public interface ItemDao {
 			@Bind("country") String country,
 			@Bind("textSearch") String textSearch,
 			@Bind("maxMeterDistance") Double maxMeterDistance,
-			@Bind("lastPrice") BigDecimal lastPrice,
-			@Bind("lastUpdated") Instant lastUpdated,
 			@Bind("condition") String condition,
+			@Bind("offset") int offset,
 			@Bind("pageSize") int pageSize
 	);
 
@@ -90,9 +88,8 @@ public interface ItemDao {
 			@Bind("country") String country,
 			@Bind("textSearch") String textSearch,
 			@Bind("maxMeterDistance") Double maxMeterDistance,
-			@Bind("lastPrice") BigDecimal lastPrice,
-			@Bind("lastUpdated") Instant lastUpdated,
 			@Bind("condition") String condition,
+			@Bind("offset") int offset,
 			@Bind("pageSize") int pageSize
 	);
 
@@ -106,9 +103,8 @@ public interface ItemDao {
 			@Bind("country") String country,
 			@Bind("textSearch") String textSearch,
 			@Bind("maxMeterDistance") Double maxMeterDistance,
-			@Bind("lastPrice") BigDecimal lastPrice,
-			@Bind("lastUpdated") Instant lastUpdated,
 			@Bind("condition") String condition,
+			@Bind("offset") int offset,
 			@Bind("pageSize") int pageSize
 	);
 }

@@ -1,5 +1,6 @@
 package org.bettermarketplace.mapper;
 
+import org.bettermarketplace.api.dto.location.LocationDto;
 import org.bettermarketplace.db.entity.LocationDbo;
 import org.bettermarketplace.http.dto.PostalCodeDto;
 import org.bettermarketplace.model.Location;

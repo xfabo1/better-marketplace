@@ -70,7 +70,7 @@ deleteItem(id) ::= <<
   WHERE id=:id
 >>
 
-findItemsByUpdateTimeAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize) ::= <<
+findItemsByUpdateTimeAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
    SELECT *
    FROM item
    WHERE TRUE
@@ -88,14 +88,12 @@ findItemsByUpdateTimeAsc(longitude, latitude, minPrice, maxPrice, country, textS
    )
    <endif>
    <if(condition)>AND condition = :condition<endif>
-   <if(lastUpdated)>
-   AND updated_at >= :lastUpdated
-   <endif>
    ORDER BY updated_at ASC
+   OFFSET :offset
    LIMIT :pageSize
 >>
 
-findItemsByUpdateTimeDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize) ::= <<
+findItemsByUpdateTimeDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
    SELECT *
    FROM item
    WHERE TRUE
@@ -113,15 +111,13 @@ findItemsByUpdateTimeDesc(longitude, latitude, minPrice, maxPrice, country, text
    )
    <endif>
    <if(condition)>AND condition = :condition<endif>
-   <if(lastUpdated)>
-   AND updated_at \<= :lastUpdated
-   <endif>
    ORDER BY updated_at DESC
+   OFFSET :offset
    LIMIT :pageSize
 >>
 
 
-findItemsByPriceAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize) ::= <<
+findItemsByPriceAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
    SELECT *
    FROM item
    WHERE TRUE
@@ -139,16 +135,14 @@ findItemsByPriceAsc(longitude, latitude, minPrice, maxPrice, country, textSearch
    )
    <endif>
    <if(condition)>AND condition = :condition<endif>
-   <if(lastPrice)>
-   AND price >= :lastPrice
-   <endif>
    ORDER BY price ASC
+   OFFSET :offset
    LIMIT :pageSize
 >>
 
-findItemsByPriceDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize) ::= <<
+findItemsByPriceDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
   SELECT *
-  FROM item
+  FROM item t
   WHERE TRUE
   <if(minPrice)>AND price \>= :minPrice<endif>
   <if(maxPrice)>AND price \<= :maxPrice<endif>
@@ -164,9 +158,7 @@ findItemsByPriceDesc(longitude, latitude, minPrice, maxPrice, country, textSearc
   )
   <endif>
   <if(condition)>AND condition = :condition<endif>
-  <if(lastPrice)>
-  AND price \<= :lastPrice
-  <endif>
   ORDER BY price DESC
+  OFFSET :offset
   LIMIT :pageSize
 >>

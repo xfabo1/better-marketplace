@@ -23,6 +23,10 @@ public record ItemDbo(
 		Currency currency,
 		@ColumnName("location_id")
 		Long locationId,
+		@ColumnName("place_name")
+		String placeName,
+		@ColumnName("postal_code")
+		String postalCode,
 		String category,
 		String subcategory,
 		@ColumnName("created_at")

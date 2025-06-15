@@ -3,12 +3,11 @@ package org.bettermarketplace.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.bettermarketplace.api.dto.filter.SearchFilter;
+import org.bettermarketplace.api.dto.filter.SearchFilterDto;
 import org.bettermarketplace.api.dto.item.CreateItemDto;
 import org.bettermarketplace.api.dto.item.UpdateItemDto;
 import org.bettermarketplace.db.dao.ItemDao;
 import org.bettermarketplace.db.entity.ItemDbo;
-import org.bettermarketplace.model.Country;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,34 +25,70 @@ public class ItemService {
 		return itemDao.findItem(id);
 	}
 
-	public List<ItemDbo> findItemsAsc(SearchFilter searchFilter, double longitude, double latitude, String country, int pageSize) {
+	public List<ItemDbo> findItemsByUpdateTimeAsc(SearchFilterDto searchFilterDto, Double longitude, Double latitude,
+			String country, int page, int pageSize) {
+		int offset = page * pageSize;
 		return itemDao.findItemsByUpdateTimeAsc(
 				longitude,
 				latitude,
-				searchFilter.minPrice(),
-				searchFilter.maxPrice(),
+				searchFilterDto.minPrice(),
+				searchFilterDto.maxPrice(),
 				country,
-				searchFilter.searchText(),
-				searchFilter.maxMeterDistance(),
-				searchFilter.lastPrice(),
-				searchFilter.lastUpdate(),
-				searchFilter.condition(),
+				searchFilterDto.searchText(),
+				searchFilterDto.maxMeterDistance(),
+				searchFilterDto.condition(),
+				offset,
 				pageSize
 		);
 	}
 
-	public List<ItemDbo> findItemsDesc(SearchFilter searchFilter, double longitude, double latitude, String country, int pageSize) {
-		return itemDao.findItemsByUpdateTimeAsc(
+	public List<ItemDbo> findItemsByUpdateTimeDesc(SearchFilterDto searchFilterDto, Double longitude, Double latitude,
+			String country, int page, int pageSize) {
+		int offset = page * pageSize;
+		return itemDao.findItemsByUpdateTimeDesc(
 				longitude,
 				latitude,
-				searchFilter.minPrice(),
-				searchFilter.maxPrice(),
+				searchFilterDto.minPrice(),
+				searchFilterDto.maxPrice(),
 				country,
-				searchFilter.searchText(),
-				searchFilter.maxMeterDistance(),
-				searchFilter.lastPrice(),
-				searchFilter.lastUpdate(),
-				searchFilter.condition(),
+				searchFilterDto.searchText(),
+				searchFilterDto.maxMeterDistance(),
+				searchFilterDto.condition(),
+				offset,
+				pageSize
+		);
+	}
+
+	public List<ItemDbo> findItemsByPriceAsc(SearchFilterDto searchFilterDto, Double longitude, Double latitude,
+			String country, int page, int pageSize) {
+		int offset = page * pageSize;
+		return itemDao.findItemsByPriceAsc(
+				longitude,
+				latitude,
+				searchFilterDto.minPrice(),
+				searchFilterDto.maxPrice(),
+				country,
+				searchFilterDto.searchText(),
+				searchFilterDto.maxMeterDistance(),
+				searchFilterDto.condition(),
+				offset,
+				pageSize
+		);
+	}
+
+	public List<ItemDbo> findItemsByPriceDesc(SearchFilterDto searchFilterDto, Double longitude, Double latitude,
+			String country, int page, int pageSize) {
+		int offset = page * pageSize;
+		return itemDao.findItemsByPriceDesc(
+				longitude,
+				latitude,
+				searchFilterDto.minPrice(),
+				searchFilterDto.maxPrice(),
+				country,
+				searchFilterDto.searchText(),
+				searchFilterDto.maxMeterDistance(),
+				searchFilterDto.condition(),
+				offset,
 				pageSize
 		);
 	}

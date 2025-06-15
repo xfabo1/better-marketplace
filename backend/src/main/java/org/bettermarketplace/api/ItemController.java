@@ -1,8 +1,10 @@
 package org.bettermarketplace.api;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-import org.bettermarketplace.api.dto.filter.SearchFilter;
+import org.bettermarketplace.api.dto.filter.SearchFilterDto;
 import org.bettermarketplace.api.dto.item.CreateItemDto;
 import org.bettermarketplace.api.dto.item.ItemFullDetailsDto;
 import org.bettermarketplace.api.dto.item.PreviewItemDto;
@@ -11,7 +13,6 @@ import org.bettermarketplace.db.entity.ItemDbo;
 import org.bettermarketplace.db.entity.LocationDbo;
 import org.bettermarketplace.mapper.ItemMapper;
 import org.bettermarketplace.mapper.LocationMapper;
-import org.bettermarketplace.model.Country;
 import org.bettermarketplace.security.CookieUtil;
 import org.bettermarketplace.security.TokenService;
 import org.bettermarketplace.service.ItemService;
@@ -53,10 +54,54 @@ public class ItemController {
 	}
 
 	@GetMapping("/preview")
-	public ResponseEntity<PreviewItemDto> getPreviewItems(@RequestBody SearchFilter searchFilter,
+	public ResponseEntity<List<PreviewItemDto>> getPreviewItems(@RequestBody SearchFilterDto searchFilterDto,
 			@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
-		return ResponseEntity.ok().build();
 
+		Double latitude = null;
+		Double longitude = null;
+		String country = null;
+
+		if (searchFilterDto.locationId() != null) {
+			var location = locationService.findLocation(searchFilterDto.locationId());
+			if (location.isEmpty()) {
+				return ResponseEntity.status(500).build();
+			}
+			latitude = location.get().latitude();
+			longitude = location.get().longitude();
+			country = location.get().countryCode();
+		}
+
+		List<ItemDbo> result;
+
+		switch (searchFilterDto.sorting()) {
+			case OLDEST -> {
+				result = itemService.findItemsByUpdateTimeAsc(searchFilterDto, longitude, latitude, country, page, pageSize);
+			}
+			case PRICE_ASC -> {
+				result = itemService.findItemsByPriceAsc(searchFilterDto, longitude, latitude, country, page, pageSize);
+			}
+			case PRICE_DESC -> {
+				result = itemService.findItemsByPriceDesc(searchFilterDto, longitude, latitude, country, page, pageSize);
+			}
+			default -> {
+				result = itemService.findItemsByUpdateTimeDesc(searchFilterDto, longitude, latitude, country, page, pageSize);
+			}
+		}
+
+		List<PreviewItemDto> previewItems = result.stream()
+				.map(item -> {
+					var location = locationService.findLocation(item.locationId());
+					return new PreviewItemDto(
+							item.name(),
+							location.map(LocationDbo::postalCode).orElse(""),
+							location.map(LocationDbo::city).orElse(""),
+							item.price(),
+							item.currency()
+					);
+				})
+				.toList();
+
+		return ResponseEntity.ok(previewItems);
 	}
 
 	@GetMapping("/item/{id}")
@@ -95,7 +140,8 @@ public class ItemController {
 				return ResponseEntity.status(500).build();
 			}
 
-			var itemId = itemService.insertItem(createItemDto, userAuthDetails.getUserId(), location.get().longitude(),
+			var itemId = itemService.insertItem(createItemDto, userAuthDetails.getUserId(),
+					location.get().longitude(),
 					location.get().latitude(), location.get().countryCode());
 			return ResponseEntity.status(201).body(itemId);
 		} catch (Exception e) {
@@ -129,9 +175,6 @@ public class ItemController {
 				country = location.get().countryCode();
 			}
 
-
-
-
 			itemService.updateItem(updateItemDto, id, country, longitude, latitude);
 
 			return ResponseEntity.status(201).build();
@@ -143,18 +186,19 @@ public class ItemController {
 
 	private ItemFullDetailsDto combineLocationAndUserWithItem(ItemDbo itemDbo, LocationDbo locationDbo) {
 		var location = LOCATION_MAPPER.from(locationDbo);
-		return ItemFullDetailsDto.builder()
-				.name(itemDbo.name())
-				.price(itemDbo.price())
-				.currency(itemDbo.currency())
-				.description(itemDbo.description())
-				.imageUrl(itemDbo.imageUrl())
-				.email(itemDbo.email())
-				.locationName(location.toString())
-				.country(location.getCountryCode())
-				.createdAt(itemDbo.createdAt())
-				.updatedAt(itemDbo.updatedAt())
-				.phoneNumber(itemDbo.phoneNumber())
-				.build();
+		return new ItemFullDetailsDto(
+				itemDbo.name(),
+				itemDbo.description(),
+				itemDbo.imageUrl(),
+				itemDbo.price(),
+				itemDbo.currency(),
+				"", // TODO: Add username lookup
+				itemDbo.email(),
+				itemDbo.phoneNumber(),
+				location.getCountryCode(),
+				location.toString(),
+				itemDbo.createdAt(),
+				itemDbo.updatedAt()
+		);
 	}
 }
