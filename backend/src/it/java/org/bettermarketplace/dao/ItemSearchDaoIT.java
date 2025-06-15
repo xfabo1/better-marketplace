@@ -231,21 +231,18 @@ public class ItemSearchDaoIT extends PostgisTest {
 			createTestItem("Item " + String.format("%02d", i), BigDecimal.valueOf(i * 100), brnoLocationId);
 		}
 
-		// Test first page (offset 0, pageSize 3)
 		List<PreviewItemDbo> firstPage = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, 0, 3);
 		assertThat(firstPage).hasSize(3);
 		assertThat(firstPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(100));
 		assertThat(firstPage.get(1).price()).isEqualByComparingTo(BigDecimal.valueOf(200));
 		assertThat(firstPage.get(2).price()).isEqualByComparingTo(BigDecimal.valueOf(300));
 
-		// Test second page (offset 3, pageSize 3)
 		List<PreviewItemDbo> secondPage = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, 3, 3);
 		assertThat(secondPage).hasSize(3);
 		assertThat(secondPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(400));
 		assertThat(secondPage.get(1).price()).isEqualByComparingTo(BigDecimal.valueOf(500));
 		assertThat(secondPage.get(2).price()).isEqualByComparingTo(BigDecimal.valueOf(600));
 
-		// Test third page (offset 6, pageSize 3)
 		List<PreviewItemDbo> thirdPage = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, 6, 3);
 		assertThat(thirdPage).hasSize(3);
 		assertThat(thirdPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(700));
@@ -259,7 +256,6 @@ public class ItemSearchDaoIT extends PostgisTest {
 			createTestItem("Item " + String.format("%02d", i), BigDecimal.valueOf(i * 100), brnoLocationId);
 		}
 
-		// Test first page (offset 0, pageSize 4)
 		List<PreviewItemDbo> firstPage = itemDao.findItemsByPriceDesc(null, null, null, null, null, null, null, null, 0, 4);
 		assertThat(firstPage).hasSize(4);
 		assertThat(firstPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(1000));
@@ -267,7 +263,6 @@ public class ItemSearchDaoIT extends PostgisTest {
 		assertThat(firstPage.get(2).price()).isEqualByComparingTo(BigDecimal.valueOf(800));
 		assertThat(firstPage.get(3).price()).isEqualByComparingTo(BigDecimal.valueOf(700));
 
-		// Test second page (offset 4, pageSize 4)
 		List<PreviewItemDbo> secondPage = itemDao.findItemsByPriceDesc(null, null, null, null, null, null, null, null, 4, 4);
 		assertThat(secondPage).hasSize(4);
 		assertThat(secondPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(600));
@@ -283,14 +278,12 @@ public class ItemSearchDaoIT extends PostgisTest {
 			Thread.sleep(50); // Ensure different timestamps
 		}
 
-		// Test first page (offset 0, pageSize 3)
 		List<PreviewItemDbo> firstPage = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, 0, 3);
 		assertThat(firstPage).hasSize(3);
 		assertThat(firstPage.get(0).name()).isEqualTo("Item 01");
 		assertThat(firstPage.get(1).name()).isEqualTo("Item 02");
 		assertThat(firstPage.get(2).name()).isEqualTo("Item 03");
 
-		// Test second page (offset 3, pageSize 3)
 		List<PreviewItemDbo> secondPage = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, 3, 3);
 		assertThat(secondPage).hasSize(3);
 		assertThat(secondPage.get(0).name()).isEqualTo("Item 04");
@@ -302,17 +295,15 @@ public class ItemSearchDaoIT extends PostgisTest {
 	public void findItemsByUpdateTimeDesc_withOffset_returnsCorrectItems() throws InterruptedException {
 		for (int i = 1; i <= 8; i++) {
 			createTestItem("Item " + String.format("%02d", i), BigDecimal.valueOf(i * 100), brnoLocationId);
-			Thread.sleep(50); // Ensure different timestamps
+			Thread.sleep(50);
 		}
 
-		// Test first page (offset 0, pageSize 3)
 		List<PreviewItemDbo> firstPage = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, 0, 3);
 		assertThat(firstPage).hasSize(3);
 		assertThat(firstPage.get(0).name()).isEqualTo("Item 08");
 		assertThat(firstPage.get(1).name()).isEqualTo("Item 07");
 		assertThat(firstPage.get(2).name()).isEqualTo("Item 06");
 
-		// Test second page (offset 3, pageSize 3)
 		List<PreviewItemDbo> secondPage = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, 3, 3);
 		assertThat(secondPage).hasSize(3);
 		assertThat(secondPage.get(0).name()).isEqualTo("Item 05");
@@ -505,4 +496,4 @@ public class ItemSearchDaoIT extends PostgisTest {
 		Long itemId = itemDao.insertItem(item, userId, latitude, longitude, country);
 		createdItemIds.add(itemId);
 	}
-} 
+}

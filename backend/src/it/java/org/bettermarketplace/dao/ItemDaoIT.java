@@ -37,6 +37,36 @@ public class ItemDaoIT extends PostgisTest {
 			.displayItemsFromOtherCountry(false)
 			.build();
 
+	private static final Location BRNO_LOCATION = Location.builder()
+			.city("Brno")
+			.countryCode(Country.CZ)
+			.placeName("Brno Test Location")
+			.latitude(49.1951)
+			.longitude(16.6068)
+			.postalCode("60200")
+			.region("Jihomoravský kraj")
+			.build();
+
+	private static final Location PRAGUE_LOCATION = Location.builder()
+			.city("Praha")
+			.countryCode(Country.CZ)
+			.placeName("Praha Test Location")
+			.latitude(50.0755)
+			.longitude(14.4378)
+			.postalCode("11000")
+			.region("Praha")
+			.build();
+
+	private static final Location BRATISLAVA_LOCATION = Location.builder()
+			.city("Bratislava")
+			.countryCode(Country.SK)
+			.placeName("Bratislava Test Location")
+			.latitude(48.1486)
+			.longitude(17.1077)
+			.postalCode("81101")
+			.region("Bratislavský kraj")
+			.build();
+
 	private static final Location LOCATION = Location.builder()
 			.city("Brno")
 			.countryCode(Country.CZ)
@@ -57,11 +87,17 @@ public class ItemDaoIT extends PostgisTest {
 
 	private Long userId;
 	private Long locationId;
+	private Long brnoLocationId;
+	private Long pragueLocationId;
+	private Long bratislavaLocationId;
 
 	@BeforeAll
 	public void setUp() {
 		userId = userDao.insertUser(USER, "password");
 		locationId = locationDao.insertLocation(LOCATION);
+		brnoLocationId = locationDao.insertLocation(BRNO_LOCATION);
+		pragueLocationId = locationDao.insertLocation(PRAGUE_LOCATION);
+		bratislavaLocationId = locationDao.insertLocation(BRATISLAVA_LOCATION);
 	}
 
 	@Test
@@ -149,5 +185,67 @@ public class ItemDaoIT extends PostgisTest {
 				.returns(IMAGE_URL, ItemDbo::imageUrl)
 				.returns(PHONE, ItemDbo::phoneNumber)
 				.returns(userId, ItemDbo::userId);
+
+		itemDao.deleteItem(id);
+	}
+
+	@Test
+	public void updateItemLocation_locationChanged_allLocationFieldsUpdated() {
+		var item = CreateItemDto.builder()
+				.name("Test Item")
+				.description("Test description")
+				.price(BigDecimal.valueOf(500))
+				.locationId(brnoLocationId)
+				.currency(Currency.CZK)
+				.email(EMAIL)
+				.condition("new")
+				.imageUrl(IMAGE_URL)
+				.phoneNumber(PHONE).build();
+
+		var itemId = itemDao.insertItem(item, userId, BRNO_LOCATION.getLatitude(), BRNO_LOCATION.getLongitude(), "CZ");
+		
+		var initialItem = itemDao.findItem(itemId);
+		assertThat(initialItem).isPresent();
+		assertThat(initialItem.get())
+				.returns(brnoLocationId, ItemDbo::locationId)
+				.returns("Brno Test Location", ItemDbo::placeName)
+				.returns("60200", ItemDbo::postalCode);
+		assertThat(initialItem.get().country()).isEqualTo(Country.CZ);
+		
+		var updateToPrague = UpdateItemDto.builder()
+				.locationId(pragueLocationId)
+				.build();
+		
+		itemDao.updateItem(updateToPrague.name(), updateToPrague.description(), updateToPrague.currency(), 
+				updateToPrague.price(), updateToPrague.locationId(), updateToPrague.imageUrl(), 
+				updateToPrague.email(), updateToPrague.phoneNumber(), Country.CZ.name(),
+				PRAGUE_LOCATION.getLongitude(), PRAGUE_LOCATION.getLatitude(), itemId);
+		
+		var updatedItem = itemDao.findItem(itemId);
+		assertThat(updatedItem).isPresent();
+		assertThat(updatedItem.get())
+				.returns(pragueLocationId, ItemDbo::locationId)
+				.returns("Praha Test Location", ItemDbo::placeName)
+				.returns("11000", ItemDbo::postalCode);
+		assertThat(updatedItem.get().country()).isEqualTo(Country.CZ);
+		
+		var updateToBratislava = UpdateItemDto.builder()
+				.locationId(bratislavaLocationId)
+				.build();
+		
+		itemDao.updateItem(updateToBratislava.name(), updateToBratislava.description(), updateToBratislava.currency(), 
+				updateToBratislava.price(), updateToBratislava.locationId(), updateToBratislava.imageUrl(), 
+				updateToBratislava.email(), updateToBratislava.phoneNumber(), Country.SK.name(),
+				BRATISLAVA_LOCATION.getLongitude(), BRATISLAVA_LOCATION.getLatitude(), itemId);
+		
+		var finalItem = itemDao.findItem(itemId);
+		assertThat(finalItem).isPresent();
+		assertThat(finalItem.get())
+				.returns(bratislavaLocationId, ItemDbo::locationId)
+				.returns("Bratislava Test Location", ItemDbo::placeName)
+				.returns("81101", ItemDbo::postalCode);
+		assertThat(finalItem.get().country()).isEqualTo(Country.SK);
+		
+		itemDao.deleteItem(itemId);
 	}
 }

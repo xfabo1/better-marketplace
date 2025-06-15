@@ -3,6 +3,7 @@ package org.bettermarketplace.db.entity;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import org.bettermarketplace.model.Country;
 import org.bettermarketplace.model.Currency;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
@@ -28,6 +29,7 @@ public record ItemDbo(
 		String placeName,
 		@ColumnName("postal_code")
 		String postalCode,
+		Country country,
 		String category,
 		Instant deleted_at,
 		String subcategory,

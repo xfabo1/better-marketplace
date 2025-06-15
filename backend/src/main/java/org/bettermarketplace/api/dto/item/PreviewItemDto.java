@@ -5,9 +5,6 @@ import java.math.BigDecimal;
 import org.bettermarketplace.model.Country;
 import org.bettermarketplace.model.Currency;
 
-import lombok.Builder;
-
-@Builder
 public record PreviewItemDto(
 		String name,
 		Country country,

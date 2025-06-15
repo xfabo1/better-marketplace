@@ -4,9 +4,6 @@ import java.time.Instant;
 
 import org.bettermarketplace.model.Sorting;
 
-import lombok.Builder;
-
-@Builder
 public record SearchFilterDto(
 		Long locationId,
 		Double minPrice,

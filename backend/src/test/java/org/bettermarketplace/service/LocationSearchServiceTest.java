@@ -27,8 +27,7 @@ class LocationSearchServiceTest {
 	@BeforeEach
 	void setUp() {
 		locationSearchService = new LocationSearchService(locationService);
-		
-		// Create mock location data
+
 		mockLocations = List.of(
 				new LocationDbo(1L, "11000", "CZ", "Prague", "Prague Region", "Prague", 50.0755, 14.4378),
 				new LocationDbo(2L, "60200", "CZ", "Brno", "South Moravian Region", "Brno", 49.1951, 16.6068),
@@ -40,10 +39,8 @@ class LocationSearchServiceTest {
 
 	@Test
 	void loadLocations_validData_loadsLocationsIntoTrieAndMap() {
-		// Given
 		when(locationService.findLocations()).thenReturn(mockLocations);
 
-		// Then - verify locations are loaded by testing search functionality
 		List<LocationDto> pragueResults = locationSearchService.search("Prague");
 		assertThat(pragueResults).hasSize(1);
 		assertThat(pragueResults.getFirst().id()).isEqualTo(1L);
@@ -52,13 +49,10 @@ class LocationSearchServiceTest {
 
 	@Test
 	void search_exactMatch_returnsMatchingLocation() {
-		// Given
 		when(locationService.findLocations()).thenReturn(mockLocations);
 
-		// When
 		List<LocationDto> results = locationSearchService.search("CZ, Brno");
 
-		// Then
 		assertThat(results).hasSize(1);
 		assertThat(results.getFirst().id()).isEqualTo(2L);
 		assertThat(results.getFirst().name()).contains("Brno");
@@ -66,57 +60,44 @@ class LocationSearchServiceTest {
 
 	@Test
 	void search_partialMatch_returnsMatchingLocations() {
-		// Given
 		when(locationService.findLocations()).thenReturn(mockLocations);
 
-		// When
 		List<LocationDto> results = locationSearchService.search("Pra");
 
-		// Then
 		assertThat(results).hasSize(1);
 		assertThat(results.getFirst().name()).contains("Prague");
 	}
 
 	@Test
 	void search_caseInsensitive_returnsMatchingLocations() {
-		// Given
 		when(locationService.findLocations()).thenReturn(mockLocations);
 
-		// When
 		List<LocationDto> results = locationSearchService.search("PRAGUE");
 
-		// Then
 		assertThat(results).hasSize(1);
 		assertThat(results.getFirst().name()).contains("Prague");
 	}
 
 	@Test
 	void search_noMatch_returnsEmptyList() {
-		// Given
 		when(locationService.findLocations()).thenReturn(mockLocations);
 
-		// When
 		List<LocationDto> results = locationSearchService.search("NonExistentCity");
 
-		// Then
 		assertThat(results).isEmpty();
 	}
 
 	@Test
 	void search_emptyPrefix_returnsEmptyList() {
-		// Given
 		when(locationService.findLocations()).thenReturn(mockLocations);
 
-		// When
 		List<LocationDto> results = locationSearchService.search("");
 
-		// Then
 		assertThat(results).isEmpty();
 	}
 
 	@Test
 	void search_multipleMatches_returnsAllMatches() {
-		// Given
 		List<LocationDbo> locationsWithSimilarNames = List.of(
 				new LocationDbo(1L, "11000", "CZ", "Prague", "Prague Region", "Prague", 50.0755, 14.4378),
 				new LocationDbo(2L, "12000", "CZ", "Prague 2", "Prague Region", "Prague", 50.0755, 14.4378),
@@ -124,23 +105,18 @@ class LocationSearchServiceTest {
 		);
 		when(locationService.findLocations()).thenReturn(locationsWithSimilarNames);
 
-		// When
 		List<LocationDto> results = locationSearchService.search("CZ, Prague");
 
-		// Then
 		assertThat(results).hasSize(3);
 		assertThat(results).allMatch(location -> location.name().contains("Prague"));
 	}
 
 	@Test
 	void getById_existingId_returnsLocation() {
-		// Given
 		when(locationService.findLocations()).thenReturn(mockLocations);
 
-		// When
 		Optional<LocationDto> result = locationSearchService.getById(1L);
 
-		// Then
 		assertThat(result).isPresent();
 		assertThat(result.get().id()).isEqualTo(1L);
 		assertThat(result.get().name()).contains("Prague");
@@ -148,76 +124,58 @@ class LocationSearchServiceTest {
 
 	@Test
 	void getById_nonExistingId_returnsEmpty() {
-		// Given
 		when(locationService.findLocations()).thenReturn(mockLocations);
 
-		// When
 		Optional<LocationDto> result = locationSearchService.getById(999L);
 
-		// Then
 		assertThat(result).isEmpty();
 	}
 
 	@Test
 	void getById_beforeLoadingLocations_returnsEmpty() {
-		// Given - no locations loaded
-
-		// When
 		Optional<LocationDto> result = locationSearchService.getById(1L);
 
-		// Then
 		assertThat(result).isEmpty();
 	}
 
 	@Test
 	void search_beforeLoadingLocations_returnsEmptyList() {
-		// Given - no locations loaded
-
-		// When
 		List<LocationDto> results = locationSearchService.search("Prague");
 
-		// Then
 		assertThat(results).isEmpty();
 	}
 
 	@Test
 	void loadLocations_emptyLocationList_handlesGracefully() {
-		// Given
 		when(locationService.findLocations()).thenReturn(List.of());
 
-		// Then
 		List<LocationDto> results = locationSearchService.search("Prague");
 		assertThat(results).isEmpty();
-		
+
 		Optional<LocationDto> byId = locationSearchService.getById(1L);
 		assertThat(byId).isEmpty();
 	}
 
 	@Test
 	void search_maxSuggestionsLimit_respectsLimit() {
-		// Given - create more than 10 locations with same prefix
 		List<LocationDbo> manyLocations = List.of(
 				new LocationDbo(1L, "11000", "CZ", "Prague 1", "Prague Region", "Prague", 50.0755, 14.4378),
-				new LocationDbo(2L, "12000", "CZ", "Prague 2", "Prague Region", "Prague", 50.0755, 14.4378),
-				new LocationDbo(3L, "13000", "CZ", "Prague 3", "Prague Region", "Prague", 50.0755, 14.4378),
-				new LocationDbo(4L, "14000", "CZ", "Prague 4", "Prague Region", "Prague", 50.0755, 14.4378),
-				new LocationDbo(5L, "15000", "CZ", "Prague 5", "Prague Region", "Prague", 50.0755, 14.4378),
-				new LocationDbo(6L, "16000", "CZ", "Prague 6", "Prague Region", "Prague", 50.0755, 14.4378),
-				new LocationDbo(7L, "17000", "CZ", "Prague 7", "Prague Region", "Prague", 50.0755, 14.4378),
-				new LocationDbo(8L, "18000", "CZ", "Prague 8", "Prague Region", "Prague", 50.0755, 14.4378),
-				new LocationDbo(9L, "19000", "CZ", "Prague 9", "Prague Region", "Prague", 50.0755, 14.4378),
-				new LocationDbo(10L, "20000", "CZ", "Prague 10", "Prague Region", "Prague", 50.0755, 14.4378),
-				new LocationDbo(11L, "21000", "CZ", "Prague 11", "Prague Region", "Prague", 50.0755, 14.4378),
-				new LocationDbo(12L, "22000", "CZ", "Prague 12", "Prague Region", "Prague", 50.0755, 14.4378)
+				new LocationDbo(2L, "11001", "CZ", "Prague 2", "Prague Region", "Prague", 50.0755, 14.4378),
+				new LocationDbo(3L, "11002", "CZ", "Prague 3", "Prague Region", "Prague", 50.0755, 14.4378),
+				new LocationDbo(4L, "11003", "CZ", "Prague 4", "Prague Region", "Prague", 50.0755, 14.4378),
+				new LocationDbo(5L, "11004", "CZ", "Prague 5", "Prague Region", "Prague", 50.0755, 14.4378),
+				new LocationDbo(6L, "11005", "CZ", "Prague 6", "Prague Region", "Prague", 50.0755, 14.4378),
+				new LocationDbo(7L, "11006", "CZ", "Prague 7", "Prague Region", "Prague", 50.0755, 14.4378),
+				new LocationDbo(8L, "11007", "CZ", "Prague 8", "Prague Region", "Prague", 50.0755, 14.4378),
+				new LocationDbo(9L, "11008", "CZ", "Prague 9", "Prague Region", "Prague", 50.0755, 14.4378),
+				new LocationDbo(10L, "11009", "CZ", "Prague 10", "Prague Region", "Prague", 50.0755, 14.4378),
+				new LocationDbo(11L, "11010", "CZ", "Prague 11", "Prague Region", "Prague", 50.0755, 14.4378),
+				new LocationDbo(12L, "11011", "CZ", "Prague 12", "Prague Region", "Prague", 50.0755, 14.4378)
 		);
 		when(locationService.findLocations()).thenReturn(manyLocations);
 
-		// When
 		List<LocationDto> results = locationSearchService.search("CZ, Prague");
 
-		// Then - should respect the maxSuggestions limit of 10
-		assertThat(results).hasSizeLessThanOrEqualTo(10);
+		assertThat(results).hasSize(10);
 	}
-
-
 } 
