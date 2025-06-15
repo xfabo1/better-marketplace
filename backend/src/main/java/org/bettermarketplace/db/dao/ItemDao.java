@@ -1,12 +1,12 @@
 package org.bettermarketplace.db.dao;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 import org.bettermarketplace.api.dto.item.CreateItemDto;
 import org.bettermarketplace.db.entity.ItemDbo;
+import org.bettermarketplace.db.entity.PreviewItemDbo;
 import org.bettermarketplace.model.Currency;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -50,7 +50,8 @@ public interface ItemDao {
 
 	@SqlQuery
 	@DefineNamedBindings
-	List<ItemDbo> findItemsByPriceAsc(
+	@RegisterConstructorMapper(PreviewItemDbo.class)
+	List<PreviewItemDbo> findItemsByPriceAsc(
 			@Bind("longitude") Double longitude,
 			@Bind("latitude") Double latitude,
 			@Bind("minPrice") Double minPrice,
@@ -65,7 +66,8 @@ public interface ItemDao {
 
 	@SqlQuery
 	@DefineNamedBindings
-	List<ItemDbo> findItemsByPriceDesc(
+	@RegisterConstructorMapper(PreviewItemDbo.class)
+	List<PreviewItemDbo> findItemsByPriceDesc(
 			@Bind("longitude") Double longitude,
 			@Bind("latitude") Double latitude,
 			@Bind("minPrice") Double minPrice,
@@ -80,7 +82,8 @@ public interface ItemDao {
 
 	@SqlQuery
 	@DefineNamedBindings
-	List<ItemDbo> findItemsByUpdateTimeAsc(
+	@RegisterConstructorMapper(PreviewItemDbo.class)
+	List<PreviewItemDbo> findItemsByUpdateTimeDesc(
 			@Bind("longitude") Double longitude,
 			@Bind("latitude") Double latitude,
 			@Bind("minPrice") Double minPrice,
@@ -95,7 +98,8 @@ public interface ItemDao {
 
 	@SqlQuery
 	@DefineNamedBindings
-	List<ItemDbo> findItemsByUpdateTimeDesc(
+	@RegisterConstructorMapper(PreviewItemDbo.class)
+	List<PreviewItemDbo> findItemsByUpdateTimeAsc(
 			@Bind("longitude") Double longitude,
 			@Bind("latitude") Double latitude,
 			@Bind("minPrice") Double minPrice,

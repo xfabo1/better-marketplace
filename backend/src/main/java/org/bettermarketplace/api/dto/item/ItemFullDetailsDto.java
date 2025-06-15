@@ -5,21 +5,28 @@ import java.time.Instant;
 
 import org.bettermarketplace.model.Country;
 import org.bettermarketplace.model.Currency;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import lombok.Builder;
 
 @Builder
 public record ItemFullDetailsDto(
+		Long id,
 		String name,
 		String description,
 		String imageUrl,
-		BigDecimal price,
-		Currency currency,
+		String phoneNumber,
 		String username,
 		String email,
-		String phoneNumber,
-		Country country,
-		String locationName,
+		BigDecimal price,
+		Long userId,
+		Currency currency,
+		Long locationId,
+		String placeName,
+		String postalCode,
+		String category,
+		Instant deleted_at,
+		String subcategory,
 		Instant createdAt,
-		Instant updatedAt
-) {}
+		Instant updatedAt,
+		String condition) {}

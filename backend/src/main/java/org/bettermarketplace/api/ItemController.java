@@ -11,6 +11,8 @@ import org.bettermarketplace.api.dto.item.PreviewItemDto;
 import org.bettermarketplace.api.dto.item.UpdateItemDto;
 import org.bettermarketplace.db.entity.ItemDbo;
 import org.bettermarketplace.db.entity.LocationDbo;
+import org.bettermarketplace.db.entity.PreviewItemDbo;
+import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.mapper.ItemMapper;
 import org.bettermarketplace.mapper.LocationMapper;
 import org.bettermarketplace.security.CookieUtil;
@@ -57,75 +59,54 @@ public class ItemController {
 	public ResponseEntity<List<PreviewItemDto>> getPreviewItems(@RequestBody SearchFilterDto searchFilterDto,
 			@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
 
-		Double latitude = null;
-		Double longitude = null;
-		String country = null;
+		try {
+			Double latitude = null;
+			Double longitude = null;
+			String country = null;
 
-		if (searchFilterDto.locationId() != null) {
-			var location = locationService.findLocation(searchFilterDto.locationId());
-			if (location.isEmpty()) {
-				return ResponseEntity.status(500).build();
+			if (searchFilterDto.locationId() != null) {
+				var location = locationService.findLocation(searchFilterDto.locationId());
+				if (location.isEmpty()) {
+					return ResponseEntity.status(500).build();
+				}
+				latitude = location.get().latitude();
+				longitude = location.get().longitude();
+				country = location.get().countryCode();
 			}
-			latitude = location.get().latitude();
-			longitude = location.get().longitude();
-			country = location.get().countryCode();
+
+			List<PreviewItemDbo> result;
+
+			switch (searchFilterDto.sorting()) {
+				case OLDEST -> {
+					result = itemService.findItemsByUpdateTimeAsc(searchFilterDto, longitude, latitude, country, page,
+							pageSize);
+				}
+				case PRICE_ASC -> {
+					result = itemService.findItemsByPriceAsc(searchFilterDto, longitude, latitude, country, page,
+							pageSize);
+				}
+				case PRICE_DESC -> {
+					result = itemService.findItemsByPriceDesc(searchFilterDto, longitude, latitude, country, page,
+							pageSize);
+				}
+				default -> {
+					result = itemService.findItemsByUpdateTimeDesc(searchFilterDto, longitude, latitude, country, page,
+							pageSize);
+				}
+			}
+
+			return ResponseEntity.ok(result.stream().map(LOCATION_MAPPER::from).toList());
+		} catch (Exception e) {
+			return ResponseEntity.status(500).build();
 		}
-
-		List<ItemDbo> result;
-
-		switch (searchFilterDto.sorting()) {
-			case OLDEST -> {
-				result = itemService.findItemsByUpdateTimeAsc(searchFilterDto, longitude, latitude, country, page, pageSize);
-			}
-			case PRICE_ASC -> {
-				result = itemService.findItemsByPriceAsc(searchFilterDto, longitude, latitude, country, page, pageSize);
-			}
-			case PRICE_DESC -> {
-				result = itemService.findItemsByPriceDesc(searchFilterDto, longitude, latitude, country, page, pageSize);
-			}
-			default -> {
-				result = itemService.findItemsByUpdateTimeDesc(searchFilterDto, longitude, latitude, country, page, pageSize);
-			}
-		}
-
-		List<PreviewItemDto> previewItems = result.stream()
-				.map(item -> {
-					var location = locationService.findLocation(item.locationId());
-					return new PreviewItemDto(
-							item.name(),
-							location.map(LocationDbo::postalCode).orElse(""),
-							location.map(LocationDbo::city).orElse(""),
-							item.price(),
-							item.currency()
-					);
-				})
-				.toList();
-
-		return ResponseEntity.ok(previewItems);
 	}
 
 	@GetMapping("/item/{id}")
 	public ResponseEntity<ItemFullDetailsDto> getItemById(@PathVariable("id") Long id) {
-		try {
-			var itemDbo = itemService.findItem(id);
+		var itemDbo = itemService.findItem(id);
 
-			if (itemDbo.isEmpty()) {
-				return ResponseEntity.notFound().build();
-			}
-
-			var locationDbo = locationService.findLocation(itemDbo.get().locationId());
-
-			// Ths is the same situation as above and this should never happen
-			if (locationDbo.isEmpty()) {
-				log.error("Location with ID {} not found in item with ID {}", itemDbo.get().locationId(),
-						itemDbo.get().id());
-				return ResponseEntity.status(500).build();
-			}
-
-			return ResponseEntity.ok(combineLocationAndUserWithItem(itemDbo.get(), locationDbo.get()));
-		} catch (Exception e) {
-			return ResponseEntity.status(500).build();
-		}
+		return itemDbo.map(dbo -> ResponseEntity.ok(ITEM_MAPPER.from(dbo)))
+				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
 	@PostMapping("/item")
@@ -182,23 +163,5 @@ public class ItemController {
 			log.error("Error while updating item with ID {}", id, e);
 			return ResponseEntity.status(500).build();
 		}
-	}
-
-	private ItemFullDetailsDto combineLocationAndUserWithItem(ItemDbo itemDbo, LocationDbo locationDbo) {
-		var location = LOCATION_MAPPER.from(locationDbo);
-		return new ItemFullDetailsDto(
-				itemDbo.name(),
-				itemDbo.description(),
-				itemDbo.imageUrl(),
-				itemDbo.price(),
-				itemDbo.currency(),
-				"", // TODO: Add username lookup
-				itemDbo.email(),
-				itemDbo.phoneNumber(),
-				location.getCountryCode(),
-				location.toString(),
-				itemDbo.createdAt(),
-				itemDbo.updatedAt()
-		);
 	}
 }

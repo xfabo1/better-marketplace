@@ -14,9 +14,10 @@ public record ItemDbo(
 		String name,
 		String description,
 		String imageUrl,
-		String email,
 		@ColumnName("phone_number")
 		String phoneNumber,
+		String username,
+		String email,
 		BigDecimal price,
 		@ColumnName("user_id")
 		Long userId,
@@ -28,6 +29,7 @@ public record ItemDbo(
 		@ColumnName("postal_code")
 		String postalCode,
 		String category,
+		Instant deleted_at,
 		String subcategory,
 		@ColumnName("created_at")
 		Instant createdAt,

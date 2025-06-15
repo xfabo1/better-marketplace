@@ -1,12 +1,13 @@
-findItems() ::= <<
-  SELECT *
-  FROM item
->>
-
 findItem(id) ::= <<
-  SELECT *
-  FROM item
-  WHERE id=:id
+  SELECT 
+    i.*,
+    u.username,
+    l.place_name,
+    l.postal_code
+  FROM item i
+  INNER JOIN marketplace_user u ON i.user_id = u.id
+  INNER JOIN location l ON i.location_id = l.id
+  WHERE i.id=:id
 >>
 
 insertItem(itemObject, userId, longitude, latitude, country) ::= <<
@@ -71,94 +72,122 @@ deleteItem(id) ::= <<
 >>
 
 findItemsByUpdateTimeAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
-   SELECT *
-   FROM item
+   SELECT 
+     i.name,
+     i.country,
+     i.currency,
+     i.price,
+     l.place_name,
+     l.postal_code
+   FROM item i
+   INNER JOIN location l ON i.location_id = l.id
    WHERE TRUE
-   <if(minPrice)>AND price \>= :minPrice<endif>
-   <if(maxPrice)>AND price \<= :maxPrice<endif>
-   <if(country)> AND country = :country<endif>
+   <if(minPrice)>AND i.price \>= :minPrice<endif>
+   <if(maxPrice)>AND i.price \<= :maxPrice<endif>
+   <if(country)> AND i.country = :country<endif>
    /* Full-text search with null check */
-   <if(textSearch)>AND search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
+   <if(textSearch)>AND i.search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
    /* Spatial query with null checks */
    <if(latitude && longitude && maxMeterDistance)>
    AND ST_DWithin(
-       geom,
+       i.geom,
        ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
        :maxMeterDistance
    )
    <endif>
-   <if(condition)>AND condition = :condition<endif>
-   ORDER BY updated_at ASC
+   <if(condition)>AND i.condition = :condition<endif>
+   ORDER BY i.updated_at ASC
    OFFSET :offset
    LIMIT :pageSize
 >>
 
 findItemsByUpdateTimeDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
-   SELECT *
-   FROM item
+   SELECT 
+     i.name,
+     i.country,
+     i.currency,
+     i.price,
+     l.place_name,
+     l.postal_code
+   FROM item i
+   INNER JOIN location l ON i.location_id = l.id
    WHERE TRUE
-   <if(minPrice)>AND price \>= :minPrice<endif>
-   <if(maxPrice)>AND price \<= :maxPrice<endif>
-   <if(country)> AND country = :country<endif>
+   <if(minPrice)>AND i.price \>= :minPrice<endif>
+   <if(maxPrice)>AND i.price \<= :maxPrice<endif>
+   <if(country)> AND i.country = :country<endif>
    /* Full-text search with null check */
-   <if(textSearch)>AND search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
+   <if(textSearch)>AND i.search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
    /* Spatial query with null checks */
    <if(latitude && longitude && maxMeterDistance)>
    AND ST_DWithin(
-       geom,
+       i.geom,
        ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
        :maxMeterDistance
    )
    <endif>
-   <if(condition)>AND condition = :condition<endif>
-   ORDER BY updated_at DESC
+   <if(condition)>AND i.condition = :condition<endif>
+   ORDER BY i.updated_at DESC
    OFFSET :offset
    LIMIT :pageSize
 >>
 
 
 findItemsByPriceAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
-   SELECT *
-   FROM item
+   SELECT 
+     i.name,
+     i.country,
+     i.currency,
+     i.price,
+     l.place_name,
+     l.postal_code
+   FROM item i
+   INNER JOIN location l ON i.location_id = l.id
    WHERE TRUE
-   <if(minPrice)>AND price \>= :minPrice<endif>
-   <if(maxPrice)>AND price \<= :maxPrice<endif>
-   <if(country)> AND country = :country<endif>
+   <if(minPrice)>AND i.price \>= :minPrice<endif>
+   <if(maxPrice)>AND i.price \<= :maxPrice<endif>
+   <if(country)> AND i.country = :country<endif>
    /* Full-text search with null check */
-   <if(textSearch)>AND search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
+   <if(textSearch)>AND i.search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
    /* Spatial query with null checks */
    <if(latitude && longitude && maxMeterDistance)>
    AND ST_DWithin(
-       geom,
+       i.geom,
        ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
        :maxMeterDistance
    )
    <endif>
-   <if(condition)>AND condition = :condition<endif>
-   ORDER BY price ASC
+   <if(condition)>AND i.condition = :condition<endif>
+   ORDER BY i.price ASC
    OFFSET :offset
    LIMIT :pageSize
 >>
 
 findItemsByPriceDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
-  SELECT *
-  FROM item t
+  SELECT 
+     i.name,
+     i.country,
+     i.currency,
+     i.price,
+     l.place_name,
+     l.postal_code
+  FROM item i
+  INNER JOIN location l ON i.location_id = l.id
   WHERE TRUE
-  <if(minPrice)>AND price \>= :minPrice<endif>
-  <if(maxPrice)>AND price \<= :maxPrice<endif>
-  <if(country)> AND country = :country<endif>
+  <if(minPrice)>AND i.price \>= :minPrice<endif>
+  <if(maxPrice)>AND i.price \<= :maxPrice<endif>
+  <if(country)> AND i.country = :country<endif>
   /* Full-text search with null check */
-  <if(textSearch)>AND search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
+  <if(textSearch)>AND i.search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
   /* Spatial query with null checks */
   <if(latitude && longitude && maxMeterDistance)>
   AND ST_DWithin(
-      geom,
+      i.geom,
       ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
       :maxMeterDistance
   )
   <endif>
-  <if(condition)>AND condition = :condition<endif>
-  ORDER BY price DESC
+  <if(condition)>AND i.condition = :condition<endif>
+  ORDER BY i.price DESC
   OFFSET :offset
   LIMIT :pageSize
 >>

@@ -8,6 +8,7 @@ import org.bettermarketplace.api.dto.item.CreateItemDto;
 import org.bettermarketplace.api.dto.item.UpdateItemDto;
 import org.bettermarketplace.db.dao.ItemDao;
 import org.bettermarketplace.db.entity.ItemDbo;
+import org.bettermarketplace.db.entity.PreviewItemDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class ItemService {
 		return itemDao.findItem(id);
 	}
 
-	public List<ItemDbo> findItemsByUpdateTimeAsc(SearchFilterDto searchFilterDto, Double longitude, Double latitude,
+	public List<PreviewItemDbo> findItemsByUpdateTimeAsc(SearchFilterDto searchFilterDto, Double longitude, Double latitude,
 			String country, int page, int pageSize) {
 		int offset = page * pageSize;
 		return itemDao.findItemsByUpdateTimeAsc(
@@ -42,7 +43,7 @@ public class ItemService {
 		);
 	}
 
-	public List<ItemDbo> findItemsByUpdateTimeDesc(SearchFilterDto searchFilterDto, Double longitude, Double latitude,
+	public List<PreviewItemDbo> findItemsByUpdateTimeDesc(SearchFilterDto searchFilterDto, Double longitude, Double latitude,
 			String country, int page, int pageSize) {
 		int offset = page * pageSize;
 		return itemDao.findItemsByUpdateTimeDesc(
@@ -59,7 +60,7 @@ public class ItemService {
 		);
 	}
 
-	public List<ItemDbo> findItemsByPriceAsc(SearchFilterDto searchFilterDto, Double longitude, Double latitude,
+	public List<PreviewItemDbo> findItemsByPriceAsc(SearchFilterDto searchFilterDto, Double longitude, Double latitude,
 			String country, int page, int pageSize) {
 		int offset = page * pageSize;
 		return itemDao.findItemsByPriceAsc(
@@ -76,7 +77,7 @@ public class ItemService {
 		);
 	}
 
-	public List<ItemDbo> findItemsByPriceDesc(SearchFilterDto searchFilterDto, Double longitude, Double latitude,
+	public List<PreviewItemDbo> findItemsByPriceDesc(SearchFilterDto searchFilterDto, Double longitude, Double latitude,
 			String country, int page, int pageSize) {
 		int offset = page * pageSize;
 		return itemDao.findItemsByPriceDesc(
