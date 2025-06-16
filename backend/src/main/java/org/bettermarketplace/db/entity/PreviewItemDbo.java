@@ -10,7 +10,7 @@ import lombok.Builder;
 
 @Builder
 public record PreviewItemDbo(
-		String name,
+		String title,
 		Country country,
 		@ColumnName("postal_code")
 		String postalCode,

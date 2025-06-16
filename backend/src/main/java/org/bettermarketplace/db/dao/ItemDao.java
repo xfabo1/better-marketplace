@@ -32,7 +32,7 @@ public interface ItemDao {
 	@SqlUpdate
 	@DefineNamedBindings
 	void updateItem(
-			@Bind("name") String name,
+			@Bind("title") String title,
 			@Bind("description") String description,
 			@Bind("currency") Currency currency,
 			@Bind("price") BigDecimal price,

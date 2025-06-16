@@ -8,7 +8,7 @@ import lombok.Builder;
 
 @Builder
 public record CreateItemDto(
-	String name,
+	String title,
 	String description,
 	Currency currency,
 	BigDecimal price,

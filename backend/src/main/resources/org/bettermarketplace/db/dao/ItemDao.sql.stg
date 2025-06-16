@@ -17,7 +17,7 @@ insertItem(itemObject, userId, longitude, latitude, country) ::= <<
     phone_number,
     user_id,
     description,
-    name,
+    title,
     price,
     currency,
     location_id,
@@ -34,7 +34,7 @@ insertItem(itemObject, userId, longitude, latitude, country) ::= <<
     :itemObject.phoneNumber,
     :userId,
     :itemObject.description,
-    :itemObject.name,
+    :itemObject.title,
     :itemObject.price,
     :itemObject.currency,
     :itemObject.locationId,
@@ -47,10 +47,10 @@ insertItem(itemObject, userId, longitude, latitude, country) ::= <<
   )
 >>
 
-updateItem(name, description, currency, price, locationId, imageUrl, email, phoneNumber, longitude, latitude, id, country, condition) ::= <<
+updateItem(title, description, currency, price, locationId, imageUrl, email, phoneNumber, longitude, latitude, id, country, condition) ::= <<
   UPDATE item
   SET
-      <if(name)>name = :name,<endif>
+      <if(title)>title = :title,<endif>
       <if(description)>description = :description,<endif>
       <if(currency)>currency = :currency,<endif>
       <if(price)>price = :price,<endif>
@@ -73,7 +73,7 @@ deleteItem(id) ::= <<
 
 findItemsByUpdateTimeAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
    SELECT 
-     i.name,
+     i.title,
      i.country,
      i.currency,
      i.price,
@@ -105,7 +105,7 @@ findItemsByUpdateTimeAsc(longitude, latitude, minPrice, maxPrice, country, textS
 
 findItemsByUpdateTimeDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
    SELECT 
-     i.name,
+     i.title,
      i.country,
      i.currency,
      i.price,
@@ -138,7 +138,7 @@ findItemsByUpdateTimeDesc(longitude, latitude, minPrice, maxPrice, country, text
 
 findItemsByPriceAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
    SELECT 
-     i.name,
+     i.title,
      i.country,
      i.currency,
      i.price,
@@ -170,7 +170,7 @@ findItemsByPriceAsc(longitude, latitude, minPrice, maxPrice, country, textSearch
 
 findItemsByPriceDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
   SELECT 
-     i.name,
+     i.title,
      i.country,
      i.currency,
      i.price,

@@ -6,7 +6,7 @@ import org.bettermarketplace.model.Country;
 import org.bettermarketplace.model.Currency;
 
 public record PreviewItemDto(
-		String name,
+		String title,
 		Country country,
 		String postalCode,
 		String placeName,

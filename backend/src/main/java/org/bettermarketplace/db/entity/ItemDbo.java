@@ -12,7 +12,7 @@ import lombok.Builder;
 @Builder
 public record ItemDbo(
 		Long id,
-		String name,
+		String title,
 		String description,
 		String imageUrl,
 		@ColumnName("phone_number")

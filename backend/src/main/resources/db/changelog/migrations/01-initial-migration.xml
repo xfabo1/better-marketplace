@@ -76,7 +76,7 @@
                 <constraints nullable="false" foreignKeyName="item_user_pk" referencedTableName="marketplace_user" referencedColumnNames="id"/>
             </column>
             <column name="description" type="varchar(2000)"/>
-            <column name="name" type="varchar(100)">
+            <column name="title" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="price" type="decimal(20,2)">
@@ -124,6 +124,9 @@
         </createIndex>
         <createIndex tableName="item" indexName="idx_item_date_updated">
             <column name="updated_at"/>
+        </createIndex>
+        <createIndex tableName="item" indexName="idx_item_title">
+            <column name="title"/>
         </createIndex>
         <sql>
             CREATE INDEX item_geom_idx ON item USING GIST (geom);

@@ -126,9 +126,9 @@ public class ItemSearchDaoIT extends PostgisTest {
 		List<PreviewItemDbo> results = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, 0, 10);
 
 		assertThat(results).hasSize(3);
-		assertThat(results.get(0).name()).isEqualTo("First Item");
-		assertThat(results.get(1).name()).isEqualTo("Second Item");
-		assertThat(results.get(2).name()).isEqualTo("Third Item");
+		assertThat(results.get(0).title()).isEqualTo("First Item");
+		assertThat(results.get(1).title()).isEqualTo("Second Item");
+		assertThat(results.get(2).title()).isEqualTo("Third Item");
 	}
 
 	@Test
@@ -143,9 +143,9 @@ public class ItemSearchDaoIT extends PostgisTest {
 		List<PreviewItemDbo> results = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, 0, 10);
 
 		assertThat(results).hasSize(3);
-		assertThat(results.get(0).name()).isEqualTo("Third Item");
-		assertThat(results.get(1).name()).isEqualTo("Second Item");
-		assertThat(results.get(2).name()).isEqualTo("First Item");
+		assertThat(results.get(0).title()).isEqualTo("Third Item");
+		assertThat(results.get(1).title()).isEqualTo("Second Item");
+		assertThat(results.get(2).title()).isEqualTo("First Item");
 	}
 
 	@Test
@@ -157,7 +157,7 @@ public class ItemSearchDaoIT extends PostgisTest {
 		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(null, null, 100.0, 200.0, null, null, null, null, 0, 10);
 
 		assertThat(results).hasSize(1);
-		assertThat(results.getFirst().name()).isEqualTo("Medium Item");
+		assertThat(results.getFirst().title()).isEqualTo("Medium Item");
 		assertThat(results.getFirst().price()).isEqualByComparingTo(BigDecimal.valueOf(150));
 	}
 
@@ -183,8 +183,8 @@ public class ItemSearchDaoIT extends PostgisTest {
 		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, "CZ", null, null, null, 0, 10);
 
 		assertThat(results).hasSize(2);
-		assertThat(results.get(0).name()).isEqualTo("CZ Item 1");
-		assertThat(results.get(1).name()).isEqualTo("CZ Item 2");
+		assertThat(results.get(0).title()).isEqualTo("CZ Item 1");
+		assertThat(results.get(1).title()).isEqualTo("CZ Item 2");
 	}
 
 	@Test
@@ -196,8 +196,8 @@ public class ItemSearchDaoIT extends PostgisTest {
 		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, null, "Pro", null, null, 0, 10);
 
 		assertThat(results).hasSize(2);
-		assertThat(results.get(0).name()).isEqualTo("iPhone 14 Pro");
-		assertThat(results.get(1).name()).isEqualTo("MacBook Pro");
+		assertThat(results.get(0).title()).isEqualTo("iPhone 14 Pro");
+		assertThat(results.get(1).title()).isEqualTo("MacBook Pro");
 	}
 
 	@Test
@@ -209,7 +209,7 @@ public class ItemSearchDaoIT extends PostgisTest {
 				null, null, null, null, 50000.0, null, 0, 10);
 
 		assertThat(results).hasSize(1);
-		assertThat(results.getFirst().name()).isEqualTo("Brno Item");
+		assertThat(results.getFirst().title()).isEqualTo("Brno Item");
 	}
 
 	@Test
@@ -221,8 +221,8 @@ public class ItemSearchDaoIT extends PostgisTest {
 				null, null, null, null, 250000.0, null, 0, 10);
 
 		assertThat(results).hasSize(2);
-		assertThat(results.get(0).name()).isEqualTo("Brno Item");
-		assertThat(results.get(1).name()).isEqualTo("Prague Item");
+		assertThat(results.get(0).title()).isEqualTo("Brno Item");
+		assertThat(results.get(1).title()).isEqualTo("Prague Item");
 	}
 
 	@Test
@@ -280,15 +280,15 @@ public class ItemSearchDaoIT extends PostgisTest {
 
 		List<PreviewItemDbo> firstPage = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, 0, 3);
 		assertThat(firstPage).hasSize(3);
-		assertThat(firstPage.get(0).name()).isEqualTo("Item 01");
-		assertThat(firstPage.get(1).name()).isEqualTo("Item 02");
-		assertThat(firstPage.get(2).name()).isEqualTo("Item 03");
+		assertThat(firstPage.get(0).title()).isEqualTo("Item 01");
+		assertThat(firstPage.get(1).title()).isEqualTo("Item 02");
+		assertThat(firstPage.get(2).title()).isEqualTo("Item 03");
 
 		List<PreviewItemDbo> secondPage = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, 3, 3);
 		assertThat(secondPage).hasSize(3);
-		assertThat(secondPage.get(0).name()).isEqualTo("Item 04");
-		assertThat(secondPage.get(1).name()).isEqualTo("Item 05");
-		assertThat(secondPage.get(2).name()).isEqualTo("Item 06");
+		assertThat(secondPage.get(0).title()).isEqualTo("Item 04");
+		assertThat(secondPage.get(1).title()).isEqualTo("Item 05");
+		assertThat(secondPage.get(2).title()).isEqualTo("Item 06");
 	}
 
 	@Test
@@ -300,15 +300,15 @@ public class ItemSearchDaoIT extends PostgisTest {
 
 		List<PreviewItemDbo> firstPage = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, 0, 3);
 		assertThat(firstPage).hasSize(3);
-		assertThat(firstPage.get(0).name()).isEqualTo("Item 08");
-		assertThat(firstPage.get(1).name()).isEqualTo("Item 07");
-		assertThat(firstPage.get(2).name()).isEqualTo("Item 06");
+		assertThat(firstPage.get(0).title()).isEqualTo("Item 08");
+		assertThat(firstPage.get(1).title()).isEqualTo("Item 07");
+		assertThat(firstPage.get(2).title()).isEqualTo("Item 06");
 
 		List<PreviewItemDbo> secondPage = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, 3, 3);
 		assertThat(secondPage).hasSize(3);
-		assertThat(secondPage.get(0).name()).isEqualTo("Item 05");
-		assertThat(secondPage.get(1).name()).isEqualTo("Item 04");
-		assertThat(secondPage.get(2).name()).isEqualTo("Item 03");
+		assertThat(secondPage.get(0).title()).isEqualTo("Item 05");
+		assertThat(secondPage.get(1).title()).isEqualTo("Item 04");
+		assertThat(secondPage.get(2).title()).isEqualTo("Item 03");
 	}
 
 	@Test
@@ -370,7 +370,7 @@ public class ItemSearchDaoIT extends PostgisTest {
 				BRNO_LOCATION.getLatitude(), null, null, null, "iPhone", 50000.0, null, 0, 10);
 
 		assertThat(results).hasSize(1);
-		assertThat(results.getFirst().name()).isEqualTo("iPhone in Brno");
+		assertThat(results.getFirst().title()).isEqualTo("iPhone in Brno");
 	}
 
 	@Test
@@ -390,8 +390,8 @@ public class ItemSearchDaoIT extends PostgisTest {
 		assertThat(secondPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(500));
 		assertThat(secondPage.get(3).price()).isEqualByComparingTo(BigDecimal.valueOf(800));
 
-		List<String> firstPageNames = firstPage.stream().map(PreviewItemDbo::name).toList();
-		List<String> secondPageNames = secondPage.stream().map(PreviewItemDbo::name).toList();
+		List<String> firstPageNames = firstPage.stream().map(PreviewItemDbo::title).toList();
+		List<String> secondPageNames = secondPage.stream().map(PreviewItemDbo::title).toList();
 		assertThat(firstPageNames).doesNotContainAnyElementsOf(secondPageNames);
 	}
 
@@ -412,8 +412,8 @@ public class ItemSearchDaoIT extends PostgisTest {
 		assertThat(secondPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(600));
 		assertThat(secondPage.get(3).price()).isEqualByComparingTo(BigDecimal.valueOf(300));
 
-		List<String> firstPageNames = firstPage.stream().map(PreviewItemDbo::name).toList();
-		List<String> secondPageNames = secondPage.stream().map(PreviewItemDbo::name).toList();
+		List<String> firstPageNames = firstPage.stream().map(PreviewItemDbo::title).toList();
+		List<String> secondPageNames = secondPage.stream().map(PreviewItemDbo::title).toList();
 		assertThat(firstPageNames).doesNotContainAnyElementsOf(secondPageNames);
 	}
 
@@ -427,17 +427,17 @@ public class ItemSearchDaoIT extends PostgisTest {
 
 		List<PreviewItemDbo> firstPage = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, 0, 3);
 		assertThat(firstPage).hasSize(3);
-		assertThat(firstPage.get(0).name()).isEqualTo("Item 01");
-		assertThat(firstPage.get(2).name()).isEqualTo("Item 03");
+		assertThat(firstPage.get(0).title()).isEqualTo("Item 01");
+		assertThat(firstPage.get(2).title()).isEqualTo("Item 03");
 
 		List<PreviewItemDbo> secondPage = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, 3, 3);
 
 		assertThat(secondPage).hasSize(3);
-		assertThat(secondPage.get(0).name()).isEqualTo("Item 04");
-		assertThat(secondPage.get(2).name()).isEqualTo("Item 06");
+		assertThat(secondPage.get(0).title()).isEqualTo("Item 04");
+		assertThat(secondPage.get(2).title()).isEqualTo("Item 06");
 
-		List<String> firstPageNames = firstPage.stream().map(PreviewItemDbo::name).toList();
-		List<String> secondPageNames = secondPage.stream().map(PreviewItemDbo::name).toList();
+		List<String> firstPageNames = firstPage.stream().map(PreviewItemDbo::title).toList();
+		List<String> secondPageNames = secondPage.stream().map(PreviewItemDbo::title).toList();
 		assertThat(firstPageNames).doesNotContainAnyElementsOf(secondPageNames);
 	}
 
@@ -451,17 +451,17 @@ public class ItemSearchDaoIT extends PostgisTest {
 
 		List<PreviewItemDbo> firstPage = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, 0, 3);
 		assertThat(firstPage).hasSize(3);
-		assertThat(firstPage.get(0).name()).isEqualTo("Item 08");
-		assertThat(firstPage.get(2).name()).isEqualTo("Item 06");
+		assertThat(firstPage.get(0).title()).isEqualTo("Item 08");
+		assertThat(firstPage.get(2).title()).isEqualTo("Item 06");
 
 		List<PreviewItemDbo> secondPage = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, 3, 3);
 
 		assertThat(secondPage).hasSize(3);
-		assertThat(secondPage.get(0).name()).isEqualTo("Item 05");
-		assertThat(secondPage.get(2).name()).isEqualTo("Item 03");
+		assertThat(secondPage.get(0).title()).isEqualTo("Item 05");
+		assertThat(secondPage.get(2).title()).isEqualTo("Item 03");
 
-		List<String> firstPageNames = firstPage.stream().map(PreviewItemDbo::name).toList();
-		List<String> secondPageNames = secondPage.stream().map(PreviewItemDbo::name).toList();
+		List<String> firstPageNames = firstPage.stream().map(PreviewItemDbo::title).toList();
+		List<String> secondPageNames = secondPage.stream().map(PreviewItemDbo::title).toList();
 		assertThat(firstPageNames).doesNotContainAnyElementsOf(secondPageNames);
 	}
 

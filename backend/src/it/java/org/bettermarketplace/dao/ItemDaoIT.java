@@ -103,7 +103,7 @@ public class ItemDaoIT extends PostgisTest {
 	@Test
 	public void insertItem_validBody_itemInserted() {
 		var item = CreateItemDto.builder()
-				.name(NAME)
+				.title(NAME)
 				.description(DESCRIPTION)
 				.price(PRICE)
 				.locationId(locationId)
@@ -119,7 +119,7 @@ public class ItemDaoIT extends PostgisTest {
 
 		assertThat(itemDbo).isPresent();
 		assertThat(itemDbo.get())
-				.returns(NAME, ItemDbo::name)
+				.returns(NAME, ItemDbo::title)
 				.returns(DESCRIPTION, ItemDbo::description);
 		assertThat(itemDbo.get().price().compareTo(PRICE)).isZero();
 		assertThat(itemDbo.get())
@@ -136,7 +136,7 @@ public class ItemDaoIT extends PostgisTest {
 	@Test
 	public void updateItem_validBody_itemUpdated() {
 		var item = CreateItemDto.builder()
-				.name(NAME)
+				.title(NAME)
 				.description(DESCRIPTION)
 				.price(PRICE)
 				.locationId(locationId)
@@ -151,7 +151,7 @@ public class ItemDaoIT extends PostgisTest {
 
 		assertThat(itemDbo).isPresent();
 		assertThat(itemDbo.get())
-				.returns(NAME, ItemDbo::name)
+				.returns(NAME, ItemDbo::title)
 				.returns(DESCRIPTION, ItemDbo::description);
 		assertThat(itemDbo.get().price().compareTo(PRICE)).isZero();
 		assertThat(itemDbo.get())
@@ -168,7 +168,7 @@ public class ItemDaoIT extends PostgisTest {
 				.condition("used")
 				.build();
 
-		itemDao.updateItem(updateItem.name(), updateItem.description(), updateItem.currency(), updateItem.price(),
+		itemDao.updateItem(updateItem.title(), updateItem.description(), updateItem.currency(), updateItem.price(),
 				updateItem.locationId(), updateItem.imageUrl(), updateItem.email(), updateItem.phoneNumber(), null,
 				null, null, id, updateItem.condition());
 
@@ -176,7 +176,7 @@ public class ItemDaoIT extends PostgisTest {
 
 		assertThat(updatedItem).isPresent();
 		assertThat(updatedItem.get())
-				.returns(NAME, ItemDbo::name)
+				.returns(NAME, ItemDbo::title)
 				.returns(DESCRIPTION, ItemDbo::description);
 		assertThat(updatedItem.get().price().compareTo(BigDecimal.TEN)).isZero();
 		assertThat(updatedItem.get())
@@ -193,7 +193,7 @@ public class ItemDaoIT extends PostgisTest {
 	@Test
 	public void updateItemLocation_locationChanged_allLocationFieldsUpdated() {
 		var item = CreateItemDto.builder()
-				.name("Test Item")
+				.title("Test Item")
 				.description("Test description")
 				.price(BigDecimal.valueOf(500))
 				.locationId(brnoLocationId)
@@ -217,7 +217,7 @@ public class ItemDaoIT extends PostgisTest {
 				.locationId(pragueLocationId)
 				.build();
 		
-		itemDao.updateItem(updateToPrague.name(), updateToPrague.description(), updateToPrague.currency(), 
+		itemDao.updateItem(updateToPrague.title(), updateToPrague.description(), updateToPrague.currency(),
 				updateToPrague.price(), updateToPrague.locationId(), updateToPrague.imageUrl(), 
 				updateToPrague.email(), updateToPrague.phoneNumber(), Country.CZ.name(),
 				PRAGUE_LOCATION.getLongitude(), PRAGUE_LOCATION.getLatitude(), itemId, updateToPrague.condition());
@@ -234,7 +234,7 @@ public class ItemDaoIT extends PostgisTest {
 				.locationId(bratislavaLocationId)
 				.build();
 		
-		itemDao.updateItem(updateToBratislava.name(), updateToBratislava.description(), updateToBratislava.currency(), 
+		itemDao.updateItem(updateToBratislava.title(), updateToBratislava.description(), updateToBratislava.currency(),
 				updateToBratislava.price(), updateToBratislava.locationId(), updateToBratislava.imageUrl(), 
 				updateToBratislava.email(), updateToBratislava.phoneNumber(), Country.SK.name(),
 				BRATISLAVA_LOCATION.getLongitude(), BRATISLAVA_LOCATION.getLatitude(), itemId, updateToBratislava.condition());

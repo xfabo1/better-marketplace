@@ -8,7 +8,7 @@ import org.bettermarketplace.model.Currency;
 
 public record ItemFullDetailsDto(
 		Long id,
-		String name,
+		String title,
 		String description,
 		String imageUrl,
 		String phoneNumber,
