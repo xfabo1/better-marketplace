@@ -1,7 +1,9 @@
 package org.bettermarketplace.api;
 
+import static org.bettermarketplace.api.response.ResponseStatusMessage.INTERNAL_SERVER_ERROR;
+import static org.bettermarketplace.api.response.ResponseStatusMessage.UNAUTHORIZED;
+
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,10 +12,8 @@ import org.bettermarketplace.api.dto.item.CreateItemDto;
 import org.bettermarketplace.api.dto.item.ItemFullDetailsDto;
 import org.bettermarketplace.api.dto.item.PreviewItemDto;
 import org.bettermarketplace.api.dto.item.UpdateItemDto;
-import org.bettermarketplace.db.entity.ItemDbo;
-import org.bettermarketplace.db.entity.LocationDbo;
+import org.bettermarketplace.api.response.ApiResponse;
 import org.bettermarketplace.db.entity.PreviewItemDbo;
-import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.mapper.ItemMapper;
 import org.bettermarketplace.mapper.LocationMapper;
 import org.bettermarketplace.model.Sorting;
@@ -22,7 +22,6 @@ import org.bettermarketplace.security.TokenService;
 import org.bettermarketplace.service.ItemService;
 import org.bettermarketplace.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,8 +57,8 @@ public class ItemController {
 	}
 
 	@GetMapping("/preview")
-	public ResponseEntity<List<PreviewItemDto>> getPreviewItems(
-			@RequestParam("page") int page, 
+	public ApiResponse<List<PreviewItemDto>> getPreviewItems(
+			@RequestParam("page") int page,
 			@RequestParam("pageSize") int pageSize,
 			@RequestParam(value = "locationId", required = false) Long locationId,
 			@RequestParam(value = "minPrice", required = false) Double minPrice,
@@ -72,118 +71,137 @@ public class ItemController {
 
 		try {
 			var searchFilterDto = new SearchFilterDto(
-				locationId,
-				minPrice,
-				maxPrice,
-				dateAdded != null ? Instant.parse(dateAdded) : null,
-				condition,
-				searchText,
-				Sorting.valueOf(sorting),
-				maxMeterDistance
+					locationId,
+					minPrice,
+					maxPrice,
+					dateAdded != null ? Instant.parse(dateAdded) : null,
+					condition,
+					searchText,
+					Sorting.valueOf(sorting),
+					maxMeterDistance
 			);
 
-			Double latitude = null;
-			Double longitude = null;
-			String country = null;
-
-			if (searchFilterDto.locationId() != null) {
-				var location = locationService.findLocation(searchFilterDto.locationId());
-				if (location.isEmpty()) {
-					return ResponseEntity.status(500).build();
-				}
-				latitude = location.get().latitude();
-				longitude = location.get().longitude();
-				country = location.get().countryCode();
+			var coordinates = getLocationCoordinates(searchFilterDto.locationId());
+			if (coordinates == null) {
+				return createErrorMessage();
 			}
 
 			List<PreviewItemDbo> result;
 
 			switch (searchFilterDto.sorting()) {
-				case OLDEST -> {
-					result = itemService.findItemsByUpdateTimeAsc(searchFilterDto, longitude, latitude, country, page,
-							pageSize);
-				}
-				case PRICE_ASC -> {
-					result = itemService.findItemsByPriceAsc(searchFilterDto, longitude, latitude, country, page,
-							pageSize);
-				}
-				case PRICE_DESC -> {
-					result = itemService.findItemsByPriceDesc(searchFilterDto, longitude, latitude, country, page,
-							pageSize);
-				}
-				default -> {
-					result = itemService.findItemsByUpdateTimeDesc(searchFilterDto, longitude, latitude, country, page,
-							pageSize);
-				}
+				case OLDEST -> result = itemService.findItemsByUpdateTimeAsc(searchFilterDto, coordinates.longitude,
+						coordinates.latitude, coordinates.country, page, pageSize);
+				case PRICE_ASC -> result = itemService.findItemsByPriceAsc(searchFilterDto, coordinates.longitude,
+						coordinates.latitude(), coordinates.country, page, pageSize);
+				case PRICE_DESC ->
+						result = itemService.findItemsByPriceDesc(searchFilterDto, coordinates.longitude,
+								coordinates.latitude(), coordinates.country, page, pageSize);
+				default -> result = itemService.findItemsByUpdateTimeDesc(searchFilterDto,
+						coordinates.longitude(), coordinates.latitude(), coordinates.country, page, pageSize);
 			}
 
-			return ResponseEntity.ok(result.stream().map(LOCATION_MAPPER::from).toList());
+			return ApiResponse.<List<PreviewItemDto>>builder()
+					.body(result.stream().map(LOCATION_MAPPER::from).toList())
+					.statusCode(200)
+					.build();
+
 		} catch (Exception e) {
-			return ResponseEntity.status(500).build();
+			return createErrorMessage();
 		}
 	}
 
 	@GetMapping("/item/{id}")
-	public ResponseEntity<ItemFullDetailsDto> getItemById(@PathVariable("id") Long id) {
+	public ApiResponse<ItemFullDetailsDto> getItemById(@PathVariable("id") Long id) {
 		var itemDbo = itemService.findItem(id);
 
-		return itemDbo.map(dbo -> ResponseEntity.ok(ITEM_MAPPER.from(dbo)))
-				.orElseGet(() -> ResponseEntity.notFound().build());
+		if (itemDbo.isEmpty()) {
+			return ApiResponse.<ItemFullDetailsDto>builder()
+					.statusCode(404)
+					.build();
+		}
+
+		return ApiResponse.<ItemFullDetailsDto>builder()
+				.body(ITEM_MAPPER.from(itemDbo.get()))
+				.statusCode(200)
+				.build();
+
 	}
 
 	@PostMapping("/item")
-	public ResponseEntity<Long> createItem(@RequestBody CreateItemDto createItemDto, HttpServletRequest request) {
+	public ApiResponse<Void> createItem(@RequestBody CreateItemDto createItemDto, HttpServletRequest request) {
 		try {
 			var token = CookieUtil.extractTokenFromCookie(request);
 
 			var userAuthDetails = tokenService.getUserDetails(token);
-			var location = locationService.findLocation(createItemDto.locationId());
 
-			if (location.isEmpty()) {
-				return ResponseEntity.status(500).build();
+			var coordinates = getLocationCoordinates(createItemDto.locationId());
+			if (coordinates == null) {
+				return createErrorMessage();
 			}
 
-			var itemId = itemService.insertItem(createItemDto, userAuthDetails.getUserId(),
-					location.get().longitude(),
-					location.get().latitude(), location.get().countryCode());
-			return ResponseEntity.status(201).body(itemId);
+			itemService.insertItem(createItemDto, userAuthDetails.getUserId(),
+					coordinates.longitude, coordinates.latitude, coordinates.country);
+			return ApiResponse.<Void>builder()
+					.statusCode(201)
+					.build();
 		} catch (Exception e) {
-			return ResponseEntity.status(500).build();
+			log.error("Error while creating item", e);
+			return createErrorMessage();
 		}
 	}
 
 	@PutMapping("/item/{id}")
-	public ResponseEntity<String> updateItem(@PathVariable("id") Long id, @RequestBody UpdateItemDto updateItemDto,
+	public ApiResponse<Long> updateItem(@PathVariable("id") Long id, @RequestBody UpdateItemDto updateItemDto,
 			HttpServletRequest request) {
 		try {
 			var token = CookieUtil.extractTokenFromCookie(request);
 			var userAuthDetails = tokenService.getUserDetails(token);
 			if (!Objects.equals(userAuthDetails.getUserId(), id)) {
-				return ResponseEntity.status(401).build();
+				return ApiResponse.<Long>builder()
+						.statusCode(UNAUTHORIZED.statusCode())
+						.message(UNAUTHORIZED.statusMessage())
+						.build();
 			}
 
-			Double latitude = null;
-			Double longitude = null;
-			String country = null;
-
-			if (updateItemDto.locationId() != null) {
-
-				var location = locationService.findLocation(updateItemDto.locationId());
-				if (location.isEmpty()) {
-					return ResponseEntity.notFound().build();
-				}
-
-				latitude = location.get().latitude();
-				longitude = location.get().longitude();
-				country = location.get().countryCode();
+			var coordinates = getLocationCoordinates(updateItemDto.locationId());
+			if (coordinates == null) {
+				return createErrorMessage();
 			}
 
-			itemService.updateItem(updateItemDto, id, country, longitude, latitude);
+			itemService.updateItem(updateItemDto, id, coordinates.country, coordinates.longitude,
+					coordinates.latitude());
 
-			return ResponseEntity.status(201).build();
+			return ApiResponse.<Long>builder()
+					.statusCode(200)
+					.build();
+
 		} catch (Exception e) {
 			log.error("Error while updating item with ID {}", id, e);
-			return ResponseEntity.status(500).build();
+			return createErrorMessage();
 		}
+	}
+
+	private <T> ApiResponse<T> createErrorMessage() {
+		return ApiResponse.<T>builder()
+				.statusCode(INTERNAL_SERVER_ERROR.statusCode())
+				.message(INTERNAL_SERVER_ERROR.statusMessage())
+				.body(null)
+				.build();
+	}
+
+	private record LocationCoordinates(Double latitude, Double longitude, String country) {}
+
+	private LocationCoordinates getLocationCoordinates(Long locationId) {
+		var location = locationService.findLocation(locationId);
+		if (location.isEmpty()) {
+			log.error("Location with id {} not found", locationId);
+			return null;
+		}
+
+		return new LocationCoordinates(
+				location.get().latitude(),
+				location.get().longitude(),
+				location.get().countryCode()
+		);
 	}
 }

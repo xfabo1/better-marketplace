@@ -22,6 +22,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -52,7 +54,7 @@ public class SecurityConfig {
 		authProvider.setPasswordEncoder(passwordEncoder());
 		return new ProviderManager(authProvider);
 	}
-	
+
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
@@ -62,7 +64,7 @@ public class SecurityConfig {
 		configuration.setExposedHeaders(List.of("Authorization"));
 		configuration.setAllowCredentials(true);
 		configuration.setMaxAge(3600L); // 1 hour
-		
+
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
@@ -75,7 +77,7 @@ public class SecurityConfig {
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers("/auth/login",
-						                 "/auth/register").permitAll()
+								"/auth/register").permitAll()
 						.requestMatchers(HttpMethod.GET, "/**").permitAll()
 						.requestMatchers(HttpMethod.POST, "/**")
 						.hasAuthority("SCOPE_write")
@@ -88,6 +90,13 @@ public class SecurityConfig {
 						.anyRequest()
 						.authenticated())
 				.httpBasic(AbstractHttpConfigurer::disable)
+				.exceptionHandling(handling -> handling
+						.authenticationEntryPoint((request, response, exception) -> {
+							response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+							response.setContentType("application/json");
+							response.getWriter().write("{\"message\":\"unauthorized\",\"statusCode\":401}");
+						})
+				)
 				.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.build();
