@@ -165,11 +165,12 @@ public class ItemDaoIT extends PostgisTest {
 		var updateItem = UpdateItemDto.builder()
 				.email("random@gmail.com")
 				.price(BigDecimal.TEN)
+				.condition("used")
 				.build();
 
 		itemDao.updateItem(updateItem.name(), updateItem.description(), updateItem.currency(), updateItem.price(),
 				updateItem.locationId(), updateItem.imageUrl(), updateItem.email(), updateItem.phoneNumber(), null,
-				null, null, id);
+				null, null, id, updateItem.condition());
 
 		var updatedItem = itemDao.findItem(id);
 
@@ -219,7 +220,7 @@ public class ItemDaoIT extends PostgisTest {
 		itemDao.updateItem(updateToPrague.name(), updateToPrague.description(), updateToPrague.currency(), 
 				updateToPrague.price(), updateToPrague.locationId(), updateToPrague.imageUrl(), 
 				updateToPrague.email(), updateToPrague.phoneNumber(), Country.CZ.name(),
-				PRAGUE_LOCATION.getLongitude(), PRAGUE_LOCATION.getLatitude(), itemId);
+				PRAGUE_LOCATION.getLongitude(), PRAGUE_LOCATION.getLatitude(), itemId, updateToPrague.condition());
 		
 		var updatedItem = itemDao.findItem(itemId);
 		assertThat(updatedItem).isPresent();
@@ -236,7 +237,7 @@ public class ItemDaoIT extends PostgisTest {
 		itemDao.updateItem(updateToBratislava.name(), updateToBratislava.description(), updateToBratislava.currency(), 
 				updateToBratislava.price(), updateToBratislava.locationId(), updateToBratislava.imageUrl(), 
 				updateToBratislava.email(), updateToBratislava.phoneNumber(), Country.SK.name(),
-				BRATISLAVA_LOCATION.getLongitude(), BRATISLAVA_LOCATION.getLatitude(), itemId);
+				BRATISLAVA_LOCATION.getLongitude(), BRATISLAVA_LOCATION.getLatitude(), itemId, updateToBratislava.condition());
 		
 		var finalItem = itemDao.findItem(itemId);
 		assertThat(finalItem).isPresent();

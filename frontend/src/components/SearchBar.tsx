@@ -115,7 +115,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
               >
                 {conditions.map((cond) => (
                   <option key={cond.id} value={cond.id}>
-                    {t(cond.name)}
+                    {t(cond.value)}
                   </option>
                 ))}
               </select>
@@ -131,11 +131,11 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
               >
-                {dateFilterOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {t(option.label)}
-                  </option>
-                ))}
+                                  {dateFilterOptions.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {t(option.value)}
+                    </option>
+                  ))}
               </select>
             </div>
             

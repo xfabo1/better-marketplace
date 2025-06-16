@@ -78,7 +78,9 @@ findItemsByUpdateTimeAsc(longitude, latitude, minPrice, maxPrice, country, textS
      i.currency,
      i.price,
      l.place_name,
-     l.postal_code
+     l.postal_code,
+     i.category,
+     i.condition
    FROM item i
    INNER JOIN location l ON i.location_id = l.id
    WHERE TRUE
@@ -108,7 +110,9 @@ findItemsByUpdateTimeDesc(longitude, latitude, minPrice, maxPrice, country, text
      i.currency,
      i.price,
      l.place_name,
-     l.postal_code
+     l.postal_code,
+     i.category,
+     i.condition
    FROM item i
    INNER JOIN location l ON i.location_id = l.id
    WHERE TRUE
@@ -139,7 +143,9 @@ findItemsByPriceAsc(longitude, latitude, minPrice, maxPrice, country, textSearch
      i.currency,
      i.price,
      l.place_name,
-     l.postal_code
+     l.postal_code,
+     i.category,
+     i.condition
    FROM item i
    INNER JOIN location l ON i.location_id = l.id
    WHERE TRUE
@@ -169,7 +175,9 @@ findItemsByPriceDesc(longitude, latitude, minPrice, maxPrice, country, textSearc
      i.currency,
      i.price,
      l.place_name,
-     l.postal_code
+     l.postal_code,
+     i.category,
+     i.condition
   FROM item i
   INNER JOIN location l ON i.location_id = l.id
   WHERE TRUE

@@ -11,6 +11,8 @@ public record PreviewItemDto(
 		String postalCode,
 		String placeName,
 		BigDecimal price,
-		Currency currency
+		Currency currency,
+		String category,
+		String condition
 ) {
 }

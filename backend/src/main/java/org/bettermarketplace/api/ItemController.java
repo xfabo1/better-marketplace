@@ -1,5 +1,6 @@
 package org.bettermarketplace.api;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +16,7 @@ import org.bettermarketplace.db.entity.PreviewItemDbo;
 import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.mapper.ItemMapper;
 import org.bettermarketplace.mapper.LocationMapper;
+import org.bettermarketplace.model.Sorting;
 import org.bettermarketplace.security.CookieUtil;
 import org.bettermarketplace.security.TokenService;
 import org.bettermarketplace.service.ItemService;
@@ -56,10 +58,30 @@ public class ItemController {
 	}
 
 	@GetMapping("/preview")
-	public ResponseEntity<List<PreviewItemDto>> getPreviewItems(@RequestBody SearchFilterDto searchFilterDto,
-			@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
+	public ResponseEntity<List<PreviewItemDto>> getPreviewItems(
+			@RequestParam("page") int page, 
+			@RequestParam("pageSize") int pageSize,
+			@RequestParam(value = "locationId", required = false) Long locationId,
+			@RequestParam(value = "minPrice", required = false) Double minPrice,
+			@RequestParam(value = "maxPrice", required = false) Double maxPrice,
+			@RequestParam(value = "dateAdded", required = false) String dateAdded,
+			@RequestParam(value = "condition", required = false) String condition,
+			@RequestParam(value = "searchText", required = false) String searchText,
+			@RequestParam(value = "sorting", required = false, defaultValue = "NEWEST") String sorting,
+			@RequestParam(value = "maxMeterDistance", required = false) Double maxMeterDistance) {
 
 		try {
+			var searchFilterDto = new SearchFilterDto(
+				locationId,
+				minPrice,
+				maxPrice,
+				dateAdded != null ? Instant.parse(dateAdded) : null,
+				condition,
+				searchText,
+				Sorting.valueOf(sorting),
+				maxMeterDistance
+			);
+
 			Double latitude = null;
 			Double longitude = null;
 			String country = null;

@@ -1,6 +1,6 @@
 export const dateFilterOptions = [
-  { label: "all_dates", value: "all" },
-  { label: "today", value: "today" },
-  { label: "this_week", value: "week" },
-  { label: "this_month", value: "month" },
+  { id: "all", value: "all_dates" },
+  { id: "today", value: "today" },
+  { id: "week", value: "this_week" },
+  { id: "month", value: "this_month" },
 ];

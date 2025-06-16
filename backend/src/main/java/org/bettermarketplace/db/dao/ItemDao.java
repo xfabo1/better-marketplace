@@ -43,7 +43,8 @@ public interface ItemDao {
 			@Bind("country") String country,
 			@Bind("longitude") Double longitude,
 			@Bind("latitude") Double latitude,
-			@Bind("id") Long id);
+			@Bind("id") Long id,
+			@Bind("condition") String condition);
 
 	@SqlUpdate
 	void deleteItem(@Bind("id") Long id);

@@ -1,38 +1,22 @@
 "use client";
 
-import { getItems } from "@/api/itemApi";
+import { searchItems, PreviewItemDto, SearchFilterDto } from "@/api/itemApi";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { categories } from "@/data/categories";
 import { conditions } from "@/data/conditions";
 import { dateFilterOptions } from "@/data/dateFilterOptions";
-import { sortOptions } from "@/data/sortOptions";
-import Image from "next/image";
-import Link from "next/link";
+import { sortOptions, mapSortingToBackend } from "@/data/sortOptions";
+
+
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 // Items per page
 const ITEMS_PER_PAGE = 9;
 
-// Interface for Item from backend
-interface Item {
-  id: number;
-  name: string;
-  price: number;
-  currency: string;
-  description: string;
-  imageUrl: string;
-  locationId: number;
-  creatorId: number;
-  // Frontend specific fields that we'll add after fetching
-  location?: string;
-  postalCode?: string;
-  conditionId?: string;
-  createdAt?: string;
-  title?: string;
-}
+import { Listing } from "@/types/listing";
 
 export default function ListingsPage() {
   const searchParams = useSearchParams();
@@ -48,7 +32,7 @@ export default function ListingsPage() {
   const [dateFilter, setDateFilter] = useState("all");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [listings, setListings] = useState<Item[]>([]);
+  const [listings, setListings] = useState<Listing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,24 +55,37 @@ export default function ListingsPage() {
     }
   }, [searchParams]);
 
-  // Fetch items from backend
+  // Fetch items from backend using the new search API
   useEffect(() => {
     const fetchItems = async () => {
       try {
         setIsLoading(true);
         setError(null);
 
-        const items = await getItems();
+        // Create search filter based on current state
+        const searchFilter: SearchFilterDto = {
+          searchText: searchQuery || undefined,
+          minPrice: minPrice ? parseFloat(minPrice) : undefined,
+          maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,
+          condition: selectedCondition !== "all" ? selectedCondition : undefined,
+          sorting: mapSortingToBackend(sortBy),
+          // For now, we don't have location filtering implemented
+          locationId: undefined,
+          maxMeterDistance: undefined,
+          dateAdded: undefined, // We'll handle date filtering on frontend for now
+        };
+
+        const items = await searchItems({
+          searchFilter,
+          page: currentPage - 1, // Backend uses 0-based pagination
+          pageSize: ITEMS_PER_PAGE,
+        });
 
         // Transform backend items to match frontend listing structure
-        const transformedItems = items.map((item: Item) => ({
+        const transformedItems = items.map((item: PreviewItemDto) => ({
           ...item,
-          title: item.name,
-          // For now, use placeholder values for fields not available in the backend
-          location: "Unknown", // This should come from locationId
-          postalCode: "000 00",
-          conditionId: "used", // Default condition
-          createdAt: new Date().toISOString(), // Default to current date
+          id: `${item.name}-${Math.random()}`, // Generate temporary ID until backend provides it
+          imageUrl: "https://placehold.co/800x600/e6f7ef/10b981/png?text=No+Image", // Placeholder until backend provides it
         }));
 
         setListings(transformedItems);
@@ -101,91 +98,30 @@ export default function ListingsPage() {
     };
 
     fetchItems();
-  }, []);
+  }, [searchQuery, minPrice, maxPrice, selectedCondition, sortBy, currentPage]);
 
-  // Filter listings based on selected filters
-  const filteredListings = listings.filter(listing => {
-    // Filter by location (city name or postal code)
-    if (locationQuery && listing.location) {
-      const locationMatches = listing.location.toLowerCase().includes(locationQuery.toLowerCase());
-      const postalCodeMatches = listing.postalCode?.includes(locationQuery) || false;
-      if (!locationMatches && !postalCodeMatches) {
-        return false;
-      }
-    }
-
-    // Filter by condition
-    if (selectedCondition !== "all" && listing.conditionId !== selectedCondition) {
-      return false;
-    }
-
-    // Filter by search query
-    if (searchQuery && !listing.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
-    }
-
-    // Filter by price range
-    if (minPrice && listing.price < parseInt(minPrice)) {
-      return false;
-    }
-
-    if (maxPrice && listing.price > parseInt(maxPrice)) {
-      return false;
-    }
-
-    // Filter by date
-    if (dateFilter !== "all" && listing.createdAt) {
-      const today = new Date();
-      const listingDate = new Date(listing.createdAt);
-
-      if (dateFilter === "today") {
-        if (
-          today.getDate() !== listingDate.getDate() ||
-          today.getMonth() !== listingDate.getMonth() ||
-          today.getFullYear() !== listingDate.getFullYear()
-        ) {
-          return false;
-        }
-      } else if (dateFilter === "week") {
-        const weekAgo = new Date();
-        weekAgo.setDate(today.getDate() - 7);
-        if (listingDate < weekAgo) {
-          return false;
-        }
-      } else if (dateFilter === "month") {
-        const monthAgo = new Date();
-        monthAgo.setMonth(today.getMonth() - 1);
-        if (listingDate < monthAgo) {
-          return false;
-        }
-      }
-    }
-
-    return true;
-  });
-
-  // Sort listings based on selected sort option
-  const sortedListings = [...filteredListings].sort((a, b) => {
-    switch (sortBy) {
+  // Helper function to map frontend sorting to backend sorting
+  const mapSortingToBackend = (frontendSort: string): "NEWEST" | "OLDEST" | "PRICE_ASC" | "PRICE_DESC" => {
+    switch (frontendSort) {
       case "newest":
-        return new Date(b.createdAt || "").getTime() - new Date(a.createdAt || "").getTime();
+        return "NEWEST";
       case "oldest":
-        return new Date(a.createdAt || "").getTime() - new Date(b.createdAt || "").getTime();
+        return "OLDEST";
       case "price_asc":
-        return a.price - b.price;
+        return "PRICE_ASC";
       case "price_desc":
-        return b.price - a.price;
+        return "PRICE_DESC";
       default:
-        return 0;
+        return "NEWEST";
     }
-  });
+  };
 
-  // Calculate pagination
-  const totalPages = Math.ceil(sortedListings.length / ITEMS_PER_PAGE);
-  const paginatedListings = sortedListings.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+
+
+  // Backend handles sorting, so we don't need to sort again
+  const sortedListings = listings;
+
+
 
   const handleLocationChange = (location: string) => {
     setLocationQuery(location);
@@ -399,7 +335,7 @@ export default function ListingsPage() {
                         role="menuitem"
                         onClick={() => handleSortChange(option.value)}
                       >
-                        {t(option.label)}
+                        {t(option.value)}
                       </button>
                     ))}
                   </div>
@@ -436,7 +372,7 @@ export default function ListingsPage() {
                 >
                   {conditions.map(cond => (
                     <option key={cond.id} value={cond.id}>
-                      {t(cond.name)}
+                      {t(cond.value)}
                     </option>
                   ))}
                 </select>
@@ -453,8 +389,8 @@ export default function ListingsPage() {
                   onChange={e => setLocalDateFilter(e.target.value)}
                 >
                   {dateFilterOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {t(option.label)}
+                    <option key={option.id} value={option.id}>
+                      {t(option.value)}
                     </option>
                   ))}
                 </select>
@@ -533,7 +469,7 @@ export default function ListingsPage() {
                 >
                   {sortOptions.map(option => (
                     <option key={option.value} value={option.value}>
-                      {t(option.label)}
+                      {t(option.value)}
                     </option>
                   ))}
                 </select>
@@ -544,44 +480,48 @@ export default function ListingsPage() {
           {paginatedListings.length > 0 ? (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                {paginatedListings.map(listing => (
-                  <Link href={`/listing/${listing.id}`} key={listing.id} className="group">
+                {paginatedListings.map((listing, index) => (
+                  <div key={`${listing.name}-${index}`} className="group">
                     <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
-                      <div className="relative h-32 w-full">
-                        <Image
-                          src={listing.imageUrl}
-                          alt={listing.title || "Listing"}
-                          fill
-                          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                          className="object-cover"
-                        />
+                      <div className="relative h-32 w-full bg-gray-200 flex items-center justify-center">
+                        {/* Placeholder for image since backend doesn't provide imageUrl yet */}
+                        <svg className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
                       </div>
                       <div className="p-2 flex-grow flex flex-col">
                         <div className="flex justify-between items-center mb-1">
                           <div className="text-xs text-primary font-medium truncate max-w-[70%]">
-                            {t(getCategoryTranslationKey(listing.name))}
+                            {t(getCategoryTranslationKey(listing.category || ""))}
                           </div>
                           <div className="text-xs text-gray-500 hidden sm:block">
-                            {formatDate(listing.createdAt || "")}
+                            {/* TODO: Show date when backend provides createdAt */}
                           </div>
                         </div>
                         <h3 className="text-xs font-medium text-gray-900 group-hover:text-primary transition-colors duration-200 mb-1 line-clamp-2">
-                          {listing.title || "Untitled Listing"}
+                          {listing.name}
                         </h3>
                         <div className="text-xs text-gray-600 mb-1 hidden sm:block">
-                          {t(listing.conditionId || "Used")}
+                          {listing.condition ? t(listing.condition) : ""}
                         </div>
-                        <div className="mt-auto flex justify-between items-center">
-                          <span className="text-sm font-bold text-gray-900">
-                            {listing.price.toLocaleString()} {listing.currency}
-                          </span>
-                          <span className="text-xs text-gray-500 truncate max-w-[40%]">
-                            {listing.location}
-                          </span>
+                        <div className="mt-auto">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-sm font-bold text-gray-900">
+                              {listing.price.toLocaleString()} {listing.currency}
+                            </span>
+                            <span className="text-xs text-gray-500 truncate max-w-[40%]">
+                              {listing.placeName}
+                            </span>
+                          </div>
+                          <div className="flex justify-end items-center text-xs text-gray-400">
+                            <span className="truncate">
+                              {listing.postalCode} • {listing.country}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
 

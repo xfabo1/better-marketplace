@@ -109,21 +109,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="01-04-table-for-tokens" author="xfabo1">
-        <createTable tableName="tokens">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="token" type="varchar(1000)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="user_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="user_token_id" referencedColumnNames="id" referencedTableName="marketplace_user"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="01-05-create-indexes" author="xfabo1">
+    <changeSet id="01-04-create-indexes" author="xfabo1">
         <createIndex indexName="idx_user_email" tableName="marketplace_user">
             <column name="email"/>
         </createIndex>

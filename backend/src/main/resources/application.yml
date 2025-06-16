@@ -2,11 +2,6 @@ server:
   servlet:
     context-path: '/api/better-marketplace'
 
-logging:
-  level:
-    jdbi:
-      sql: DEBUG
-
 spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
@@ -28,12 +23,6 @@ app:
   security:
     token:
       expiration-hours: 168
-
-
-
 clients:
   open-data-client:
     url: 'https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/geonames-postal-code@public/exports'
-
-file-service:
-

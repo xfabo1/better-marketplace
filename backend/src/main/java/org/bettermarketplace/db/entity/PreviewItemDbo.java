@@ -17,6 +17,8 @@ public record PreviewItemDbo(
 		@ColumnName("place_name")
 		String placeName,
 		BigDecimal price,
-		Currency currency
+		Currency currency,
+		String category,
+		String condition
 ) {
 }

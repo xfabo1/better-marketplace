@@ -101,7 +101,7 @@ public class ItemService {
 	public void updateItem(UpdateItemDto updateItemDto, Long id, String country, Double longitude, Double latitude) {
 		itemDao.updateItem(updateItemDto.name(), updateItemDto.description(), updateItemDto.currency(),
 				updateItemDto.price(), updateItemDto.locationId(), updateItemDto.imageUrl(), updateItemDto.email(),
-				updateItemDto.phoneNumber(), country, longitude, latitude, id);
+				updateItemDto.phoneNumber(), country, longitude, latitude, id, updateItemDto.condition());
 	}
 
 }

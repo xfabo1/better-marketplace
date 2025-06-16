@@ -15,5 +15,6 @@ public record UpdateItemDto(
 		Long locationId,
 		String imageUrl,
 		String email,
-		String phoneNumber) {
+		String phoneNumber,
+		String condition) {
 }

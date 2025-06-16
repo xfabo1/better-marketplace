@@ -9,7 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { createItem } from "@/api/itemApi";
 import { categories } from "@/data/categories";
-import { conditions } from "@/data/conditions";
+import { createConditions, ConditionOption } from "@/data/conditions";
 
 // Character limits
 const TITLE_MAX_LENGTH = 100;
@@ -66,6 +66,8 @@ function SellForm() {
       setAvailableSubcategories([]);
     }
   }, [formData.category]);
+
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -178,9 +180,9 @@ function SellForm() {
         locationId: 1, // Use a default locationId of 1
         email: formData.contactEmail || user?.email || "",
         phoneNumber: formData.contactPhone || user?.phone || "",
-        // Include subcategory in the request
         category: formData.category,
         subcategory: formData.subcategory,
+        condition: formData.condition
       };
 
       const itemId = await createItem(itemData);
@@ -326,9 +328,9 @@ function SellForm() {
                 onChange={handleChange}
               >
                 <option value="">{t("select_condition")}</option>
-                {conditions.map(condition => (
+                {createConditions.map(condition => (
                   <option key={condition.id} value={condition.id}>
-                    {t(condition.name)}
+                                          {t(condition.value)}
                   </option>
                 ))}
               </select>
