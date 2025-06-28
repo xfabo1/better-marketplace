@@ -13,7 +13,6 @@ public record CreateItemDto(
 	Currency currency,
 	BigDecimal price,
 	Long locationId,
-	String imageUrl,
 	String email,
 	String phoneNumber,
 	String category,

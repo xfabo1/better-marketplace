@@ -13,8 +13,9 @@ public record UpdateItemDto(
 		Currency currency,
 		BigDecimal price,
 		Long locationId,
-		String imageUrl,
 		String email,
 		String phoneNumber,
+		String category,
+		String subcategory,
 		String condition) {
 }

@@ -104,4 +104,16 @@ public class ItemService {
 				updateItemDto.phoneNumber(), country, longitude, latitude, id, updateItemDto.condition());
 	}
 
+	public int getCountOfAllItems(SearchFilterDto searchFilterDto, Double latitude, Double longitude, String country) {
+		return itemDao.getCountOfAllItems(
+				longitude,
+				latitude,
+				searchFilterDto.minPrice(),
+				searchFilterDto.maxPrice(),
+				country,
+				searchFilterDto.searchText(),
+				searchFilterDto.maxMeterDistance(),
+				searchFilterDto.condition()
+		);
+	}
 }

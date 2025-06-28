@@ -8,6 +8,7 @@ import org.bettermarketplace.model.Currency;
 public record PreviewItemDto(
 		String title,
 		Country country,
+		String imageUrl,
 		String postalCode,
 		String placeName,
 		BigDecimal price,

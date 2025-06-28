@@ -144,11 +144,11 @@ function SettingsContent() {
                       value={userData.country}
                       onChange={e => setUserData({ ...userData, country: e.target.value })}
                     >
-                                              {countries.map(country => (
-                          <option key={country.id} value={country.id}>
-                            {t(country.value)}
-                          </option>
-                        ))}
+                      {countries.map(country => (
+                        <option key={country.value} value={country.value}>
+                          {t(country.value)}
+                        </option>
+                      ))}
                     </select>
                     <p className="mt-1 text-xs text-gray-500">{t("location_restricted")}</p>
                   </div>

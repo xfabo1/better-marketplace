@@ -112,5 +112,18 @@ public interface ItemDao {
 			@Bind("offset") int offset,
 			@Bind("pageSize") int pageSize
 	);
+
+	@SqlQuery
+	@DefineNamedBindings
+	int getCountOfAllItems(
+			@Bind("longitude") Double longitude,
+			@Bind("latitude") Double latitude,
+			@Bind("minPrice") Double minPrice,
+			@Bind("maxPrice") Double maxPrice,
+			@Bind("country") String country,
+			@Bind("textSearch") String textSearch,
+			@Bind("maxMeterDistance") Double maxMeterDistance,
+			@Bind("condition") String condition
+	);
 }
 

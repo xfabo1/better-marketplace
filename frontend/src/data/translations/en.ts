@@ -1,6 +1,4 @@
-// English translations
 export const enTranslations = {
-  // Header
   "browse": "Browse",
   "sell": "Sell",
   "my_listings": "My Listings",
@@ -10,23 +8,13 @@ export const enTranslations = {
   "login": "Login",
   "register": "Register",
   "open_menu": "Open menu",
-  
-  // Navigation
   "home": "Home",
-  
-  // Home page
   "find_anything": "Find anything you need",
   "buy_sell_easily": "Buy and sell easily on Better Marketplace",
-  
-  // Sidebar
   "categories": "Categories",
-  
-  // Form fields
   "subcategory": "Subcategory",
   "select_subcategory": "Select Subcategory",
   "select_subcategory_error": "Please select a subcategory",
-  
-  // Category names
   "transport": "Transport",
   "electronics": "Electronics",
   "household": "Household",
@@ -36,8 +24,6 @@ export const enTranslations = {
   "children": "Children",
   "animals": "Animals",
   "culture_education": "Culture & Education",
-  
-  // Subcategories - Transport
   "cars": "Cars",
   "motorcycles": "Motorcycles",
   "trucks": "Trucks",
@@ -48,8 +34,6 @@ export const enTranslations = {
   "car_accessories": "Car Accessories",
   "boats": "Boats",
   "bicycles": "Bicycles & E-bikes",
-  
-  // Subcategories - Electronics
   "mobile_phones": "Mobile Phones",
   "tablets": "Tablets",
   "laptops": "Laptops",
@@ -60,8 +44,6 @@ export const enTranslations = {
   "pc_accessories": "PC Accessories",
   "smart_watches": "Smart Watches",
   "network_devices": "Network Devices",
-  
-  // Subcategories - Household
   "furniture": "Furniture",
   "appliances": "Appliances",
   "kitchen_appliances": "Kitchen Appliances",
@@ -71,8 +53,6 @@ export const enTranslations = {
   "household_items": "Household Items",
   "cleaning_equipment": "Cleaning Equipment",
   "bathroom": "Bathroom & WC",
-  
-  // Subcategories - Garden & Workshop
   "garden_tools": "Garden Tools",
   "machines_mowers": "Machines & Mowers",
   "garden_furniture": "Garden Furniture",
@@ -80,8 +60,6 @@ export const enTranslations = {
   "grills": "Grills & Equipment",
   "tools": "Tools & Workshop Equipment",
   "building_materials": "Building Materials",
-  
-  // Subcategories - Fashion
   "men": "Men's Clothing",
   "women": "Women's Clothing",
   "children_clothes": "Children's Clothing",
@@ -89,8 +67,6 @@ export const enTranslations = {
   "accessories": "Accessories",
   "jewelry_watches": "Jewelry & Watches",
   "bags": "Bags & Handbags",
-  
-  // Subcategories - Sports & Hobbies
   "fitness": "Fitness & Training",
   "cycling": "Cycling",
   "winter_sports": "Winter Sports",
@@ -100,15 +76,11 @@ export const enTranslations = {
   "shooting": "Shooting & Airsoft",
   "musical_instruments": "Musical Instruments",
   "modeling": "Modeling",
-  
-  // Subcategories - Children
   "toys": "Toys",
   "strollers": "Strollers",
   "children_furniture": "Children's Furniture",
   "car_seats": "Car Seats",
   "equipment": "Equipment",
-  
-  // Subcategories - Animals
   "dogs": "Dogs",
   "cats": "Cats",
   "small_animals": "Small Animals",
@@ -117,34 +89,24 @@ export const enTranslations = {
   "terrarium": "Terrarium",
   "accessories_for_animals": "Pet Supplies",
   "food": "Pet Food",
-  
-  // Subcategories - Culture & Education
   "books": "Books",
   "textbooks": "Textbooks",
   "cds_dvds": "CDs, DVDs & Blu-ray",
   "posters_pictures": "Posters & Pictures",
-  
-  // Condition options
   "all_conditions": "All Conditions",
   "new": "New",
   "used_like_new": "Used - Like New",
   "used_very_good": "Used - Very Good",
   "used_good": "Used - Good",
   "used_fair": "Used - Fair",
-  
-  // Sort options
-  "newest": "Newest",
-  "oldest": "Oldest",
-  "price_lowest": "Lowest Price",
-  "price_highest": "Highest Price",
-  
-  // Date filter options
+  "NEWEST": "Newest",
+  "OLDEST": "Oldest",
+  "PRICE_ASC": "Lowest Price",
+  "PRICE_DESC": "Highest Price",
   "all_dates": "All",
   "today": "Today",
   "this_week": "This Week",
   "this_month": "This Month",
-  
-  // Search
   "search_anything": "Search anything...",
   "search": "Search",
   "filters": "Filters",
@@ -156,8 +118,6 @@ export const enTranslations = {
   "from": "From",
   "to": "To",
   "added": "Added",
-  
-  // Listings page
   "browse_listings": "Browse Listings",
   "listing_singular": "listing",
   "listing_few": "listings",
@@ -169,8 +129,6 @@ export const enTranslations = {
   "no_listings_found": "No listings were found for your search.",
   "no_listings_in_category": "No listings found in this category.",
   "reset_filters": "Reset Filters",
-  
-  // Profile page
   "personal_info": "Personal Information",
   "edit_profile": "Edit Profile",
   "change_password": "Change Password",
@@ -194,8 +152,6 @@ export const enTranslations = {
   "total": "Total",
   "active": "Active",
   "sold": "Sold",
-  
-  // Settings page
   "security": "Security",
   "current_password": "Current password",
   "new_password": "New password",
@@ -208,16 +164,12 @@ export const enTranslations = {
   "location_restricted": "You can only select Czech Republic or Slovakia",
   "czech_republic": "Czech Republic",
   "slovakia": "Slovakia",
-  
-  // My Listings page
   "new_listing": "New Listing",
   "create_new_listing": "Create New Listing",
   "no_listings_of_type": "You don't have any {type} listings.",
   "created": "Created",
   "edit": "Edit",
   "delete": "Delete",
-  
-  // Create Listing page
   "create_listing": "Create Listing",
   "listing_title": "Listing Title",
   "select_category": "Select Category",
@@ -247,15 +199,11 @@ export const enTranslations = {
   "image_hint": "Upload up to 5 images in JPG or PNG format.",
   "cancel": "Cancel",
   "submitting": "Submitting...",
-  
-  // Form placeholders
   "description_placeholder": "Detailed description of your listing...",
   "location_placeholder": "Prague, Brno, ...",
   "title_placeholder": "E.g. iPhone 12 Pro Max, 256GB, Pacific Blue",
   "phone_placeholder": "+44 123 456 789",
   "email_placeholder": "email@example.com",
-  
-  // Item details
   "description": "Description",
   "specifications": "Specifications",
   "seller_info": "Seller Information",
@@ -269,8 +217,6 @@ export const enTranslations = {
   "favorite": "Add to Favorites",
   "item_posted": "Posted",
   "no_longer_available": "No Longer Available",
-  
-  // Login and Register
   "login_to_account": "Login to your account",
   "no_account": "Don't have an account?",
   "create_account": "Create new account",
@@ -294,8 +240,6 @@ export const enTranslations = {
   "currency_info": "This currency will be used when creating your listings.",
   "czech_koruna": "Czech Koruna (Kč)",
   "euro": "Euro (€)",
-  
-  // Authentication errors
   "invalid_credentials": "Invalid credentials",
   "check_credentials": "Please check your credentials and try again.",
   "email_already_used": "This email is already in use",
@@ -303,7 +247,14 @@ export const enTranslations = {
   "registration_error": "Registration error",
   "network_error": "Network connection error",
   "server_error": "Server error",
+  "password_error": "Passwords do not match",
   "login_error": "Login error",
   "auth_error_message": "Authentication error occurred. Please log in again. If the problem persists, there might be an issue on our side.",
-  "network_error_details": "Check your internet connection or try again later."
+  "network_error_details": "Check your internet connection or try again later.",
+  "item_not_found": "Item not found",
+  "failed_fetch_item": "Failed to fetch item",
+  "failed_create_item": "Failed to create item",
+  "failed_update_item": "Failed to update item",
+  "failed_search_items": "Failed to search items",
+  "network_error_server": "Network error: Unable to connect to the server"
 };

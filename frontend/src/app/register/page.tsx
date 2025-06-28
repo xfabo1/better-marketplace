@@ -11,35 +11,63 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [country, setCountry] = useState("CZ"); // Default country: Czech Republic
   const [showCrossCountryListings, setShowCrossCountryListings] = useState(false); // Default to show cross-country listings
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [error, setError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const validatePasswords = (pass: string, confirmPass: string) => {
+    if (confirmPass && pass !== confirmPass) {
+      setPasswordError(t('password_error') || "Hesla se neshodují");
+    } else {
+      setPasswordError("");
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    validatePasswords(newPassword, confirmPassword);
+  };
+
+  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newConfirmPassword = e.target.value;
+    setConfirmPassword(newConfirmPassword);
+    validatePasswords(password, newConfirmPassword);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
+    if (password !== confirmPassword) {
+      setPasswordError(t('password_error') || "Hesla se neshodují");
+      setIsSubmitting(false);
+      return;
+        }
+    if (password.length < 6) {
+      setPasswordError(t('password_too_short') || "Heslo musí mít alespoň 6 znaků");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
-      // Register the user with the backend
       await registerUser({
         username: name,
         email,
         password,
         country: country,
         displayItemsFromOtherCountry: showCrossCountryListings
-      });
-      
-      // Redirect is handled in the login function
-    } catch (error: any) {
-      // Handle specific error messages from the backend
-      if (error.message === "email_used") {
+      }, t);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage === "email_used") {
         setError(t('email_already_used') || "This email is already in use");
-      } else if (error.message === "username_used") {
+      } else if (errorMessage === "username_used") {
         setError(t('username_already_used') || "This username is already in use");
-      } else if (error.message?.includes("Network error")) {
+      } else if (errorMessage.includes("Network error")) {
         setError(t('network_error') || "Network connection error");
       } else {
         setError(t('registration_error') || "Registration error. Please try again.");
@@ -118,8 +146,32 @@ export default function RegisterPage() {
                   className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                   placeholder={t('password') || "Heslo"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handlePasswordChange}
                 />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('confirm_password') || "Potvrdit heslo"}
+                </label>
+                <input
+                  id="confirm-password"
+                  name="confirm-password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  className={`block w-full px-4 py-3 rounded-md border shadow-sm text-gray-900 focus:outline-none sm:text-sm ${
+                    passwordError 
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-gray-300 focus:border-primary'
+                  }`}
+                  placeholder={t('confirm_password') || "Potvrdit heslo"}
+                  value={confirmPassword}
+                  onChange={handleConfirmPasswordChange}
+                />
+                {passwordError && (
+                  <p className="mt-1 text-sm text-red-600">{t(passwordError)}</p>
+                )}
               </div>
 
               <div className="mb-4">
@@ -193,7 +245,7 @@ export default function RegisterPage() {
             <div>
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || passwordError !== "" || password !== confirmPassword}
                 className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {isSubmitting ? (

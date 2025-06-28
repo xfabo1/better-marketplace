@@ -38,7 +38,6 @@ export default function ProfilePage() {
           ...mockUserData,
           name: user.name,
           email: user.email,
-          phone: user.phone,
           country: user.country,
           showCrossCountryListings: user.showCrossCountryListings,
         });

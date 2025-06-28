@@ -6,18 +6,18 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { sortOptions, mapSortingToBackend } from "@/data/sortOptions";
-import { conditions } from "@/data/conditions";
+import { sortOptions} from "@/data/sortOptions";
+import { conditions,  } from "@/data/conditions";
 import { dateFilterOptions } from "@/data/dateFilterOptions";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { categories } from "@/data/categories";
-import { searchItems, PreviewItemDto, SearchFilterDto } from "@/api/itemApi";
-import { Listing } from "@/types/listing";
+import { searchItems } from "@/api/itemApi";
+import { PreviewItemDto, SearchFilterDto } from "@/types/types";
 
 export default function CategoryPage() {
   const params = useParams();
   const { t } = useLanguage();
-  const [listings, setListings] = useState<Listing[]>([]);
+  const [listings, setListings] = useState<PreviewItemDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryName, setCategoryName] = useState("");
   const [subcategoryName, setSubcategoryName] = useState("");
@@ -36,23 +36,16 @@ export default function CategoryPage() {
   const itemsPerPage = 15; 
 
   useEffect(() => {
-    // Extract category and subcategory from URL params
     const slugArray = Array.isArray(params.slug) ? params.slug : [params.slug];
     const mainCategory = slugArray[0] || "";
     const subCategory = slugArray.length > 1 ? slugArray[1] : null;
-
-    // Set the category and subcategory names for display
     setCategoryName(formatCategoryName(mainCategory));
     setCategoryId(getEnglishId(mainCategory));
     if (subCategory) {
       setSubcategoryName(formatCategoryName(subCategory));
       setSubcategoryId(getEnglishId(subCategory));
     }
-
-    // Fetch listings based on category/subcategory
     fetchListings(mainCategory, subCategory || null);
-    
-    // Reset sorting to default when changing category
     setSortBy("newest");
     setIsSortMenuOpen(false);
     setLocationQuery("");
@@ -63,17 +56,12 @@ export default function CategoryPage() {
     setSearchQuery("");
     setIsFiltersOpen(false);
   }, [params]);
-
-  // Refetch listings when filters change
   useEffect(() => {
     if (categoryId) {
       fetchListings(categoryId, subcategoryId || null);
     }
   }, [selectedCondition, sortBy, minPrice, maxPrice, categoryId, subcategoryId]);
-
-  // Get the English ID of a category or subcategory based on the slug
   const getEnglishId = (slug: string): string => {
-    // Check if it's a main category
     const category = categories.find(cat => {
       const slugPart = cat.href.split('/').pop();
       return slugPart === slug;
@@ -82,8 +70,6 @@ export default function CategoryPage() {
     if (category) {
       return category.id;
     }
-    
-    // Check if it's a subcategory
     for (const cat of categories) {
       if (cat.subcategories) {
         const subcategory = cat.subcategories.find(subcat => {
@@ -96,48 +82,32 @@ export default function CategoryPage() {
         }
       }
     }
-    
-    // If not found, return the original slug
     return slug;
   };
 
   const formatCategoryName = (slug: string) => {
-    // Convert slug to display name (e.g., "doprava" -> "Doprava")
     return slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
   };
-
-
 
   const fetchListings = async (category: string, subcategory: string | null) => {
     setLoading(true);
     try {
-      // Create search filter for this category
       const searchFilter: SearchFilterDto = {
-        searchText: subcategory || category, // Use subcategory if available, otherwise category
+        searchText: subcategory || category,
         condition: selectedCondition !== "all" ? selectedCondition : undefined,
-        sorting: mapSortingToBackend(sortBy),
+        sorting: sortBy,
         minPrice: minPrice ? parseFloat(minPrice) : undefined,
         maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,
       };
 
       const items = await searchItems({
         searchFilter,
-        page: 0, // Always start from first page when fetching category
-        pageSize: 50, // Get more items for client-side filtering
-      });
+        page: currentPage,
+        pageSize: itemsPerPage,
+      }, t);
 
-      // Transform backend items to match frontend listing structure
-      const transformedItems = items.map((item: PreviewItemDto) => ({
-        ...item, // Include all backend fields
-        id: `${item.name}-${Math.random()}`, // Generate temporary ID until backend provides it
-        imageUrl: "https://placehold.co/800x600/e6f7ef/10b981/png?text=No+Image", // Placeholder until backend provides it
-      }));
-
-      setListings(transformedItems);
-      setCurrentPage(1); // Reset to first page when changing category
+      setListings(items.items);
     } catch (error) {
-      console.error("Error fetching listings:", error);
-      // Set empty array if API fails
       setListings([]);
     } finally {
       setLoading(false);
@@ -164,25 +134,13 @@ export default function CategoryPage() {
     setCurrentPage(1);
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    // Change to DD.MM.YYYY format
-    return date.toLocaleDateString('cs-CZ', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }).replace(/\s/g, '');
-  };
-
   const handleSortChange = (sort: string) => {
     setSortBy(sort);
     setCurrentPage(1);
     setIsSortMenuOpen(false);
   };
 
-  // Filter listings based on selected filters
   const filteredListings = listings.filter((listing) => {
-    // Filter by location (city name or postal code)
     if (locationQuery) {
       const locationMatches = listing.placeName.toLowerCase().includes(locationQuery.toLowerCase());
       const postalCodeMatches = listing.postalCode.includes(locationQuery);
@@ -190,18 +148,12 @@ export default function CategoryPage() {
         return false;
       }
     }
-    
-    // Filter by condition
     if (selectedCondition !== "all" && listing.condition !== selectedCondition) {
       return false;
     }
-    
-    // Filter by search query
-    if (searchQuery && !listing.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+    if (searchQuery && !listing.title.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
-    
-    // Filter by price range
     if (minPrice && listing.price < parseInt(minPrice)) {
       return false;
     }
@@ -210,19 +162,13 @@ export default function CategoryPage() {
       return false;
     }
     
-    // TODO: Filter by date when backend provides createdAt field
-    // For now, date filtering is disabled since backend doesn't provide createdAt
-    
     return true;
   });
-
-  // Sort listings based on selected sort option
   const sortedListings = [...filteredListings].sort((a, b) => {
     switch (sortBy) {
       case "newest":
       case "oldest":
-        // TODO: Implement date sorting when backend provides createdAt field
-        return 0; // No sorting by date for now
+        return 0;
       case "price_asc":
         return a.price - b.price;
       case "price_desc":
@@ -231,17 +177,11 @@ export default function CategoryPage() {
         return 0;
     }
   });
-
-  // Pagination logic
   const totalPages = Math.ceil(sortedListings.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedListings = sortedListings.slice(startIndex, startIndex + itemsPerPage);
-
-  // Get translated category and subcategory names
   const translatedCategoryName = categoryId ? t(categoryId) : categoryName;
   const translatedSubcategoryName = subcategoryId ? t(subcategoryId) : subcategoryName;
-
-  // Custom SearchBar with filters
   const CustomSearchBar = () => {
     const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
     const [location, setLocation] = useState(locationQuery);
@@ -374,7 +314,7 @@ export default function CategoryPage() {
                   onChange={(e) => setCondition(e.target.value)}
                 >
                   {conditions.map((cond) => (
-                    <option key={cond.id} value={cond.id}>
+                    <option key={cond.value} value={cond.value}>
                       {t(cond.value)}
                     </option>
                   ))}
@@ -392,7 +332,7 @@ export default function CategoryPage() {
                   onChange={(e) => setLocalDateFilter(e.target.value)}
                 >
                   {dateFilterOptions.map((option) => (
-                    <option key={option.id} value={option.id}>
+                    <option key={option.value} value={option.value}>
                       {t(option.value)}
                     </option>
                   ))}

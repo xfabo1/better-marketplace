@@ -1,6 +1,4 @@
-// Czech translations
 export const csTranslations = {
-  // Header
   "browse": "Procházet",
   "sell": "Prodat",
   "my_listings": "Moje inzeráty",
@@ -10,18 +8,10 @@ export const csTranslations = {
   "login": "Přihlásit",
   "register": "Registrovat",
   "open_menu": "Otevřít menu",
-  
-  // Navigation
   "home": "Domů",
-  
-  // Home page
   "find_anything": "Najděte cokoliv potřebujete",
   "buy_sell_easily": "Nakupujte a prodávejte jednoduše na Better Marketplace",
-  
-  // Sidebar
   "categories": "Kategorie",
-  
-  // Category names
   "transport": "Doprava",
   "electronics": "Elektronika",
   "household": "Domácnost",
@@ -31,13 +21,9 @@ export const csTranslations = {
   "children": "Děti",
   "animals": "Zvířata",
   "culture_education": "Kultura a vzdělávání",
-  
-  // Form fields
   "subcategory": "Podkategorie",
   "select_subcategory": "Vyberte podkategorii",
   "select_subcategory_error": "Vyberte podkategorii",
-  
-  // Subcategories - Transport
   "cars": "Automobily",
   "motorcycles": "Motorky",
   "trucks": "Nákladní vozidla",
@@ -48,8 +34,6 @@ export const csTranslations = {
   "car_accessories": "Autopříslušenství",
   "boats": "Lodě a čluny",
   "bicycles": "Kola a elektrokola",
-  
-  // Subcategories - Electronics
   "mobile_phones": "Mobilní telefony",
   "tablets": "Tablety",
   "laptops": "Notebooky",
@@ -60,8 +44,6 @@ export const csTranslations = {
   "pc_accessories": "PC příslušenství",
   "smart_watches": "Chytré hodinky a náramky",
   "network_devices": "Síťové prvky a routery",
-  
-  // Subcategories - Household
   "furniture": "Nábytek",
   "appliances": "Bílá technika",
   "kitchen_appliances": "Kuchyňské spotřebiče",
@@ -71,8 +53,6 @@ export const csTranslations = {
   "household_items": "Domácí potřeby",
   "cleaning_equipment": "Čisticí technika",
   "bathroom": "Koupelna a WC",
-  
-  // Subcategories - Garden & Workshop
   "garden_tools": "Zahradní nářadí",
   "machines_mowers": "Stroje a sekačky",
   "garden_furniture": "Nábytek na zahradu",
@@ -80,8 +60,6 @@ export const csTranslations = {
   "grills": "Grily a vybavení",
   "tools": "Nářadí a vybavení dílny",
   "building_materials": "Stavební materiál",
-  
-  // Subcategories - Fashion
   "men": "Oblečení - muži",
   "women": "Oblečení - ženy",
   "children_clothes": "Dětské oblečení",
@@ -89,8 +67,6 @@ export const csTranslations = {
   "accessories": "Doplňky",
   "jewelry_watches": "Šperky a hodinky",
   "bags": "Kabelky a tašky",
-  
-  // Subcategories - Sports & Hobbies
   "fitness": "Fitness a posilování",
   "cycling": "Cyklistika",
   "winter_sports": "Zimní sporty",
@@ -100,15 +76,11 @@ export const csTranslations = {
   "shooting": "Střelectví a airsoft",
   "musical_instruments": "Hudební nástroje",
   "modeling": "Modelářství",
-  
-  // Subcategories - Children
   "toys": "Hračky",
   "strollers": "Kočárky",
   "children_furniture": "Dětský nábytek",
   "car_seats": "Autosedačky",
   "equipment": "Potřebné vybavení",
-  
-  // Subcategories - Animals
   "dogs": "Psi",
   "cats": "Kočky",
   "small_animals": "Malá zvířata",
@@ -117,34 +89,24 @@ export const csTranslations = {
   "terrarium": "Teraristika",
   "accessories_for_animals": "Chovatelské potřeby",
   "food": "Krmivo",
-  
-  // Subcategories - Culture & Education
   "books": "Knihy",
   "textbooks": "Učebnice",
   "cds_dvds": "CD, DVD, Blu-ray",
   "posters_pictures": "Plakáty a obrazy",
-  
-  // Condition options
   "all_conditions": "Všechny stavy",
   "new": "Nové",
   "used_like_new": "Použité - jako nové",
   "used_very_good": "Použité - velmi dobrý stav",
   "used_good": "Použité - dobrý stav",
   "used_fair": "Použité - horší stav",
-  
-  // Sort options
-  "newest": "Nejnovější",
-  "oldest": "Nejstarší",
-  "price_lowest": "Nejlevnější",
-  "price_highest": "Nejdražší",
-  
-  // Date filter options
+  "NEWEST": "Nejnovější",
+  "OLDEST": "Nejstarší",
+  "PRICE_ASC": "Nejlevnější",
+  "PRICE_DESC": "Nejdražší",
   "all_dates": "Všechny",
   "today": "Dnes",
   "this_week": "Tento týden",
   "this_month": "Tento měsíc",
-  
-  // Search
   "search_anything": "Hledat cokoliv...",
   "search": "Hledat",
   "filters": "Filtry",
@@ -156,8 +118,6 @@ export const csTranslations = {
   "from": "Od",
   "to": "Do",
   "added": "Přidáno",
-  
-  // Listings page
   "browse_listings": "Procházet inzeráty",
   "listing_singular": "inzerát",
   "listing_few": "inzeráty",
@@ -169,8 +129,6 @@ export const csTranslations = {
   "no_listings_found": "Pro vaše vyhledávání nebyly nalezeny žádné inzeráty.",
   "no_listings_in_category": "V této kategorii zatím nejsou žádné inzeráty.",
   "reset_filters": "Resetovat filtry",
-  
-  // Profile page
   "personal_info": "Osobní údaje",
   "edit_profile": "Upravit profil",
   "change_password": "Změnit heslo",
@@ -194,8 +152,6 @@ export const csTranslations = {
   "total": "Celkem",
   "active": "Aktivní",
   "sold": "Prodané",
-  
-  // Settings page
   "security": "Zabezpečení",
   "current_password": "Současné heslo",
   "new_password": "Nové heslo",
@@ -208,16 +164,12 @@ export const csTranslations = {
   "location_restricted": "Můžete vybrat pouze Českou republiku nebo Slovensko",
   "czech_republic": "Česká republika",
   "slovakia": "Slovensko",
-  
-  // My Listings page
   "new_listing": "Nový inzerát",
   "create_new_listing": "Vytvořit nový inzerát",
   "no_listings_of_type": "Nemáte žádné {type} inzeráty.",
   "created": "Vytvořeno",
   "edit": "Upravit",
   "delete": "Smazat",
-  
-  // Create Listing page
   "create_listing": "Vytvořit inzerát",
   "listing_title": "Název inzerátu",
   "select_category": "Vyberte kategorii",
@@ -247,15 +199,11 @@ export const csTranslations = {
   "image_hint": "Nahrajte až 5 fotografií ve formátu JPG nebo PNG.",
   "cancel": "Zrušit",
   "submitting": "Odesílání...",
-  
-  // Form placeholders
   "description_placeholder": "Podrobný popis inzerátu...",
   "location_placeholder": "Praha, Brno, ...",
   "title_placeholder": "Např. iPhone 12 Pro Max, 256GB, Pacific Blue",
   "phone_placeholder": "+420 123 456 789",
   "email_placeholder": "email@example.cz",
-  
-  // Item details
   "description": "Popis",
   "specifications": "Specifikace",
   "seller_info": "Informace o prodejci",
@@ -269,8 +217,6 @@ export const csTranslations = {
   "favorite": "Přidat do oblíbených",
   "item_posted": "Inzerát přidán",
   "no_longer_available": "Již není dostupné",
-  
-  // Login and Register
   "login_to_account": "Přihlaste se ke svému účtu",
   "no_account": "Nemáte účet?",
   "create_account": "Vytvořit nový účet",
@@ -294,8 +240,6 @@ export const csTranslations = {
   "currency_info": "Tato měna bude použita při vytváření vašich inzerátů.",
   "czech_koruna": "Česká koruna (Kč)",
   "euro": "Euro (€)",
-  
-  // Authentication errors
   "invalid_credentials": "Nesprávné přihlašovací údaje",
   "check_credentials": "Zkontrolujte prosím své přihlašovací údaje a zkuste to znovu.",
   "email_already_used": "Tento email je již používán",
@@ -303,7 +247,14 @@ export const csTranslations = {
   "registration_error": "Chyba při registraci",
   "network_error": "Chyba připojení k serveru",
   "server_error": "Chyba serveru",
+  "password_error": "Hesla se neshodují",
   "login_error": "Chyba při přihlášení",
   "auth_error_message": "Došlo k chybě při ověřování. Prosím, přihlaste se znovu. Pokud problém přetrvává, může být problém na naší straně.",
-  "network_error_details": "Zkontrolujte své připojení k internetu nebo to zkuste znovu později."
+  "network_error_details": "Zkontrolujte své připojení k internetu nebo to zkuste znovu později.",
+  "item_not_found": "Položka nebyla nalezena",
+  "failed_fetch_item": "Nepodařilo se načíst položku",
+  "failed_create_item": "Nepodařilo se vytvořit položku",
+  "failed_update_item": "Nepodařilo se aktualizovat položku",
+  "failed_search_items": "Nepodařilo se vyhledat položky",
+  "network_error_server": "Chyba sítě: Nelze se připojit k serveru"
 };

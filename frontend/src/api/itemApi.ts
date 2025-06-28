@@ -1,72 +1,41 @@
 // Item API client for Better Marketplace
 // This file contains functions to interact with the backend item endpoints
+// Import removed as sortOptions is not used in this file
+import { ApiResponse, SearchItemsResponse, ItemFullDetailsDto, SearchItemsParams} from "@/types/types";
 
 const API_BASE_URL = "http://localhost:8080/api/better-marketplace";
-
-// TypeScript interfaces for backend data structures
-export interface PreviewItemDto {
-  name: string;
-  country: "SK" | "CZ";
-  postalCode: string;
-  placeName: string;
-  price: number;
-  currency: "CZK" | "EUR";
-  category: string;
-  condition: string;
-}
-
-export interface SearchFilterDto {
-  locationId?: number;
-  minPrice?: number;
-  maxPrice?: number;
-  dateAdded?: string; // ISO string
-  condition?: string;
-  searchText?: string;
-  sorting?: "NEWEST" | "OLDEST" | "PRICE_ASC" | "PRICE_DESC";
-  maxMeterDistance?: number;
-}
-
-export interface SearchItemsParams {
-  searchFilter: SearchFilterDto;
-  page?: number;
-  pageSize?: number;
-}
 
 /**
  * Get a specific item by ID
  */
-export async function getItemById(id: string | number) {
+export async function getItemById(id: string | number, t: (key: string) => string) {
   try {
-
     const response = await fetch(`${API_BASE_URL}/v1/items/item/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Important for cookies
-      mode: "cors", // Explicitly set CORS mode
+      credentials: "include",
+      mode: "cors",
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Fetching item failed with status ${response.status}:`, errorText);
-
-      if (response.status === 404) {
-        throw new Error("item_not_found");
+    const apiResponse: ApiResponse<ItemFullDetailsDto> = await response.json();
+    
+    if (apiResponse.statusCode !== 200) {
+      if (apiResponse.statusCode === 404) {
+        throw new Error(t("item_not_found"));
       }
-
-      throw new Error(errorText || "Failed to fetch item");
+      throw new Error(apiResponse.message || t("failed_fetch_item"));
     }
 
-    const data = await response.json();
-    return data;
+    return apiResponse.body;
   } catch (error) {
-
-    // If it's a network error, provide a more user-friendly message
     if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-      const networkError = new Error("Network error: Unable to connect to the server");
-      console.error("Network error details:", error);
-      throw networkError;
+      throw new Error(t("network_error_server"));
+    }
+
+    if (error instanceof SyntaxError) {
+      throw new Error(t("server_error"));
     }
 
     throw error;
@@ -76,47 +45,29 @@ export async function getItemById(id: string | number) {
 /**
  * Create a new item (listing)
  */
-export async function createItem(itemData: {
-  name: string;
-  price: number;
-  currency: string;
-  description: string;
-  imageUrl: string;
-  locationId: number;
-  email: string;
-  phoneNumber: string;
-  category?: string;
-  subcategory?: string;
-  condition?: string;
-}) {
+export async function createItem(formData: FormData, t: (key: string) => string) {
   try {
     const response = await fetch(`${API_BASE_URL}/v1/items/item`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // Important for cookies
-      mode: "cors", // Explicitly set CORS mode
-      body: JSON.stringify(itemData),
+      credentials: "include",
+      mode: "cors",
+      body: formData,
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Creating item failed with status ${response.status}:`, errorText);
-      throw new Error(errorText || "Failed to create item");
+    const apiResponse: ApiResponse<number> = await response.json();
+    
+    if (apiResponse.statusCode !== 200) {
+      throw new Error(apiResponse.message || t("failed_create_item"));
     }
 
-    const data = await response.json();
-    console.log("Item created successfully, received ID:", data);
-    return data; // This should be the ID of the created item
+    return apiResponse.body;
   } catch (error) {
-    console.error("Error creating item:", error);
-
-    // If it's a network error, provide a more user-friendly message
     if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-      const networkError = new Error("Network error: Unable to connect to the server");
-      console.error("Network error details:", error);
-      throw networkError;
+      throw new Error(t("network_error_server"));
+    }
+
+    if (error instanceof SyntaxError) {
+      throw new Error(t("server_error"));
     }
 
     throw error;
@@ -128,54 +79,31 @@ export async function createItem(itemData: {
  */
 export async function updateItem(
   id: string | number,
-  updateData: {
-    name?: string;
-    description?: string;
-    currency?: string;
-    price?: number;
-    location?: string;
-    imageUrl?: string;
-    email?: string;
-    phoneNumber?: string;
-    condition?: string;
-  }
+  formData: FormData,
+  t: (key: string) => string
 ) {
   try {
-    console.log(`Updating item with ID ${id} at ${API_BASE_URL}/v1/items/item/${id}`);
-
     const response = await fetch(`${API_BASE_URL}/v1/items/item/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // Important for cookies
-      mode: "cors", // Explicitly set CORS mode
-      body: JSON.stringify(updateData),
+      credentials: "include",
+      mode: "cors",
+      body: formData,
     });
 
-    console.log(`Update item response status: ${response.status} ${response.statusText}`);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Updating item failed with status ${response.status}:`, errorText);
-
-      if (response.status === 401) {
-        throw new Error("unauthorized");
-      }
-
-      throw new Error(errorText || "Failed to update item");
+    const apiResponse: ApiResponse<boolean> = await response.json();
+    
+    if (apiResponse.statusCode !== 200) {
+      throw new Error(apiResponse.message || t("failed_update_item"));
     }
 
-    console.log("Item updated successfully");
-    return true;
+    return apiResponse.body;
   } catch (error) {
-    console.error("Error updating item:", error);
-
-    // If it's a network error, provide a more user-friendly message
     if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-      const networkError = new Error("Network error: Unable to connect to the server");
-      console.error("Network error details:", error);
-      throw networkError;
+      throw new Error(t("network_error_server"));
+    }
+
+    if (error instanceof SyntaxError) {
+      throw new Error(t("server_error"));
     }
 
     throw error;
@@ -185,18 +113,14 @@ export async function updateItem(
 /**
  * Search items using the new /v1/items/preview endpoint
  */
-export async function searchItems(params: SearchItemsParams): Promise<PreviewItemDto[]> {
+export async function searchItems(params: SearchItemsParams, t: (key: string) => string): Promise<SearchItemsResponse> {
   try {
     const { searchFilter, page = 0, pageSize = 9 } = params;
-    
-    console.log(`Searching items at ${API_BASE_URL}/v1/items/preview`);
-    console.log("Search parameters:", { searchFilter, page, pageSize });
 
-    // Build query parameters from search filter
     const queryParams = new URLSearchParams();
     queryParams.append("page", page.toString());
     queryParams.append("pageSize", pageSize.toString());
-    
+
     if (searchFilter.locationId !== undefined) {
       queryParams.append("locationId", searchFilter.locationId.toString());
     }
@@ -227,29 +151,24 @@ export async function searchItems(params: SearchItemsParams): Promise<PreviewIte
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Important for cookies
-      mode: "cors", // Explicitly set CORS mode
+      credentials: "include",
+      mode: "cors",
     });
 
-    console.log(`Search items response status: ${response.status} ${response.statusText}`);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Searching items failed with status ${response.status}:`, errorText);
-      throw new Error(errorText || "Failed to search items");
+    const apiResponse: ApiResponse<SearchItemsResponse> = await response.json();
+    
+    if (apiResponse.statusCode !== 200) {
+      throw new Error(apiResponse.message || t("failed_search_items"));
     }
 
-    const data = await response.json();
-    console.log("Items search successful, received:", data.length, "items");
-    return data;
+    return apiResponse.body;
   } catch (error) {
-    console.error("Error searching items:", error);
-
-    // If it's a network error, provide a more user-friendly message
     if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-      const networkError = new Error("Network error: Unable to connect to the server");
-      console.error("Network error details:", error);
-      throw networkError;
+      throw new Error(t("network_error_server"));
+    }
+
+    if (error instanceof SyntaxError) {
+      throw new Error(t("server_error"));
     }
 
     throw error;

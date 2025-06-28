@@ -2,6 +2,7 @@ package org.bettermarketplace.api.dto.item;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 import org.bettermarketplace.model.Country;
 import org.bettermarketplace.model.Currency;
@@ -10,7 +11,7 @@ public record ItemFullDetailsDto(
 		Long id,
 		String title,
 		String description,
-		String imageUrl,
+		List<String> imageUrl,
 		String phoneNumber,
 		String username,
 		String email,
@@ -22,7 +23,6 @@ public record ItemFullDetailsDto(
 		String postalCode,
 		Country country,
 		String category,
-		Instant deleted_at,
 		String subcategory,
 		Instant createdAt,
 		Instant updatedAt,

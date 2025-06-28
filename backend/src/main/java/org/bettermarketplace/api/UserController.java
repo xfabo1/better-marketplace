@@ -1,6 +1,7 @@
 package org.bettermarketplace.api;
 
 import org.bettermarketplace.api.dto.user.UserDto;
+import org.bettermarketplace.api.response.ApiResponse;
 import org.bettermarketplace.mapper.UserMapper;
 import org.bettermarketplace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,20 +29,28 @@ public class UserController {
 	}
 
 	@DeleteMapping(value = "/user/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
+	public ApiResponse<Void> deleteUser(@PathVariable("id") Long id) {
 		userService.deleteUser(id);
-		return ResponseEntity.ok().build();
+		return ApiResponse.<Void>builder()
+				.statusCode(201)
+				.build();
 	}
 
 	@GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDto> getUser(@PathVariable("id") Long id) {
+	public ApiResponse<UserDto> getUser(@PathVariable("id") Long id) {
 		var userDbo = userService.getUser(id);
 		if (userDbo.isEmpty()) {
-			return ResponseEntity.notFound().build();
+			return ApiResponse.<UserDto>builder()
+					.statusCode(404)
+					.body(null)
+					.build();
 		}
 
 		var user = MAPPER.from(userDbo.get());
 
-		return ResponseEntity.ok(MAPPER.from(user));
+		return ApiResponse.<UserDto>builder()
+				.statusCode(200)
+				.body(MAPPER.from(user))
+				.build();
 	}
 }

@@ -9,7 +9,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { createItem } from "@/api/itemApi";
 import { categories } from "@/data/categories";
-import { createConditions, ConditionOption } from "@/data/conditions";
+import { createConditions } from "@/data/conditions";
+import { CreateItemDto } from "@/types/types";
 
 // Character limits
 const TITLE_MAX_LENGTH = 100;
@@ -37,7 +38,7 @@ function SellForm() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [availableSubcategories, setAvailableSubcategories] = useState<any[]>([]);
+  const [availableSubcategories, setAvailableSubcategories] = useState<{id: string; href: string}[]>([]);
 
   // Set mounted to true when component mounts on the client
   useEffect(() => {
@@ -66,8 +67,6 @@ function SellForm() {
       setAvailableSubcategories([]);
     }
   }, [formData.category]);
-
-
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -167,28 +166,26 @@ function SellForm() {
     setIsSubmitting(true);
 
     try {
-      // Call the API to create the item
-      const itemData = {
-        name: formData.title,
-        price: parseFloat(formData.price),
-        currency: formData.currency.toUpperCase(),
-        description: formData.description,
-        imageUrl:
-          formData.images.length > 0
-            ? URL.createObjectURL(formData.images[0])
-            : "https://placehold.co/800x600/e6f7ef/10b981/png?text=No+Image",
-        locationId: 1, // Use a default locationId of 1
-        email: formData.contactEmail || user?.email || "",
-        phoneNumber: formData.contactPhone || user?.phone || "",
-        category: formData.category,
-        subcategory: formData.subcategory,
-        condition: formData.condition
-      };
-
-      const itemId = await createItem(itemData);
-      console.log("Created item with ID:", itemId);
-
-      // Redirect to my listings page after successful submission
+      // Create FormData for the API call
+      const submitFormData = new FormData();
+      
+      submitFormData.append('title', formData.title);
+      submitFormData.append('price', formData.price);
+      submitFormData.append('currency', formData.currency.toUpperCase());
+      submitFormData.append('description', formData.description);
+      submitFormData.append('locationId', '1'); // Use a default locationId of 1
+      submitFormData.append('email', formData.contactEmail || user?.email || '');
+      submitFormData.append('phoneNumber', formData.contactPhone || '');
+      submitFormData.append('category', formData.category);
+      submitFormData.append('subcategory', formData.subcategory);
+      submitFormData.append('condition', formData.condition);
+      
+      // Add images to FormData
+      formData.images.forEach((image) => {
+        submitFormData.append('images', image);
+      });
+      
+      await createItem(submitFormData, t);
       router.push("/my-listings");
     } catch (error) {
       console.error("Error creating listing:", error);
@@ -204,13 +201,12 @@ function SellForm() {
       <main className="flex-grow py-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6 mb-6">
-            <h1 className="text-2xl font-medium text-gray-900 mb-6">{t("create_listing")}</h1>
+            <h1 className="text-2xl font-medium text-gray-900 mb-6">Create Listing</h1>
             {/* Simplified form skeleton during SSR */}
             <div className="space-y-6">
               <div className="mb-4">
-                <div className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("listing_title")} *
-                </div>
+                <div className="block text-sm font-medium text-gray-700 mb-1">Title *</div>
+
                 <div className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm"></div>
               </div>
               {/* Additional simplified form fields could be added here */}
@@ -259,6 +255,7 @@ function SellForm() {
                 {t("categories")} *
               </label>
               <select
+              
                 id="category"
                 name="category"
                 className={`block w-full px-4 py-3 rounded-md border ${
@@ -329,8 +326,8 @@ function SellForm() {
               >
                 <option value="">{t("select_condition")}</option>
                 {createConditions.map(condition => (
-                  <option key={condition.id} value={condition.id}>
-                                          {t(condition.value)}
+                  <option key={condition.value} value={condition.value}>
+                    {t(condition.value)}
                   </option>
                 ))}
               </select>

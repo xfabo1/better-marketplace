@@ -4,13 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bettermarketplace.api.dto.user.RegisterUserDto;
-import org.bettermarketplace.api.dto.user.UserDetailsUpdateDto;
 import org.bettermarketplace.db.entity.UserDbo;
-import org.bettermarketplace.model.User;
-import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
-import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindMethods;
 import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;

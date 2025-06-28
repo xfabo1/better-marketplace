@@ -13,7 +13,6 @@ export default function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const { t } = useLanguage();
 
-  // Only run client-side
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -23,7 +22,6 @@ export default function Header() {
     setIsUserMenuOpen(false);
   };
 
-  // Show a simplified header during server-rendering to avoid hydration mismatch
   if (!mounted) {
     return (
       <header className="bg-white border-b border-gray-100 sticky top-0 z-10">

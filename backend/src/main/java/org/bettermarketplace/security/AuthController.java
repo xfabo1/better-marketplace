@@ -51,7 +51,7 @@ public class AuthController {
 
 		var user = MAPPER.from(userDbo.get());
 
-		if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+		if (!passwordEncoder.matches(request.password(), userDbo.get().password())) {
 			return ResponseEntity.status(401).build();
 		}
 

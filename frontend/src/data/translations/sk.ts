@@ -1,6 +1,4 @@
-// Slovak translations
 export const skTranslations = {
-  // Header
   "browse": "Prehliadať",
   "sell": "Predať",
   "my_listings": "Moje inzeráty",
@@ -10,23 +8,13 @@ export const skTranslations = {
   "login": "Prihlásiť",
   "register": "Registrovať",
   "open_menu": "Otvoriť menu",
-  
-  // Navigation
   "home": "Domov",
-  
-  // Home page
   "find_anything": "Nájdite čokoľvek potrebujete",
   "buy_sell_easily": "Nakupujte a predávajte jednoducho na Better Marketplace",
-  
-  // Sidebar
   "categories": "Kategórie",
-  
-  // Form fields
   "subcategory": "Podkategória",
   "select_subcategory": "Vyberte podkategóriu",
   "select_subcategory_error": "Vyberte podkategóriu",
-  
-  // Category names
   "transport": "Doprava",
   "electronics": "Elektronika",
   "household": "Domácnosť",
@@ -36,8 +24,6 @@ export const skTranslations = {
   "children": "Deti",
   "animals": "Zvieratá",
   "culture_education": "Kultúra a vzdelávanie",
-  
-  // Subcategories - Transport
   "cars": "Automobily",
   "motorcycles": "Motorky",
   "trucks": "Nákladné vozidlá",
@@ -48,8 +34,6 @@ export const skTranslations = {
   "car_accessories": "Autopríslušenstvo",
   "boats": "Lode a člny",
   "bicycles": "Bicykle a elektrobicykle",
-  
-  // Subcategories - Electronics
   "mobile_phones": "Mobilné telefóny",
   "tablets": "Tablety",
   "laptops": "Notebooky",
@@ -60,8 +44,6 @@ export const skTranslations = {
   "pc_accessories": "PC príslušenstvo",
   "smart_watches": "Chytré hodinky a náramky",
   "network_devices": "Sieťové prvky a routery",
-  
-  // Subcategories - Household
   "furniture": "Nábytok",
   "appliances": "Biela technika",
   "kitchen_appliances": "Kuchynské spotrebiče",
@@ -71,8 +53,6 @@ export const skTranslations = {
   "household_items": "Domáce potreby",
   "cleaning_equipment": "Čistiaca technika",
   "bathroom": "Kúpeľňa a WC",
-  
-  // Subcategories - Garden & Workshop
   "garden_tools": "Záhradné náradie",
   "machines_mowers": "Stroje a kosačky",
   "garden_furniture": "Nábytok do záhrady",
@@ -80,8 +60,6 @@ export const skTranslations = {
   "grills": "Grily a vybavenie",
   "tools": "Náradie a vybavenie dielne",
   "building_materials": "Stavebný materiál",
-  
-  // Subcategories - Fashion
   "men": "Oblečenie - muži",
   "women": "Oblečenie - ženy",
   "children_clothes": "Detské oblečenie",
@@ -89,8 +67,6 @@ export const skTranslations = {
   "accessories": "Doplnky",
   "jewelry_watches": "Šperky a hodinky",
   "bags": "Kabelky a tašky",
-  
-  // Subcategories - Sports & Hobbies
   "fitness": "Fitness a posilňovanie",
   "cycling": "Cyklistika",
   "winter_sports": "Zimné športy",
@@ -100,15 +76,11 @@ export const skTranslations = {
   "shooting": "Streľba a airsoft",
   "musical_instruments": "Hudobné nástroje",
   "modeling": "Modelárstvo",
-  
-  // Subcategories - Children
   "toys": "Hračky",
   "strollers": "Kočíky",
   "children_furniture": "Detský nábytok",
   "car_seats": "Autosedačky",
   "equipment": "Potrebné vybavenie",
-  
-  // Subcategories - Animals
   "dogs": "Psy",
   "cats": "Mačky",
   "small_animals": "Malé zvieratá",
@@ -117,34 +89,24 @@ export const skTranslations = {
   "terrarium": "Teraristika",
   "accessories_for_animals": "Chovateľské potreby",
   "food": "Krmivo",
-  
-  // Subcategories - Culture & Education
   "books": "Knihy",
   "textbooks": "Učebnice",
   "cds_dvds": "CD, DVD, Blu-ray",
   "posters_pictures": "Plagáty a obrazy",
-  
-  // Condition options
   "all_conditions": "Všetky stavy",
   "new": "Nové",
   "used_like_new": "Použité - ako nové",
   "used_very_good": "Použité - veľmi dobrý stav",
   "used_good": "Použité - dobrý stav",
   "used_fair": "Použité - horší stav",
-  
-  // Sort options
-  "newest": "Najnovšie",
-  "oldest": "Najstaršie",
-  "price_lowest": "Najlacnejšie",
-  "price_highest": "Najdrahšie",
-  
-  // Date filter options
+  "NEWEST": "Najnovšie",
+  "OLDEST": "Najstaršie",
+  "PRICE_ASC": "Najlacnejšie",
+  "PRICE_DESC": "Najdrahšie",
   "all_dates": "Všetky",
   "today": "Dnes",
   "this_week": "Tento týždeň",
   "this_month": "Tento mesiac",
-  
-  // Search
   "search_anything": "Hľadať čokoľvek...",
   "search": "Hľadať",
   "filters": "Filtre",
@@ -156,8 +118,6 @@ export const skTranslations = {
   "from": "Od",
   "to": "Do",
   "added": "Pridané",
-  
-  // Listings page
   "browse_listings": "Prehliadať inzeráty",
   "listing_singular": "inzerát",
   "listing_few": "inzeráty",
@@ -169,8 +129,6 @@ export const skTranslations = {
   "no_listings_found": "Pre vaše vyhľadávanie neboli nájdené žiadne inzeráty.",
   "no_listings_in_category": "V tejto kategórii zatiaľ nie sú žiadne inzeráty.",
   "reset_filters": "Resetovať filtre",
-  
-  // Profile page
   "personal_info": "Osobné údaje",
   "edit_profile": "Upraviť profil",
   "change_password": "Zmeniť heslo",
@@ -194,8 +152,6 @@ export const skTranslations = {
   "total": "Celkom",
   "active": "Aktívne",
   "sold": "Predané",
-  
-  // Settings page
   "security": "Zabezpečenie",
   "current_password": "Súčasné heslo",
   "new_password": "Nové heslo",
@@ -208,16 +164,12 @@ export const skTranslations = {
   "location_restricted": "Môžete vybrať iba Českú republiku alebo Slovensko",
   "czech_republic": "Česká republika",
   "slovakia": "Slovensko",
-  
-  // My Listings page
   "new_listing": "Nový inzerát",
   "create_new_listing": "Vytvoriť nový inzerát",
   "no_listings_of_type": "Nemáte žiadne {type} inzeráty.",
   "created": "Vytvorené",
   "edit": "Upraviť",
   "delete": "Zmazať",
-  
-  // Create Listing page
   "create_listing": "Vytvoriť inzerát",
   "listing_title": "Názov inzerátu",
   "select_category": "Vyberte kategóriu",
@@ -247,15 +199,11 @@ export const skTranslations = {
   "image_hint": "Nahrajte až 5 fotografií vo formáte JPG alebo PNG.",
   "cancel": "Zrušiť",
   "submitting": "Odosielanie...",
-  
-  // Form placeholders
   "description_placeholder": "Podrobný popis inzerátu...",
   "location_placeholder": "Bratislava, Košice, ...",
   "title_placeholder": "Napr. iPhone 12 Pro Max, 256GB, Pacific Blue",
   "phone_placeholder": "+421 123 456 789",
   "email_placeholder": "email@example.sk",
-  
-  // Item details
   "description": "Popis",
   "specifications": "Špecifikácie",
   "seller_info": "Informácie o predajcovi",
@@ -269,8 +217,6 @@ export const skTranslations = {
   "favorite": "Pridať do obľúbených",
   "item_posted": "Inzerát pridaný",
   "no_longer_available": "Už nie je dostupné",
-  
-  // Login and Register
   "login_to_account": "Prihláste sa do svojho účtu",
   "no_account": "Nemáte účet?",
   "create_account": "Vytvoriť nový účet",
@@ -294,8 +240,6 @@ export const skTranslations = {
   "currency_info": "Táto mena bude použitá pri vytváraní vašich inzerátov.",
   "czech_koruna": "Česká koruna (Kč)",
   "euro": "Euro (€)",
-  
-  // Authentication errors
   "invalid_credentials": "Nesprávne prihlasovacie údaje",
   "check_credentials": "Skontrolujte prosím svoje prihlasovacie údaje a skúste to znova.",
   "email_already_used": "Tento email je už používaný",
@@ -303,7 +247,14 @@ export const skTranslations = {
   "registration_error": "Chyba pri registrácii",
   "network_error": "Chyba pripojenia k serveru",
   "server_error": "Chyba servera",
+  "password_error": "Heslá sa nezhodujú",
   "login_error": "Chyba pri prihlásení",
   "auth_error_message": "Nastala chyba pri overovaní. Prosím, prihláste sa znova. Ak problém pretrváva, môže byť problém na našej strane.",
-  "network_error_details": "Skontrolujte svoje internetové pripojenie alebo to skúste znova neskôr."
+  "network_error_details": "Skontrolujte svoje internetové pripojenie alebo to skúste znova neskôr.",
+  "item_not_found": "Položka nebola nájdená",
+  "failed_fetch_item": "Nepodarilo sa načítať položku",
+  "failed_create_item": "Nepodarilo sa vytvoriť položku",
+  "failed_update_item": "Nepodarilo sa aktualizovať položku",
+  "failed_search_items": "Nepodarilo sa vyhľadať položky",
+  "network_error_server": "Chyba siete: Nie je možné pripojiť sa k serveru"
 };

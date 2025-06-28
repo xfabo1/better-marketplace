@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { conditions } from "@/data/conditions";
 
-// Date filter options
 const dateFilterOptions = [
   { label: "all_dates", value: "all" },
   { label: "today", value: "today" },
@@ -31,7 +30,6 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Build the query parameters
     const params = new URLSearchParams();
     
     if (searchQuery) params.append("q", searchQuery);
@@ -41,11 +39,8 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     if (minPrice) params.append("minPrice", minPrice);
     if (maxPrice) params.append("maxPrice", maxPrice);
     
-    // Redirect to the listings page with the filters
     const queryString = params.toString();
     router.push(`/listings${queryString ? `?${queryString}` : ''}`);
-    
-    // Call the onSearch prop if provided (for backward compatibility)
     if (onSearch) {
       onSearch(searchQuery);
     }
@@ -114,7 +109,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                 onChange={(e) => setCondition(e.target.value)}
               >
                 {conditions.map((cond) => (
-                  <option key={cond.id} value={cond.id}>
+                  <option key={cond.value} value={cond.value}>
                     {t(cond.value)}
                   </option>
                 ))}
@@ -131,11 +126,11 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
               >
-                                  {dateFilterOptions.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {t(option.value)}
-                    </option>
-                  ))}
+                {dateFilterOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {t(option.label)}
+                  </option>
+                ))}
               </select>
             </div>
             

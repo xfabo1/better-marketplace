@@ -1,22 +1,20 @@
 "use client";
 
-import { searchItems, PreviewItemDto, SearchFilterDto } from "@/api/itemApi";
+import { searchItems } from "@/api/itemApi";
+import { SearchFilterDto } from "@/types/types";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { categories } from "@/data/categories";
 import { conditions } from "@/data/conditions";
 import { dateFilterOptions } from "@/data/dateFilterOptions";
-import { sortOptions, mapSortingToBackend } from "@/data/sortOptions";
-
-
+import { sortOptions } from "@/data/sortOptions";
+import { PreviewItemDto } from "@/types/types";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 // Items per page
 const ITEMS_PER_PAGE = 9;
-
-import { Listing } from "@/types/listing";
 
 export default function ListingsPage() {
   const searchParams = useSearchParams();
@@ -24,17 +22,21 @@ export default function ListingsPage() {
 
   // Initialize state from URL parameters
   const [locationQuery, setLocationQuery] = useState("");
-  const [selectedCondition, setSelectedCondition] = useState("all");
-  const [sortBy, setSortBy] = useState("newest");
+  const [selectedCondition, setSelectedCondition] = useState("all_conditions");
+  const [sortBy, setSortBy] = useState<string>("newest");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
-  const [dateFilter, setDateFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("all_dates");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [listings, setListings] = useState<Listing[]>([]);
+  const [listings, setListings] = useState<PreviewItemDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [totalItems, setTotalItems] = useState(0);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   // Apply URL parameters on component mount
   useEffect(() => {
@@ -67,31 +69,28 @@ export default function ListingsPage() {
           searchText: searchQuery || undefined,
           minPrice: minPrice ? parseFloat(minPrice) : undefined,
           maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,
-          condition: selectedCondition !== "all" ? selectedCondition : undefined,
-          sorting: mapSortingToBackend(sortBy),
+          condition: selectedCondition !== "all_conditions" ? selectedCondition : undefined,
+          sorting: sortBy,
           // For now, we don't have location filtering implemented
           locationId: undefined,
           maxMeterDistance: undefined,
           dateAdded: undefined, // We'll handle date filtering on frontend for now
         };
 
-        const items = await searchItems({
+        const response = await searchItems({
           searchFilter,
-          page: currentPage - 1, // Backend uses 0-based pagination
+          page: currentPage - 1,
           pageSize: ITEMS_PER_PAGE,
-        });
+        }, t);
 
-        // Transform backend items to match frontend listing structure
-        const transformedItems = items.map((item: PreviewItemDto) => ({
-          ...item,
-          id: `${item.name}-${Math.random()}`, // Generate temporary ID until backend provides it
-          imageUrl: "https://placehold.co/800x600/e6f7ef/10b981/png?text=No+Image", // Placeholder until backend provides it
-        }));
-
-        setListings(transformedItems);
+        setListings(response.items);
+        setTotalItems(response.totalItems);
       } catch (error) {
-        console.error("Error fetching items:", error);
-        setError("Failed to load listings. Please try again later.");
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError(t("failed_search_items"));
+        }
       } finally {
         setIsLoading(false);
       }
@@ -100,28 +99,8 @@ export default function ListingsPage() {
     fetchItems();
   }, [searchQuery, minPrice, maxPrice, selectedCondition, sortBy, currentPage]);
 
-  // Helper function to map frontend sorting to backend sorting
-  const mapSortingToBackend = (frontendSort: string): "NEWEST" | "OLDEST" | "PRICE_ASC" | "PRICE_DESC" => {
-    switch (frontendSort) {
-      case "newest":
-        return "NEWEST";
-      case "oldest":
-        return "OLDEST";
-      case "price_asc":
-        return "PRICE_ASC";
-      case "price_desc":
-        return "PRICE_DESC";
-      default:
-        return "NEWEST";
-    }
-  };
-
-
-
   // Backend handles sorting, so we don't need to sort again
   const sortedListings = listings;
-
-
 
   const handleLocationChange = (location: string) => {
     setLocationQuery(location);
@@ -148,18 +127,6 @@ export default function ListingsPage() {
   const handleConditionChange = (condition: string) => {
     setSelectedCondition(condition);
     setCurrentPage(1);
-  };
-
-  // Format date function
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date
-      .toLocaleDateString("cs-CZ", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
-      .replace(/\s/g, "");
   };
 
   // Add this helper function to map category slugs to proper translation keys
@@ -318,13 +285,13 @@ export default function ListingsPage() {
                     d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
                   />
                 </svg>
-                {t("newest")}
+                {t(sortBy)}
               </button>
 
               {isSortMenuOpen && (
                 <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                   <div className="py-1" role="menu" aria-orientation="vertical">
-                    {sortOptions.map(option => (
+                    {sortOptions.map((option) => (
                       <button
                         key={option.value}
                         className={`block px-4 py-2 text-sm text-left w-full ${
@@ -370,8 +337,8 @@ export default function ListingsPage() {
                   value={condition}
                   onChange={e => setCondition(e.target.value)}
                 >
-                  {conditions.map(cond => (
-                    <option key={cond.id} value={cond.id}>
+                  {conditions.map((cond) => (
+                    <option key={cond.value} value={cond.value}>
                       {t(cond.value)}
                     </option>
                   ))}
@@ -389,7 +356,7 @@ export default function ListingsPage() {
                   onChange={e => setLocalDateFilter(e.target.value)}
                 >
                   {dateFilterOptions.map(option => (
-                    <option key={option.id} value={option.id}>
+                    <option key={option.value} value={option.value}>
                       {t(option.value)}
                     </option>
                   ))}
@@ -451,12 +418,7 @@ export default function ListingsPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
               <div className="mb-4 sm:mb-0">
                 <span className="text-sm text-gray-500">
-                  {filteredListings.length}{" "}
-                  {filteredListings.length === 1
-                    ? t("listing_singular")
-                    : filteredListings.length >= 2 && filteredListings.length <= 4
-                    ? t("listing_few")
-                    : t("listing_many")}
+                  {totalItems} {totalItems === 1 ? t("listing_singular") : totalItems >= 2 && totalItems <= 4 ? t("listing_few") : t("listing_many")}
                 </span>
               </div>
 
@@ -467,7 +429,7 @@ export default function ListingsPage() {
                   onChange={e => handleSortChange(e.target.value)}
                   className="block w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:border-primary focus:outline-none"
                 >
-                  {sortOptions.map(option => (
+                  {sortOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {t(option.value)}
                     </option>
@@ -477,11 +439,22 @@ export default function ListingsPage() {
             </div>
           </div>
 
-          {paginatedListings.length > 0 ? (
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <p className="mt-2 text-gray-500">{t("loading")}</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+                {error}
+              </div>
+            </div>
+          ) : sortedListings.length > 0 ? (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                {paginatedListings.map((listing, index) => (
-                  <div key={`${listing.name}-${index}`} className="group">
+                {sortedListings.map((listing, index) => (
+                  <div key={`${listing.title}-${index}`} className="group">
                     <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
                       <div className="relative h-32 w-full bg-gray-200 flex items-center justify-center">
                         {/* Placeholder for image since backend doesn't provide imageUrl yet */}
@@ -499,7 +472,7 @@ export default function ListingsPage() {
                           </div>
                         </div>
                         <h3 className="text-xs font-medium text-gray-900 group-hover:text-primary transition-colors duration-200 mb-1 line-clamp-2">
-                          {listing.name}
+                          {listing.title}
                         </h3>
                         <div className="text-xs text-gray-600 mb-1 hidden sm:block">
                           {listing.condition ? t(listing.condition) : ""}
@@ -611,10 +584,10 @@ export default function ListingsPage() {
                 <button
                   onClick={() => {
                     setLocationQuery("");
-                    setSelectedCondition("all");
+                    setSelectedCondition("all_conditions");
                     setSearchQuery("");
                     setSortBy("newest");
-                    setDateFilter("all");
+                    setDateFilter("all_dates");
                     setMinPrice("");
                     setMaxPrice("");
                     setCurrentPage(1);

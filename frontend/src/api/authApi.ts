@@ -1,45 +1,35 @@
-// Authentication API client for Better Marketplace
-// This file contains functions to interact with the backend auth endpoints
-
-const API_BASE_URL = 'http://localhost:8080/api/better-marketplace';
+const API_BASE_URL = "http://localhost:8080/api/better-marketplace";
 
 /**
  * Login user with email and password
  */
-export async function loginUser(email: string, password: string) {
+export async function loginUser(email: string, password: string, t: (key: string) => string) {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include', // Important for cookies
-      mode: 'cors', // Explicitly set CORS mode
+      credentials: "include",
+      mode: "cors",
       body: JSON.stringify({ email, password }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      
-      // Create a more detailed error object
-      const error = new Error(errorText || 'Login failed');
-      
-      // Handle specific error cases
-      if (response.status === 401) {
-        error.message = 'invalid_credentials';
-      }
-
-      throw error;
+    const apiResponse: { statusCode: number; message: string; body: any } = await response.json();
+    if (apiResponse.statusCode !== 200) {
+      throw new Error(apiResponse.message);
     }
 
-    const data = await response.json();
-    return data;
+    return apiResponse.body;
   } catch (error) {
-    // If it's a network error, provide a more user-friendly message
-    if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-      throw Error('Network error: Unable to connect to the server');
+    if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+      throw new Error(t("network_error_server"));
     }
-    
+
+    if (error instanceof SyntaxError) {
+      throw new Error(t("server_error"));
+    }
+
     throw error;
   }
 }
@@ -47,51 +37,40 @@ export async function loginUser(email: string, password: string) {
 /**
  * Register a new user
  */
-export async function registerUser(userData: {
-  username: string;
-  email: string;
-  password: string;
-  country: string;
-  displayItemsFromOtherCountry: boolean;
-}) {
+export async function registerUser(
+  userData: {
+    username: string;
+    email: string;
+    password: string;
+    country: string;
+    displayItemsFromOtherCountry: boolean;
+  },
+  t: (key: string) => string
+) {
   try {
-    
-    // Ensure country is uppercase
-    const requestData = {
-      ...userData,
-      country: userData.country.toUpperCase()
-    };
-    
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include', // Important for cookies
-      mode: 'cors', // Explicitly set CORS mode
-      body: JSON.stringify(requestData),
+      credentials: "include",
+      mode: "cors",
+      body: JSON.stringify(userData),
     });
 
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      
-      // Handle specific error cases
-      if (errorText === 'email_used') {
-        throw new Error('email_used');
-      } else if (errorText === 'username_used') {
-        throw new Error('username_used');
-      } else {
-        throw Error(errorText || 'Registration failed');
-      }
+    const apiResponse: { statusCode: number; message: string; body: any } = await response.json();
+    if (apiResponse.statusCode !== 200) {
+      throw new Error(apiResponse.message);
     }
 
-    const result = await response.text();
-    return result;
+    return apiResponse.body;
   } catch (error) {
-    
-    if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-       throw Error('Network error: Unable to connect to the server');
+    if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+      throw new Error(t("network_error_server"));
+    }
+
+    if (error instanceof SyntaxError) {
+      throw new Error(t("server_error"));
     }
 
     throw error;
@@ -101,17 +80,29 @@ export async function registerUser(userData: {
 /**
  * Logout the current user
  */
-export async function logoutUser() {
+export async function logoutUser(t: (key: string) => string) {
+  try {
     const response = await fetch(`${API_BASE_URL}/auth/logout`, {
-      method: 'POST',
-      credentials: 'include', // Important for cookies
-      mode: 'cors', // Explicitly set CORS mode
+      method: "POST",
+      credentials: "include",
+      mode: "cors",
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || 'Logout failed');
+    const apiResponse: { statusCode: number; message: string; body: any } = await response.json();
+    if (apiResponse.statusCode !== 200) {
+      throw new Error(apiResponse.message);
     }
 
-    return true;
-} 
+    return apiResponse.body;
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+      throw new Error(t("network_error_server"));
+    }
+
+    if (error instanceof SyntaxError) {
+      throw new Error(t("server_error"));
+    }
+
+    throw error;
+  }
+}

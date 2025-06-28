@@ -4,7 +4,6 @@ import { useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 
-// Component that uses useRouter
 function ForgotPasswordForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -115,8 +114,6 @@ function ForgotPasswordForm() {
     </div>
   );
 }
-
-// Loading fallback for Suspense
 function ForgotPasswordFormFallback() {
   return (
     <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -131,8 +128,6 @@ function ForgotPasswordFormFallback() {
     </div>
   );
 }
-
-// Main component that uses Suspense
 export default function ForgotPasswordPage() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
