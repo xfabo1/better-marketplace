@@ -1,28 +1,3 @@
-server:
-  servlet:
-    context-path: '/api/better-marketplace'
-
-spring:
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.xml
-  application:
-    name: better-marketplace
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    username: marketplace-user
-    password: changemelater
-    url: jdbc:postgresql://localhost:5432/marketplace
-  openfeign:
-    client:
-      config:
-        default:
-          connectTimeout: 5000
-          readTimeout: 10000
-          loggerLevel: basic
 app:
-  security:
-    token:
-      expiration-hours: 168
-clients:
-  open-data-client:
-    url: 'https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/geonames-postal-code@public/exports'
+  cookie:
+    secure: true

@@ -3,6 +3,7 @@ package org.bettermarketplace.api;
 import static org.bettermarketplace.api.response.ResponseStatusMessage.CREATED;
 import static org.bettermarketplace.api.response.ResponseStatusMessage.INTERNAL_SERVER_ERROR;
 import static org.bettermarketplace.api.response.ResponseStatusMessage.NOT_FOUND;
+import static org.bettermarketplace.api.response.ResponseStatusMessage.SUCCESS;
 import static org.bettermarketplace.api.response.ResponseStatusMessage.UNAUTHORIZED;
 
 import java.math.BigDecimal;
@@ -26,6 +27,7 @@ import org.bettermarketplace.security.TokenService;
 import org.bettermarketplace.service.ItemService;
 import org.bettermarketplace.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,10 +42,10 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@Validated
 @RestController
 @RequestMapping("/v1/items")
-@Validated
-@Slf4j
 public class ItemController {
 
 	private static final ItemMapper ITEM_MAPPER = ItemMapper.INSTANCE;
@@ -61,7 +63,7 @@ public class ItemController {
 		this.tokenService = tokenService;
 	}
 
-	@GetMapping("/preview")
+	@GetMapping(value = "/preview", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<PreviewItemsDto>> getPreviewItems(
 			@RequestParam("page") int page,
 			@RequestParam("pageSize") int pageSize,
@@ -73,7 +75,6 @@ public class ItemController {
 			@RequestParam(value = "searchText", required = false) String searchText,
 			@RequestParam(value = "sorting", required = false, defaultValue = "NEWEST") String sorting,
 			@RequestParam(value = "maxMeterDistance", required = false) Double maxMeterDistance) {
-
 		try {
 			var searchFilterDto = new SearchFilterDto(
 					locationId,
@@ -109,7 +110,7 @@ public class ItemController {
 
 			var previewItems = PreviewItemsDto.builder()
 					.totalItems(totalItems)
-					.previewItemDtos(result.stream().map(LOCATION_MAPPER::from).toList())
+					.previewItemDtos(result.stream().map(ITEM_MAPPER::from).toList())
 					.build();
 
 			return ResponseEntity.ok(ApiResponse.<PreviewItemsDto>builder()
@@ -120,7 +121,7 @@ public class ItemController {
 		}
 	}
 
-	@GetMapping("/item/{id}")
+	@GetMapping(value = "/item/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<ItemFullDetailsDto>> getItemById(@PathVariable("id") Long id) {
 		var itemDbo = itemService.findItem(id);
 
@@ -130,7 +131,7 @@ public class ItemController {
 
 	}
 
-	@PostMapping("/item")
+	@PostMapping(value = "/item", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<ApiResponse<Void>> createItem(
 			@RequestParam("title") String title,
 			@RequestParam("price") BigDecimal price,
@@ -222,12 +223,35 @@ public class ItemController {
 			}
 
 			itemService.updateItem(updateItemDto, id, coordinates.country(), coordinates.longitude(),
-					coordinates.latitude());
+					coordinates.latitude(), images);
 
 			return ResponseEntity.ok(ApiResponse.<Void>builder().build());
 
 		} catch (Exception e) {
 			log.error("Error while updating item with ID {}", id, e);
+			return createErrorMessage();
+		}
+	}
+
+	@GetMapping(value = "/personal-items/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse<PreviewItemsDto>> getPersonalItems(@PathVariable("id") Long id, HttpServletRequest request) {
+		try {
+			var token = CookieUtil.extractTokenFromCookie(request);
+			var userAuthDetails = tokenService.getUserDetails(token);
+			if (!Objects.equals(userAuthDetails.getUserId(), id)) {
+				return ResponseEntity.status(UNAUTHORIZED.statusCode())
+						.body(ApiResponse.<PreviewItemsDto>builder()
+								.message(UNAUTHORIZED.statusMessage())
+								.build());
+			}
+			var dboItems = itemService.getPersonalItems(id);
+			var previewItemsDto = PreviewItemsDto.builder()
+					.previewItemDtos(dboItems.stream().map(ITEM_MAPPER::from).toList())
+					.build();
+
+			return ResponseEntity.status(SUCCESS.statusCode()).body(ApiResponse.<PreviewItemsDto>builder().body(previewItemsDto).build());
+		} catch (Exception e) {
+			log.error("Error while getting personal items with ID {}", id, e);
 			return createErrorMessage();
 		}
 	}

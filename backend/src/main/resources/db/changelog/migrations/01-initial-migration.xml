@@ -73,7 +73,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="user_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="item_user_pk" referencedTableName="marketplace_user" referencedColumnNames="id"/>
+                <constraints nullable="false" foreignKeyName="item_user_fk" referencedTableName="marketplace_user" referencedColumnNames="id"/>
             </column>
             <column name="description" type="varchar(2000)"/>
             <column name="title" type="varchar(100)">
@@ -86,7 +86,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="location_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="item_location_id" referencedTableName="location" referencedColumnNames="id"/>
+                <constraints nullable="false" foreignKeyName="item_location_fk" referencedTableName="location" referencedColumnNames="id"/>
             </column>
             <column name="image_url" type="varchar(1000)">
                 <constraints nullable="false"/>

@@ -1,5 +1,6 @@
 package org.bettermarketplace.service;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.bettermarketplace.db.entity.ItemDbo;
 import org.bettermarketplace.db.entity.PreviewItemDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ItemService {
@@ -98,9 +100,10 @@ public class ItemService {
 		return itemDao.insertItem(createItemDto, id, longitude, latitude, country);
 	}
 
-	public void updateItem(UpdateItemDto updateItemDto, Long id, String country, Double longitude, Double latitude) {
+	public void updateItem(UpdateItemDto updateItemDto, Long id, String country, Double longitude, Double latitude, MultipartFile[] images) {
+
 		itemDao.updateItem(updateItemDto.title(), updateItemDto.description(), updateItemDto.currency(),
-				updateItemDto.price(), updateItemDto.locationId(), updateItemDto.imageUrl(), updateItemDto.email(),
+				updateItemDto.price(), updateItemDto.locationId(), updateItemDto.email(),
 				updateItemDto.phoneNumber(), country, longitude, latitude, id, updateItemDto.condition());
 	}
 
@@ -115,5 +118,9 @@ public class ItemService {
 				searchFilterDto.maxMeterDistance(),
 				searchFilterDto.condition()
 		);
+	}
+
+	public List<PreviewItemDbo> getPersonalItems(Long id) {
+		return itemDao.getPersonalItems(id);
 	}
 }

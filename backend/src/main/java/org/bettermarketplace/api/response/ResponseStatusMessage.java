@@ -7,4 +7,5 @@ public record ResponseStatusMessage(int statusCode, String statusMessage) {
 	public static final ResponseStatusMessage NOT_FOUND = new ResponseStatusMessage(404, "not found");
 	public static final ResponseStatusMessage INTERNAL_SERVER_ERROR = new ResponseStatusMessage(500, "internal server error");
 	public static final ResponseStatusMessage CREATED = new ResponseStatusMessage(201, "created");
+	public static final ResponseStatusMessage DELETED = new ResponseStatusMessage(204, "deleted");
 }

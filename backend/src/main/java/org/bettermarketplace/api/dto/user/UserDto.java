@@ -1,5 +1,7 @@
 package org.bettermarketplace.api.dto.user;
 
+import java.time.Instant;
+
 import org.bettermarketplace.model.Country;
 
 public record UserDto(
@@ -7,6 +9,8 @@ public record UserDto(
 		String username,
 		String email,
 		boolean displayItemsFromOtherCountry,
-		Country country) {
+		Country country,
+		Instant createdAt,
+		Instant updatedAt) {
 }
 

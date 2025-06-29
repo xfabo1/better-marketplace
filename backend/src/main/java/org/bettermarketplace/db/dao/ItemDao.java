@@ -37,7 +37,6 @@ public interface ItemDao {
 			@Bind("currency") Currency currency,
 			@Bind("price") BigDecimal price,
 			@Bind("locationId") Long locationId,
-			@Bind("imageUrl") String imageUrl,
 			@Bind("email") String email,
 			@Bind("phoneNumber") String phoneNumber,
 			@Bind("country") String country,
@@ -125,5 +124,13 @@ public interface ItemDao {
 			@Bind("maxMeterDistance") Double maxMeterDistance,
 			@Bind("condition") String condition
 	);
+
+	@SqlQuery
+	@DefineNamedBindings
+	@RegisterConstructorMapper(PreviewItemDbo.class)
+	List<PreviewItemDbo> getPersonalItems(Long id);
+
+	@SqlUpdate
+	void insertImageUrl(@Bind("imageUrl") String imageUrl);
 }
 

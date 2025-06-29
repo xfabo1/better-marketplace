@@ -8,7 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { createItem } from "@/api/itemApi";
-import { categories } from "@/data/categories";
+import { categories, Subcategory } from "@/data/categories";
 import { createConditions } from "@/data/conditions";
 
 const TITLE_MAX_LENGTH = 100;
@@ -34,7 +34,7 @@ function SellForm() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [availableSubcategories, setAvailableSubcategories] = useState<{id: string; href: string}[]>([]);
+  const [availableSubcategories, setAvailableSubcategories] = useState<Subcategory[]>([]);
 
   useEffect(() => {
     setMounted(true);

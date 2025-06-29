@@ -11,6 +11,7 @@ import org.bettermarketplace.api.dto.user.UserDto;
 import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.mapper.UserMapper;
 import org.bettermarketplace.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
@@ -34,6 +35,9 @@ public class AuthController {
 	private final TokenService tokenService;
 	private final UserService userService;
 	private final PasswordEncoder passwordEncoder;
+
+	@Value("${app.cookie.secure:false}")
+	private boolean secure;
 
 	public AuthController(TokenService tokenService, UserService userService, PasswordEncoder passwordEncoder) {
 		this.tokenService = tokenService;
@@ -59,7 +63,7 @@ public class AuthController {
 
 		Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, token);
 		authCookie.setHttpOnly(true);
-		authCookie.setSecure(false); // Set to true in production with HTTPS
+		authCookie.setSecure(secure);
 		authCookie.setPath("/");
 		authCookie.setAttribute("SameSite", "Lax"); // Changed from Strict to Lax for better cross-origin experience
 		// Expiration in 30 days
@@ -74,14 +78,12 @@ public class AuthController {
 		String token = extractTokenFromCookie(request);
 
 		if (StringUtils.hasText(token)) {
-			// Revoke token on server side
 			tokenService.revokeToken(token);
 		}
 
-		// Clear the cookie
 		Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, null);
 		authCookie.setHttpOnly(true);
-		authCookie.setSecure(false); // Set to true in production with HTTPS
+		authCookie.setSecure(secure);
 		authCookie.setPath("/");
 		authCookie.setMaxAge(0); // Set age to 0 to delete the cookie
 		response.addCookie(authCookie);
