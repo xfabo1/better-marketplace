@@ -3,7 +3,6 @@ package org.bettermarketplace.service;
 import java.util.List;
 
 import org.bettermarketplace.db.dao.UserDao;
-import org.bettermarketplace.mapper.UserMapper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-
-    private static final UserMapper MAPPER = UserMapper.INSTANCE;
 
     private final UserDao userRepository;
 
@@ -24,17 +21,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.getUserByEmail(email)
-                .map(userDbo -> {
-                    var user = MAPPER.from(userDbo);
-                    return new org.springframework.security.core.userdetails.User(
-                            user.getEmail(),
-                            user.getPassword(),
-                            List.of(
-                                new SimpleGrantedAuthority("SCOPE_read"),
-                                new SimpleGrantedAuthority("SCOPE_write")
-                            )
-                    );
-                })
+                .map(userDbo -> new org.springframework.security.core.userdetails.User(
+						userDbo.email(),
+						userDbo.password(),
+						List.of(
+							new SimpleGrantedAuthority("SCOPE_read"),
+							new SimpleGrantedAuthority("SCOPE_write")
+						)
+				))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 }

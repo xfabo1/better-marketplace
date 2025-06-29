@@ -2,21 +2,16 @@ server:
   servlet:
     context-path: '/api/better-marketplace'
 
-logging:
-  level:
-    jdbi:
-      sql: DEBUG
-
 spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
   application:
     name: better-marketplace
   datasource:
-    driver-class-name: org.postgresql.Driver
-    username: marketplace-user
-    password: changemelater
-    url: jdbc:postgresql://localhost:5432/marketplace
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
   openfeign:
     client:
       config:
@@ -28,12 +23,6 @@ app:
   security:
     token:
       expiration-hours: 168
-
-
-
 clients:
   open-data-client:
     url: 'https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/geonames-postal-code@public/exports'
-
-file-service:
-

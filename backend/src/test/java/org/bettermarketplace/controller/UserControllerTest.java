@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import org.bettermarketplace.api.UserController;
 import org.bettermarketplace.api.dto.user.UserDto;
+import org.bettermarketplace.api.response.ApiResponse;
 import org.bettermarketplace.config.ObjectMapperConfiguration;
 import org.bettermarketplace.config.TestSecurityConfig;
 import org.bettermarketplace.db.entity.UserDbo;
@@ -25,6 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,9 +61,9 @@ public class UserControllerTest {
 				.andReturn()
 				.getResponse()
 				.getContentAsString();
-		var userDto = objectMapper.readValue(result, UserDto.class);
+		var apiResponse = objectMapper.readValue(result, new TypeReference<ApiResponse<UserDto>>() {});
 
-		assertThat(userDto)
+		assertThat(apiResponse.body())
 				.returns("test", UserDto::username)
 				.returns("random@gmail.com", UserDto::email);
 	}

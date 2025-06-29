@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { categories } from "@/data/categories";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -9,6 +9,8 @@ export default function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const { t } = useLanguage();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const toggleCategory = (categoryId: string, e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation
@@ -17,6 +19,25 @@ export default function Sidebar() {
     } else {
       setExpandedCategory(categoryId);
     }
+  };
+
+  const navigateToCategory = (categoryId: string, subcategoryId?: string) => {
+    const params = new URLSearchParams(searchParams);
+    
+    // Clear existing category/subcategory params
+    params.delete('category');
+    params.delete('subcategory');
+    
+    // Set new category
+    params.set('category', categoryId);
+    
+    // Set subcategory if provided
+    if (subcategoryId) {
+      params.set('subcategory', subcategoryId);
+    }
+    
+    // Navigate to listings with query params
+    router.push(`/listings?${params.toString()}`);
   };
 
   return (
@@ -44,36 +65,43 @@ export default function Sidebar() {
           {categories && categories.map((category) => (
             category && (
               <div key={category.id || `category-${Math.random()}`} className="mb-2">
-                <button
-                  onClick={(e) => toggleCategory(category.id || '', e)}
-                  className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-primary hover:bg-gray-50"
-                >
-                  <span>{t(category.id)}</span>
-                  <span className="text-gray-400">
-                    {expandedCategory === category.id ? (
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    ) : (
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    )}
-                  </span>
-                </button>
+                <div className="flex">
+                  <button
+                    onClick={() => navigateToCategory(category.id)}
+                    className="flex-1 flex items-center px-3 py-2 text-sm font-medium rounded-l-md text-gray-600 hover:text-primary hover:bg-gray-50"
+                  >
+                    <span>{t(category.id)}</span>
+                  </button>
+                  {category.subcategories && (
+                    <button
+                      onClick={(e) => toggleCategory(category.id || '', e)}
+                      className="px-2 py-2 text-sm font-medium rounded-r-md text-gray-400 hover:text-primary hover:bg-gray-50"
+                    >
+                      {expandedCategory === category.id ? (
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      ) : (
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      )}
+                    </button>
+                  )}
+                </div>
                 
                 {/* Subcategories */}
                 {expandedCategory === category.id && category.subcategories && (
                   <div className="ml-4 mt-1 pl-2 border-l border-gray-200">
                     {category.subcategories.map((subcategory) => (
                       subcategory && (
-                        <Link
+                        <button
                           key={subcategory.id || `subcategory-${Math.random()}`}
-                          href={subcategory.href || '#'}
-                          className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+                          onClick={() => navigateToCategory(category.id, subcategory.id)}
+                          className="w-full flex items-center px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md text-left"
                         >
                           {t(subcategory.id)}
-                        </Link>
+                        </button>
                       )
                     ))}
                   </div>

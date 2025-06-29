@@ -2,16 +2,18 @@ package org.bettermarketplace.api.dto.item;
 
 import java.math.BigDecimal;
 
+import org.bettermarketplace.model.Country;
 import org.bettermarketplace.model.Currency;
 
-import lombok.Builder;
-
-@Builder
 public record PreviewItemDto(
-		String name,
+		String title,
+		Country country,
+		String imageUrl,
 		String postalCode,
-		String city,
+		String placeName,
 		BigDecimal price,
-		Currency currency
+		Currency currency,
+		String category,
+		String condition
 ) {
 }

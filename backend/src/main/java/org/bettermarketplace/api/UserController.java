@@ -1,6 +1,11 @@
 package org.bettermarketplace.api;
 
+import static org.bettermarketplace.api.response.ResponseStatusMessage.*;
+import static org.bettermarketplace.api.response.ResponseStatusMessage.DELETED;
+
 import org.bettermarketplace.api.dto.user.UserDto;
+import org.bettermarketplace.api.response.ApiResponse;
+import org.bettermarketplace.api.response.ResponseStatusMessage;
 import org.bettermarketplace.mapper.UserMapper;
 import org.bettermarketplace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping("/v1/users")
+@RequestMapping(value = "/v1/users", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
 	private static final UserMapper MAPPER = UserMapper.INSTANCE;
@@ -27,14 +32,14 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@DeleteMapping(value = "/user/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "/user/{id}")
 	public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
 		userService.deleteUser(id);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.status(DELETED.statusCode()).build();
 	}
 
-	@GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDto> getUser(@PathVariable("id") Long id) {
+	@GetMapping(value = "/user/{id}")
+	public ResponseEntity<ApiResponse<UserDto>> getUser(@PathVariable("id") Long id) {
 		var userDbo = userService.getUser(id);
 		if (userDbo.isEmpty()) {
 			return ResponseEntity.notFound().build();
@@ -42,6 +47,10 @@ public class UserController {
 
 		var user = MAPPER.from(userDbo.get());
 
-		return ResponseEntity.ok(MAPPER.from(user));
+		return ResponseEntity.status(SUCCESS.statusCode()).body(
+				ApiResponse.<UserDto>builder()
+						.body(MAPPER.from(user))
+						.build()
+		);
 	}
 }

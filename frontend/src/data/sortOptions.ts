@@ -1,6 +1,10 @@
-export const sortOptions = [
-  { label: "newest", value: "newest" },
-  { label: "oldest", value: "oldest" },
-  { label: "price_lowest", value: "price_asc" },
-  { label: "price_highest", value: "price_desc" },
+export interface SortOption {
+  value: string;
+}
+
+export const sortOptions: SortOption[] = [
+  { value: "newest" },
+  { value: "oldest" },
+  { value: "price_asc" },
+  { value: "price_desc" },
 ];

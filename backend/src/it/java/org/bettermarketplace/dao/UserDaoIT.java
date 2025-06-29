@@ -66,10 +66,7 @@ public class UserDaoIT extends PostgisTest {
 				.returns(true, UserDbo::displayItemsFromOtherCountry);
 		assertThat(userDao.getUsers()).hasSize(1);
 
-		var updatedUser = UserDetailsUpdateDto.builder()
-				.displayItemsFromOtherCountry(false)
-				.country(Country.SK)
-				.build();
+		var updatedUser = new UserDetailsUpdateDto(null, false, Country.SK);
 
 		userDao.updateUser(updatedUser.password(), updatedUser.displayItemsFromOtherCountry(),
 				updatedUser.country().name(), id);

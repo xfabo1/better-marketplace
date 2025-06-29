@@ -2,24 +2,28 @@ package org.bettermarketplace.api.dto.item;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 import org.bettermarketplace.model.Country;
 import org.bettermarketplace.model.Currency;
 
-import lombok.Builder;
-
-@Builder
 public record ItemFullDetailsDto(
-		String name,
+		Long id,
+		String title,
 		String description,
-		String imageUrl,
-		BigDecimal price,
-		Currency currency,
+		List<String> imageUrl,
+		String phoneNumber,
 		String username,
 		String email,
-		String phoneNumber,
+		BigDecimal price,
+		Long userId,
+		Currency currency,
+		Long locationId,
+		String placeName,
+		String postalCode,
 		Country country,
-		String locationName,
+		String category,
+		String subcategory,
 		Instant createdAt,
-		Instant updatedAt
-) {}
+		Instant updatedAt,
+		String condition) {}

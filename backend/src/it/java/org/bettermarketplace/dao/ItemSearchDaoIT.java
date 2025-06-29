@@ -3,7 +3,6 @@ package org.bettermarketplace.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import org.bettermarketplace.configuration.PostgisTest;
 import org.bettermarketplace.db.dao.ItemDao;
 import org.bettermarketplace.db.dao.LocationDao;
 import org.bettermarketplace.db.dao.UserDao;
-import org.bettermarketplace.db.entity.ItemDbo;
+import org.bettermarketplace.db.entity.PreviewItemDbo;
 import org.bettermarketplace.model.Country;
 import org.bettermarketplace.model.Currency;
 import org.bettermarketplace.model.Location;
@@ -94,8 +93,7 @@ public class ItemSearchDaoIT extends PostgisTest {
 		createTestItem("Expensive Item", BigDecimal.valueOf(500), brnoLocationId);
 		createTestItem("Medium Item", BigDecimal.valueOf(300), brnoLocationId);
 
-		List<ItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, null, null,
-				10);
+		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, 0, 10);
 
 		assertThat(results).hasSize(3);
 		assertThat(results.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(100));
@@ -109,8 +107,7 @@ public class ItemSearchDaoIT extends PostgisTest {
 		createTestItem("Expensive Item", BigDecimal.valueOf(500), brnoLocationId);
 		createTestItem("Medium Item", BigDecimal.valueOf(300), brnoLocationId);
 
-		List<ItemDbo> results = itemDao.findItemsByPriceDesc(null, null, null, null, null, null, null, null, null, null,
-				10);
+		List<PreviewItemDbo> results = itemDao.findItemsByPriceDesc(null, null, null, null, null, null, null, null, 0, 10);
 
 		assertThat(results).hasSize(3);
 		assertThat(results.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(500));
@@ -126,13 +123,12 @@ public class ItemSearchDaoIT extends PostgisTest {
 		Thread.sleep(100);
 		createTestItem("Third Item", BigDecimal.valueOf(300), brnoLocationId);
 
-		List<ItemDbo> results = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, null,
-				null, 10);
+		List<PreviewItemDbo> results = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, 0, 10);
 
 		assertThat(results).hasSize(3);
-		assertThat(results.get(0).name()).isEqualTo("First Item");
-		assertThat(results.get(1).name()).isEqualTo("Second Item");
-		assertThat(results.get(2).name()).isEqualTo("Third Item");
+		assertThat(results.get(0).title()).isEqualTo("First Item");
+		assertThat(results.get(1).title()).isEqualTo("Second Item");
+		assertThat(results.get(2).title()).isEqualTo("Third Item");
 	}
 
 	@Test
@@ -144,13 +140,12 @@ public class ItemSearchDaoIT extends PostgisTest {
 		Thread.sleep(100);
 		createTestItem("Third Item", BigDecimal.valueOf(300), brnoLocationId);
 
-		List<ItemDbo> results = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, null,
-				null, 10);
+		List<PreviewItemDbo> results = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, 0, 10);
 
 		assertThat(results).hasSize(3);
-		assertThat(results.get(0).name()).isEqualTo("Third Item");
-		assertThat(results.get(1).name()).isEqualTo("Second Item");
-		assertThat(results.get(2).name()).isEqualTo("First Item");
+		assertThat(results.get(0).title()).isEqualTo("Third Item");
+		assertThat(results.get(1).title()).isEqualTo("Second Item");
+		assertThat(results.get(2).title()).isEqualTo("First Item");
 	}
 
 	@Test
@@ -159,11 +154,10 @@ public class ItemSearchDaoIT extends PostgisTest {
 		createTestItem("Medium Item", BigDecimal.valueOf(150), brnoLocationId);
 		createTestItem("Expensive Item", BigDecimal.valueOf(300), brnoLocationId);
 
-		List<ItemDbo> results = itemDao.findItemsByPriceAsc(null, null, 100.0, 200.0, null, null, null, null, null,
-				null, 10);
+		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(null, null, 100.0, 200.0, null, null, null, null, 0, 10);
 
 		assertThat(results).hasSize(1);
-		assertThat(results.getFirst().name()).isEqualTo("Medium Item");
+		assertThat(results.getFirst().title()).isEqualTo("Medium Item");
 		assertThat(results.getFirst().price()).isEqualByComparingTo(BigDecimal.valueOf(150));
 	}
 
@@ -173,8 +167,7 @@ public class ItemSearchDaoIT extends PostgisTest {
 		createTestItem("Medium Item", BigDecimal.valueOf(150), brnoLocationId);
 		createTestItem("Expensive Item", BigDecimal.valueOf(300), brnoLocationId);
 
-		List<ItemDbo> results = itemDao.findItemsByPriceDesc(null, null, 100.0, null, null, null, null, null, null,
-				null, 10);
+		List<PreviewItemDbo> results = itemDao.findItemsByPriceDesc(null, null, 100.0, null, null, null, null, null, 0, 10);
 
 		assertThat(results).hasSize(2);
 		assertThat(results.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(300));
@@ -187,12 +180,11 @@ public class ItemSearchDaoIT extends PostgisTest {
 		createTestItem("CZ Item 2", BigDecimal.valueOf(200), pragueLocationId, "CZ");
 		createTestItem("SK Item", BigDecimal.valueOf(150), bratislavaLocationId, "SK");
 
-		List<ItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, "CZ", null, null, null, null, null,
-				10);
+		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, "CZ", null, null, null, 0, 10);
 
 		assertThat(results).hasSize(2);
-		assertThat(results.get(0).name()).isEqualTo("CZ Item 1");
-		assertThat(results.get(1).name()).isEqualTo("CZ Item 2");
+		assertThat(results.get(0).title()).isEqualTo("CZ Item 1");
+		assertThat(results.get(1).title()).isEqualTo("CZ Item 2");
 	}
 
 	@Test
@@ -201,12 +193,11 @@ public class ItemSearchDaoIT extends PostgisTest {
 		createTestItem("MacBook Pro", "Professional laptop for developers", BigDecimal.valueOf(1500), brnoLocationId);
 		createTestItem("Toyota Camry", "Reliable family car", BigDecimal.valueOf(15000), brnoLocationId);
 
-		List<ItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, null, "Pro", null, null, null, null,
-				10);
+		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, null, "Pro", null, null, 0, 10);
 
 		assertThat(results).hasSize(2);
-		assertThat(results.get(0).name()).isEqualTo("iPhone 14 Pro");
-		assertThat(results.get(1).name()).isEqualTo("MacBook Pro");
+		assertThat(results.get(0).title()).isEqualTo("iPhone 14 Pro");
+		assertThat(results.get(1).title()).isEqualTo("MacBook Pro");
 	}
 
 	@Test
@@ -214,11 +205,11 @@ public class ItemSearchDaoIT extends PostgisTest {
 		createTestItem("Brno Item", BigDecimal.valueOf(100), brnoLocationId);
 		createTestItem("Prague Item", BigDecimal.valueOf(200), pragueLocationId);
 
-		List<ItemDbo> results = itemDao.findItemsByPriceAsc(BRNO_LOCATION.getLongitude(), BRNO_LOCATION.getLatitude(),
-				null, null, null, null, 50000.0, null, null, null, 10);
+		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(BRNO_LOCATION.getLongitude(), BRNO_LOCATION.getLatitude(),
+				null, null, null, null, 50000.0, null, 0, 10);
 
 		assertThat(results).hasSize(1);
-		assertThat(results.getFirst().name()).isEqualTo("Brno Item");
+		assertThat(results.getFirst().title()).isEqualTo("Brno Item");
 	}
 
 	@Test
@@ -226,70 +217,98 @@ public class ItemSearchDaoIT extends PostgisTest {
 		createTestItem("Brno Item", BigDecimal.valueOf(100), brnoLocationId);
 		createTestItem("Prague Item", BigDecimal.valueOf(200), pragueLocationId);
 
-		List<ItemDbo> results = itemDao.findItemsByPriceAsc(BRNO_LOCATION.getLongitude(), BRNO_LOCATION.getLatitude(),
-				null, null, null, null, 250000.0, null, null, null, 10);
+		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(BRNO_LOCATION.getLongitude(), BRNO_LOCATION.getLatitude(),
+				null, null, null, null, 250000.0, null, 0, 10);
 
 		assertThat(results).hasSize(2);
-		assertThat(results.get(0).name()).isEqualTo("Brno Item");
-		assertThat(results.get(1).name()).isEqualTo("Prague Item");
+		assertThat(results.get(0).title()).isEqualTo("Brno Item");
+		assertThat(results.get(1).title()).isEqualTo("Prague Item");
 	}
 
 	@Test
-	public void findItemsByPriceAsc_withLastPriceFilter_returnsFilteredItems() {
-		createTestItem("Item 1", BigDecimal.valueOf(100), brnoLocationId);
-		createTestItem("Item 2", BigDecimal.valueOf(200), brnoLocationId);
-		createTestItem("Item 3", BigDecimal.valueOf(300), brnoLocationId);
+	public void findItemsByPriceAsc_withOffset_returnsCorrectItems() {
+		for (int i = 1; i <= 10; i++) {
+			createTestItem("Item " + String.format("%02d", i), BigDecimal.valueOf(i * 100), brnoLocationId);
+		}
 
-		List<ItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null,
-				BigDecimal.valueOf(150), null, null, 10);
+		List<PreviewItemDbo> firstPage = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, 0, 3);
+		assertThat(firstPage).hasSize(3);
+		assertThat(firstPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(100));
+		assertThat(firstPage.get(1).price()).isEqualByComparingTo(BigDecimal.valueOf(200));
+		assertThat(firstPage.get(2).price()).isEqualByComparingTo(BigDecimal.valueOf(300));
 
-		assertThat(results).hasSize(2);
-		assertThat(results.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(200));
-		assertThat(results.get(1).price()).isEqualByComparingTo(BigDecimal.valueOf(300));
+		List<PreviewItemDbo> secondPage = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, 3, 3);
+		assertThat(secondPage).hasSize(3);
+		assertThat(secondPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(400));
+		assertThat(secondPage.get(1).price()).isEqualByComparingTo(BigDecimal.valueOf(500));
+		assertThat(secondPage.get(2).price()).isEqualByComparingTo(BigDecimal.valueOf(600));
+
+		List<PreviewItemDbo> thirdPage = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, 6, 3);
+		assertThat(thirdPage).hasSize(3);
+		assertThat(thirdPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(700));
+		assertThat(thirdPage.get(1).price()).isEqualByComparingTo(BigDecimal.valueOf(800));
+		assertThat(thirdPage.get(2).price()).isEqualByComparingTo(BigDecimal.valueOf(900));
 	}
 
 	@Test
-	public void findItemsByPriceDesc_withLastPriceFilter_returnsFilteredItems() {
-		createTestItem("Item 1", BigDecimal.valueOf(100), brnoLocationId);
-		createTestItem("Item 2", BigDecimal.valueOf(200), brnoLocationId);
-		createTestItem("Item 3", BigDecimal.valueOf(300), brnoLocationId);
+	public void findItemsByPriceDesc_withOffset_returnsCorrectItems() {
+		for (int i = 1; i <= 10; i++) {
+			createTestItem("Item " + String.format("%02d", i), BigDecimal.valueOf(i * 100), brnoLocationId);
+		}
 
-		List<ItemDbo> results = itemDao.findItemsByPriceDesc(null, null, null, null, null, null, null,
-				BigDecimal.valueOf(250), null, null, 10);
+		List<PreviewItemDbo> firstPage = itemDao.findItemsByPriceDesc(null, null, null, null, null, null, null, null, 0, 4);
+		assertThat(firstPage).hasSize(4);
+		assertThat(firstPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(1000));
+		assertThat(firstPage.get(1).price()).isEqualByComparingTo(BigDecimal.valueOf(900));
+		assertThat(firstPage.get(2).price()).isEqualByComparingTo(BigDecimal.valueOf(800));
+		assertThat(firstPage.get(3).price()).isEqualByComparingTo(BigDecimal.valueOf(700));
 
-		assertThat(results).hasSize(2);
-		assertThat(results.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(200));
-		assertThat(results.get(1).price()).isEqualByComparingTo(BigDecimal.valueOf(100));
+		List<PreviewItemDbo> secondPage = itemDao.findItemsByPriceDesc(null, null, null, null, null, null, null, null, 4, 4);
+		assertThat(secondPage).hasSize(4);
+		assertThat(secondPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(600));
+		assertThat(secondPage.get(1).price()).isEqualByComparingTo(BigDecimal.valueOf(500));
+		assertThat(secondPage.get(2).price()).isEqualByComparingTo(BigDecimal.valueOf(400));
+		assertThat(secondPage.get(3).price()).isEqualByComparingTo(BigDecimal.valueOf(300));
 	}
 
 	@Test
-	public void findItemsByUpdateTimeAsc_withLastUpdatedFilter_returnsFilteredItems() throws InterruptedException {
-		createTestItem("Old Item", BigDecimal.valueOf(100), brnoLocationId);
-		Thread.sleep(1000);
-		Instant cutoffTime = Instant.now();
-		Thread.sleep(1000);
-		createTestItem("New Item", BigDecimal.valueOf(200), brnoLocationId);
+	public void findItemsByUpdateTimeAsc_withOffset_returnsCorrectItems() throws InterruptedException {
+		for (int i = 1; i <= 8; i++) {
+			createTestItem("Item " + String.format("%02d", i), BigDecimal.valueOf(i * 100), brnoLocationId);
+			Thread.sleep(50); // Ensure different timestamps
+		}
 
-		List<ItemDbo> results = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null,
-				cutoffTime, null, 10);
+		List<PreviewItemDbo> firstPage = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, 0, 3);
+		assertThat(firstPage).hasSize(3);
+		assertThat(firstPage.get(0).title()).isEqualTo("Item 01");
+		assertThat(firstPage.get(1).title()).isEqualTo("Item 02");
+		assertThat(firstPage.get(2).title()).isEqualTo("Item 03");
 
-		assertThat(results).hasSize(1);
-		assertThat(results.getFirst().name()).isEqualTo("New Item");
+		List<PreviewItemDbo> secondPage = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, 3, 3);
+		assertThat(secondPage).hasSize(3);
+		assertThat(secondPage.get(0).title()).isEqualTo("Item 04");
+		assertThat(secondPage.get(1).title()).isEqualTo("Item 05");
+		assertThat(secondPage.get(2).title()).isEqualTo("Item 06");
 	}
 
 	@Test
-	public void findItemsByUpdateTimeDesc_withLastUpdatedFilter_returnsFilteredItems() throws InterruptedException {
-		createTestItem("Old Item", BigDecimal.valueOf(100), brnoLocationId);
-		Thread.sleep(1000);
-		Instant cutoffTime = Instant.now();
-		Thread.sleep(1000);
-		createTestItem("New Item", BigDecimal.valueOf(200), brnoLocationId);
+	public void findItemsByUpdateTimeDesc_withOffset_returnsCorrectItems() throws InterruptedException {
+		for (int i = 1; i <= 8; i++) {
+			createTestItem("Item " + String.format("%02d", i), BigDecimal.valueOf(i * 100), brnoLocationId);
+			Thread.sleep(50);
+		}
 
-		List<ItemDbo> results = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null,
-				cutoffTime, null, 10);
+		List<PreviewItemDbo> firstPage = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, 0, 3);
+		assertThat(firstPage).hasSize(3);
+		assertThat(firstPage.get(0).title()).isEqualTo("Item 08");
+		assertThat(firstPage.get(1).title()).isEqualTo("Item 07");
+		assertThat(firstPage.get(2).title()).isEqualTo("Item 06");
 
-		assertThat(results).hasSize(1);
-		assertThat(results.getFirst().name()).isEqualTo("Old Item");
+		List<PreviewItemDbo> secondPage = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, 3, 3);
+		assertThat(secondPage).hasSize(3);
+		assertThat(secondPage.get(0).title()).isEqualTo("Item 05");
+		assertThat(secondPage.get(1).title()).isEqualTo("Item 04");
+		assertThat(secondPage.get(2).title()).isEqualTo("Item 03");
 	}
 
 	@Test
@@ -298,8 +317,7 @@ public class ItemSearchDaoIT extends PostgisTest {
 			createTestItem("Item " + i, BigDecimal.valueOf(i * 100), brnoLocationId);
 		}
 
-		List<ItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, null, null,
-				3);
+		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, 0, 3);
 
 		assertThat(results).hasSize(3);
 		assertThat(results.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(100));
@@ -308,11 +326,36 @@ public class ItemSearchDaoIT extends PostgisTest {
 	}
 
 	@Test
+	public void findItemsByPriceAsc_withOffsetBeyondData_returnsPartialResults() {
+		for (int i = 1; i <= 5; i++) {
+			createTestItem("Item " + i, BigDecimal.valueOf(i * 100), brnoLocationId);
+		}
+
+		// Request offset 3 with pageSize 5, should only return 2 items
+		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, 3, 5);
+
+		assertThat(results).hasSize(2);
+		assertThat(results.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(400));
+		assertThat(results.get(1).price()).isEqualByComparingTo(BigDecimal.valueOf(500));
+	}
+
+	@Test
+	public void findItemsByPriceAsc_withOffsetEqualToDataSize_returnsEmptyResults() {
+		for (int i = 1; i <= 3; i++) {
+			createTestItem("Item " + i, BigDecimal.valueOf(i * 100), brnoLocationId);
+		}
+
+		// Request offset 3 when we only have 3 items (indices 0, 1, 2)
+		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, 3, 5);
+
+		assertThat(results).isEmpty();
+	}
+
+	@Test
 	public void findItemsByPriceAsc_withEmptyResults_returnsEmptyList() {
 		createTestItem("Test Item", BigDecimal.valueOf(100), brnoLocationId);
 
-		List<ItemDbo> results = itemDao.findItemsByPriceAsc(null, null, 1000.0, 2000.0, null, null, null, null, null,
-				null, 10);
+		List<PreviewItemDbo> results = itemDao.findItemsByPriceAsc(null, null, 1000.0, 2000.0, null, null, null, null, 0, 10);
 
 		assertThat(results).isEmpty();
 	}
@@ -323,11 +366,11 @@ public class ItemSearchDaoIT extends PostgisTest {
 		createTestItem("iPhone in Prague", "Excellent phone in Prague", BigDecimal.valueOf(550), pragueLocationId);
 		createTestItem("MacBook in Brno", "Professional laptop in Brno", BigDecimal.valueOf(1000), brnoLocationId);
 
-		List<ItemDbo> results = itemDao.findItemsByUpdateTimeAsc(BRNO_LOCATION.getLongitude(),
-				BRNO_LOCATION.getLatitude(), null, null, null, "iPhone", 50000.0, null, null, null, 10);
+		List<PreviewItemDbo> results = itemDao.findItemsByUpdateTimeAsc(BRNO_LOCATION.getLongitude(),
+				BRNO_LOCATION.getLatitude(), null, null, null, "iPhone", 50000.0, null, 0, 10);
 
 		assertThat(results).hasSize(1);
-		assertThat(results.getFirst().name()).isEqualTo("iPhone in Brno");
+		assertThat(results.getFirst().title()).isEqualTo("iPhone in Brno");
 	}
 
 	@Test
@@ -336,22 +379,19 @@ public class ItemSearchDaoIT extends PostgisTest {
 			createTestItem("Item " + String.format("%02d", i), BigDecimal.valueOf(i * 100), brnoLocationId);
 		}
 
-		List<ItemDbo> firstPage = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, null,
-				null, 4);
+		List<PreviewItemDbo> firstPage = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, 0, 4);
 		assertThat(firstPage).hasSize(4);
 		assertThat(firstPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(100));
 		assertThat(firstPage.get(3).price()).isEqualByComparingTo(BigDecimal.valueOf(400));
 
-		BigDecimal lastPriceFromFirstPage = firstPage.get(3).price();
-		List<ItemDbo> secondPage = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null,
-				lastPriceFromFirstPage.add(BigDecimal.valueOf(1)), null, null, 4);
+		List<PreviewItemDbo> secondPage = itemDao.findItemsByPriceAsc(null, null, null, null, null, null, null, null, 4, 4);
 
 		assertThat(secondPage).hasSize(4);
 		assertThat(secondPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(500));
 		assertThat(secondPage.get(3).price()).isEqualByComparingTo(BigDecimal.valueOf(800));
 
-		List<String> firstPageNames = firstPage.stream().map(ItemDbo::name).toList();
-		List<String> secondPageNames = secondPage.stream().map(ItemDbo::name).toList();
+		List<String> firstPageNames = firstPage.stream().map(PreviewItemDbo::title).toList();
+		List<String> secondPageNames = secondPage.stream().map(PreviewItemDbo::title).toList();
 		assertThat(firstPageNames).doesNotContainAnyElementsOf(secondPageNames);
 	}
 
@@ -361,22 +401,19 @@ public class ItemSearchDaoIT extends PostgisTest {
 			createTestItem("Item " + String.format("%02d", i), BigDecimal.valueOf(i * 100), brnoLocationId);
 		}
 
-		List<ItemDbo> firstPage = itemDao.findItemsByPriceDesc(null, null, null, null, null, null, null, null, null,
-				null, 4);
+		List<PreviewItemDbo> firstPage = itemDao.findItemsByPriceDesc(null, null, null, null, null, null, null, null, 0, 4);
 		assertThat(firstPage).hasSize(4);
 		assertThat(firstPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(1000));
 		assertThat(firstPage.get(3).price()).isEqualByComparingTo(BigDecimal.valueOf(700));
 
-		BigDecimal lastPriceFromFirstPage = firstPage.get(3).price();
-		List<ItemDbo> secondPage = itemDao.findItemsByPriceDesc(null, null, null, null, null, null, null,
-				lastPriceFromFirstPage.subtract(BigDecimal.valueOf(1)), null, null, 4);
+		List<PreviewItemDbo> secondPage = itemDao.findItemsByPriceDesc(null, null, null, null, null, null, null, null, 4, 4);
 
 		assertThat(secondPage).hasSize(4);
 		assertThat(secondPage.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(600));
 		assertThat(secondPage.get(3).price()).isEqualByComparingTo(BigDecimal.valueOf(300));
 
-		List<String> firstPageNames = firstPage.stream().map(ItemDbo::name).toList();
-		List<String> secondPageNames = secondPage.stream().map(ItemDbo::name).toList();
+		List<String> firstPageNames = firstPage.stream().map(PreviewItemDbo::title).toList();
+		List<String> secondPageNames = secondPage.stream().map(PreviewItemDbo::title).toList();
 		assertThat(firstPageNames).doesNotContainAnyElementsOf(secondPageNames);
 	}
 
@@ -388,22 +425,19 @@ public class ItemSearchDaoIT extends PostgisTest {
 			Thread.sleep(50);
 		}
 
-		List<ItemDbo> firstPage = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, null,
-				null, 3);
+		List<PreviewItemDbo> firstPage = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, 0, 3);
 		assertThat(firstPage).hasSize(3);
-		assertThat(firstPage.get(0).name()).isEqualTo("Item 01");
-		assertThat(firstPage.get(2).name()).isEqualTo("Item 03");
+		assertThat(firstPage.get(0).title()).isEqualTo("Item 01");
+		assertThat(firstPage.get(2).title()).isEqualTo("Item 03");
 
-		Instant lastUpdatedFromFirstPage = firstPage.get(2).updatedAt();
-		List<ItemDbo> secondPage = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null,
-				lastUpdatedFromFirstPage.plusMillis(1), null, 3);
+		List<PreviewItemDbo> secondPage = itemDao.findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, 3, 3);
 
 		assertThat(secondPage).hasSize(3);
-		assertThat(secondPage.get(0).name()).isEqualTo("Item 04");
-		assertThat(secondPage.get(2).name()).isEqualTo("Item 06");
+		assertThat(secondPage.get(0).title()).isEqualTo("Item 04");
+		assertThat(secondPage.get(2).title()).isEqualTo("Item 06");
 
-		List<String> firstPageNames = firstPage.stream().map(ItemDbo::name).toList();
-		List<String> secondPageNames = secondPage.stream().map(ItemDbo::name).toList();
+		List<String> firstPageNames = firstPage.stream().map(PreviewItemDbo::title).toList();
+		List<String> secondPageNames = secondPage.stream().map(PreviewItemDbo::title).toList();
 		assertThat(firstPageNames).doesNotContainAnyElementsOf(secondPageNames);
 	}
 
@@ -415,22 +449,19 @@ public class ItemSearchDaoIT extends PostgisTest {
 			Thread.sleep(50);
 		}
 
-		List<ItemDbo> firstPage = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null,
-				null, null, 3);
+		List<PreviewItemDbo> firstPage = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, 0, 3);
 		assertThat(firstPage).hasSize(3);
-		assertThat(firstPage.get(0).name()).isEqualTo("Item 08");
-		assertThat(firstPage.get(2).name()).isEqualTo("Item 06");
+		assertThat(firstPage.get(0).title()).isEqualTo("Item 08");
+		assertThat(firstPage.get(2).title()).isEqualTo("Item 06");
 
-		Instant lastUpdatedFromFirstPage = firstPage.get(2).updatedAt();
-		List<ItemDbo> secondPage = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null,
-				lastUpdatedFromFirstPage.minusMillis(1), null, 3);
+		List<PreviewItemDbo> secondPage = itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, 3, 3);
 
 		assertThat(secondPage).hasSize(3);
-		assertThat(secondPage.get(0).name()).isEqualTo("Item 05");
-		assertThat(secondPage.get(2).name()).isEqualTo("Item 03");
+		assertThat(secondPage.get(0).title()).isEqualTo("Item 05");
+		assertThat(secondPage.get(2).title()).isEqualTo("Item 03");
 
-		List<String> firstPageNames = firstPage.stream().map(ItemDbo::name).toList();
-		List<String> secondPageNames = secondPage.stream().map(ItemDbo::name).toList();
+		List<String> firstPageNames = firstPage.stream().map(PreviewItemDbo::title).toList();
+		List<String> secondPageNames = secondPage.stream().map(PreviewItemDbo::title).toList();
 		assertThat(firstPageNames).doesNotContainAnyElementsOf(secondPageNames);
 	}
 
@@ -465,4 +496,4 @@ public class ItemSearchDaoIT extends PostgisTest {
 		Long itemId = itemDao.insertItem(item, userId, latitude, longitude, country);
 		createdItemIds.add(itemId);
 	}
-} 
+}

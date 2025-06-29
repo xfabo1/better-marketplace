@@ -1,6 +1,10 @@
-export const dateFilterOptions = [
-  { label: "all_dates", value: "all" },
-  { label: "today", value: "today" },
-  { label: "this_week", value: "week" },
-  { label: "this_month", value: "month" },
+export interface DateFilterOption {
+  value: string;
+}
+
+export const dateFilterOptions: DateFilterOption[] = [
+  { value: "all_dates" },
+  { value: "today" },
+  { value: "this_week" },
+  { value: "this_month" },
 ];

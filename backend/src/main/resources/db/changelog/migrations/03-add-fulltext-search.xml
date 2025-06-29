@@ -13,7 +13,7 @@
             CREATE OR REPLACE FUNCTION item_search_vector_update() RETURNS trigger AS $$
             BEGIN
               NEW.search_vector =
-                setweight(to_tsvector('simple', COALESCE(NEW.name, '')), 'A') ||
+                setweight(to_tsvector('simple', COALESCE(NEW.title, '')), 'A') ||
                 setweight(to_tsvector('simple', COALESCE(NEW.description, '')), 'B');
             RETURN NEW;
             END

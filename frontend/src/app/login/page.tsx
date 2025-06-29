@@ -6,8 +6,6 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-
-// Define error types for better handling
 type ErrorType = "credentials" | "network" | "server" | "unknown";
 
 interface FormattedError {
@@ -26,20 +24,15 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<FormattedError | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Get the redirect URL from query parameters
   const [redirectUrl, setRedirectUrl] = useState("/");
 
   useEffect(() => {
-    // Parse the URL for the redirect parameter
     const params = new URLSearchParams(window.location.search);
     const redirect = params.get("redirect");
     if (redirect) {
       setRedirectUrl(redirect);
     }
   }, []);
-
-  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
       router.push("/");
@@ -63,46 +56,29 @@ export default function LoginPage() {
 
     try {
       setIsLoading(true);
-
-      // For the real API, we need the password
-      if (password) {
-        await login(email, password);
-        // Redirect to the redirect URL or homepage
-        router.push(redirectUrl);
-      } else {
-        // For social/demo login, no password is needed
-        await login(email);
-        // Redirect to the redirect URL or homepage
-        router.push(redirectUrl);
-      }
-    } catch (err: any) {
-      console.error("Login error:", err);
-
-      // Format error message based on error type
-      if (err.message === "invalid_credentials") {
+      await login(email, password);
+      router.push(redirectUrl);
+    } catch (err: unknown) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      const errorMessage = error.message;
+      
+      if (errorMessage === "invalid_credentials") {
         setError({
           type: "credentials",
           message: t("invalid_credentials") || "Invalid credentials",
           details: t("check_credentials") || "Please check your login credentials and try again.",
         });
-      } else if (err.message?.includes("Network error")) {
+      } else if (errorMessage.includes("Network error")) {
         setError({
           type: "network",
           message: t("network_error") || "Network connection error",
-          details:
-            t("network_error_details") || "Check your internet connection or try again later.",
-        });
-      } else if (err.status >= 500) {
-        setError({
-          type: "server",
-          message: t("server_error") || "Server error",
-          details: `Server returned error: ${err.status} ${err.statusText || ""}`,
+          details: t("network_error_details") || "Check your internet connection or try again later.",
         });
       } else {
         setError({
-          type: "unknown",
+          type: "server",
           message: t("login_error") || "Login error",
-          details: err.message || "Please try again later.",
+          details: errorMessage || "Please try again later.",
         });
       }
     } finally {
@@ -215,7 +191,7 @@ export default function LoginPage() {
                 disabled={isSubmitting}
                 className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                {isSubmitting ? (
+                {isSubmitting || isLoading ? (
                   <span className="flex items-center">
                     <svg
                       className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"

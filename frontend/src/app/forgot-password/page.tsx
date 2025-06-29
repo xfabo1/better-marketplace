@@ -3,9 +3,10 @@
 import { useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-// Component that uses useRouter
 function ForgotPasswordForm() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -27,10 +28,10 @@ function ForgotPasswordForm() {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-medium text-gray-900">
-            Obnovení hesla
+            {t("Obnovení hesla")}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Zadejte svou e-mailovou adresu a my vám zašleme odkaz pro obnovení hesla.
+            {t("Zadejte svou e-mailovou adresu a my vám zašleme odkaz pro obnovení hesla.")}
           </p>
         </div>
         
@@ -115,8 +116,6 @@ function ForgotPasswordForm() {
     </div>
   );
 }
-
-// Loading fallback for Suspense
 function ForgotPasswordFormFallback() {
   return (
     <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -131,8 +130,6 @@ function ForgotPasswordFormFallback() {
     </div>
   );
 }
-
-// Main component that uses Suspense
 export default function ForgotPasswordPage() {
   return (
     <div className="flex flex-col min-h-screen bg-white">

@@ -8,15 +8,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { createItem } from "@/api/itemApi";
-import { categories } from "@/data/categories";
-import { conditions } from "@/data/conditions";
+import { categories, Subcategory } from "@/data/categories";
+import { createConditions } from "@/data/conditions";
 
-// Character limits
 const TITLE_MAX_LENGTH = 100;
 const DESCRIPTION_MAX_LENGTH = 2000;
-const PRICE_MAX_VALUE = 10000000; // 10 million Kč
 
-// Component that uses useRouter
 function SellForm() {
   const router = useRouter();
   const { t } = useLanguage();
@@ -37,27 +34,23 @@ function SellForm() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [availableSubcategories, setAvailableSubcategories] = useState<any[]>([]);
+  const [availableSubcategories, setAvailableSubcategories] = useState<Subcategory[]>([]);
 
-  // Set mounted to true when component mounts on the client
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Redirect unauthenticated users to login page
   useEffect(() => {
     if (mounted && !user) {
       router.push("/login?redirect=/sell");
     }
   }, [mounted, user, router]);
 
-  // Update available subcategories when category changes
   useEffect(() => {
     if (formData.category) {
       const selectedCategory = categories.find(cat => cat.id === formData.category);
       if (selectedCategory && selectedCategory.subcategories) {
         setAvailableSubcategories(selectedCategory.subcategories);
-        // Reset subcategory when category changes
         setFormData(prev => ({ ...prev, subcategory: "" }));
       } else {
         setAvailableSubcategories([]);
@@ -128,8 +121,6 @@ function SellForm() {
       const priceValue = Number(formData.price);
       if (isNaN(priceValue) || priceValue < 0) {
         newErrors.price = t("valid_price");
-      } else if (priceValue > PRICE_MAX_VALUE) {
-        newErrors.price = t("max_price").replace("{max}", PRICE_MAX_VALUE.toLocaleString());
       }
     }
 
@@ -165,28 +156,26 @@ function SellForm() {
     setIsSubmitting(true);
 
     try {
-      // Call the API to create the item
-      const itemData = {
-        name: formData.title,
-        price: parseFloat(formData.price),
-        currency: formData.currency.toUpperCase(),
-        description: formData.description,
-        imageUrl:
-          formData.images.length > 0
-            ? URL.createObjectURL(formData.images[0])
-            : "https://placehold.co/800x600/e6f7ef/10b981/png?text=No+Image",
-        locationId: 1, // Use a default locationId of 1
-        email: formData.contactEmail || user?.email || "",
-        phoneNumber: formData.contactPhone || user?.phone || "",
-        // Include subcategory in the request
-        category: formData.category,
-        subcategory: formData.subcategory,
-      };
-
-      const itemId = await createItem(itemData);
-      console.log("Created item with ID:", itemId);
-
-      // Redirect to my listings page after successful submission
+      // Create FormData for the API call
+      const submitFormData = new FormData();
+      
+      submitFormData.append('title', formData.title);
+      submitFormData.append('price', formData.price);
+      submitFormData.append('currency', formData.currency.toUpperCase());
+      submitFormData.append('description', formData.description);
+      submitFormData.append('locationId', '1'); // Use a default locationId of 1
+      submitFormData.append('email', formData.contactEmail || user?.email || '');
+      submitFormData.append('phoneNumber', formData.contactPhone || '');
+      submitFormData.append('category', formData.category);
+      submitFormData.append('subcategory', formData.subcategory);
+      submitFormData.append('condition', formData.condition);
+      
+      // Add images to FormData
+      formData.images.forEach((image) => {
+        submitFormData.append('images', image);
+      });
+      
+      await createItem(submitFormData, t);
       router.push("/my-listings");
     } catch (error) {
       console.error("Error creating listing:", error);
@@ -202,13 +191,12 @@ function SellForm() {
       <main className="flex-grow py-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6 mb-6">
-            <h1 className="text-2xl font-medium text-gray-900 mb-6">{t("create_listing")}</h1>
+            <h1 className="text-2xl font-medium text-gray-900 mb-6">Create Listing</h1>
             {/* Simplified form skeleton during SSR */}
             <div className="space-y-6">
               <div className="mb-4">
-                <div className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("listing_title")} *
-                </div>
+                <div className="block text-sm font-medium text-gray-700 mb-1">Title *</div>
+
                 <div className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm"></div>
               </div>
               {/* Additional simplified form fields could be added here */}
@@ -257,6 +245,7 @@ function SellForm() {
                 {t("categories")} *
               </label>
               <select
+              
                 id="category"
                 name="category"
                 className={`block w-full px-4 py-3 rounded-md border ${
@@ -277,7 +266,6 @@ function SellForm() {
               {errors.category && <p className="mt-2 text-sm text-red-600">{errors.category}</p>}
             </div>
 
-            {/* Subcategory dropdown - only shown when a category is selected */}
             {formData.category && availableSubcategories.length > 0 && (
               <div className="mb-4">
                 <label
@@ -326,9 +314,9 @@ function SellForm() {
                 onChange={handleChange}
               >
                 <option value="">{t("select_condition")}</option>
-                {conditions.map(condition => (
-                  <option key={condition.id} value={condition.id}>
-                    {t(condition.name)}
+                {createConditions.map(condition => (
+                  <option key={condition.value} value={condition.value}>
+                    {t(condition.value)}
                   </option>
                 ))}
               </select>

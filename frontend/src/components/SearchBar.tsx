@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { conditions } from "@/data/conditions";
+import { sortOptions } from "@/data/sortOptions";
 
-// Date filter options
 const dateFilterOptions = [
   { label: "all_dates", value: "all" },
   { label: "today", value: "today" },
@@ -13,42 +12,77 @@ const dateFilterOptions = [
   { label: "this_month", value: "month" },
 ];
 
-interface SearchBarProps {
-  onSearch?: (query: string) => void;
+export interface SearchFilters {
+  searchQuery: string;
+  location: string;
+  condition: string;
+  dateFilter: string;
+  minPrice: string;
+  maxPrice: string;
+  sortBy: string;
 }
 
-export default function SearchBar({ onSearch }: SearchBarProps) {
-  const router = useRouter();
+interface SearchBarProps {
+  searchQuery: string;
+  location: string;
+  condition: string;
+  dateFilter: string;
+  minPrice: string;
+  maxPrice: string;
+  sortBy: string;
+  onSearchQueryChange: (searchQuery: string) => void;
+  onLocationChange: (location: string) => void;
+  onConditionChange: (condition: string) => void;
+  onDateFilterChange: (dateFilter: string) => void;
+  onSortChange: (sortBy: string) => void;
+  onPriceChange: (minPrice: string, maxPrice: string) => void;
+  onSearch: () => void;
+}
+
+export default function SearchBar({
+  searchQuery,
+  location,
+  condition,
+  dateFilter,
+  minPrice,
+  maxPrice,
+  sortBy,
+  onSearchQueryChange,
+  onLocationChange,
+  onConditionChange,
+  onDateFilterChange,
+  onSortChange,
+  onPriceChange,
+  onSearch,
+}: SearchBarProps) {
   const { t } = useLanguage();
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
-  const [location, setLocation] = useState("");
-  const [condition, setCondition] = useState("all");
-  const [dateFilter, setDateFilter] = useState("all");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Build the query parameters
-    const params = new URLSearchParams();
-    
-    if (searchQuery) params.append("q", searchQuery);
-    if (location) params.append("location", location);
-    if (condition !== "all") params.append("condition", condition);
-    if (dateFilter !== "all") params.append("date", dateFilter);
-    if (minPrice) params.append("minPrice", minPrice);
-    if (maxPrice) params.append("maxPrice", maxPrice);
-    
-    // Redirect to the listings page with the filters
-    const queryString = params.toString();
-    router.push(`/listings${queryString ? `?${queryString}` : ''}`);
-    
-    // Call the onSearch prop if provided (for backward compatibility)
-    if (onSearch) {
-      onSearch(searchQuery);
-    }
+    onSearch();
+  };
+
+  const handleLocationChangeInternal = (newLocation: string) => {
+    onLocationChange(newLocation);
+  };
+
+  const handleConditionChangeInternal = (newCondition: string) => {
+    onConditionChange(newCondition);
+  };
+
+  const handleDateFilterChangeInternal = (newDateFilter: string) => {
+    onDateFilterChange(newDateFilter);
+  };
+
+  const handleSortChangeInternal = (newSort: string) => {
+    setIsSortMenuOpen(false);
+    onSortChange(newSort);
+  };
+
+  const handlePriceChangeInternal = (field: 'min' | 'max', value: string) => {
+    onPriceChange(field === 'min' ? value : minPrice, field === 'max' ? value : maxPrice);
   };
 
   return (
@@ -66,7 +100,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
               className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-0 transition duration-150 ease-in-out"
               placeholder={t('search_anything')}
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => onSearchQueryChange(e.target.value)}
             />
           </div>
           <button
@@ -85,6 +119,39 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             </svg>
             {t('filters')}
           </button>
+            <div className="relative">
+              <button
+                type="button"
+                className="inline-flex items-center justify-center px-4 py-3 border border-gray-200 text-sm font-medium rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150 ease-in-out"
+                onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
+              >
+                <svg className="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                </svg>
+                {t('sort_by')}
+              </button>
+              
+              {isSortMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-100">
+                  <div className="py-1">
+                    {sortOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => handleSortChangeInternal(option.value)}
+                        className={`block w-full text-left px-4 py-2 text-sm ${
+                          sortBy === option.value
+                            ? "bg-gray-100 text-primary font-medium"
+                            : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        {t(option.value)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
         </div>
         
         {isFiltersOpen && (
@@ -99,7 +166,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                 className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                 placeholder={t('enter_city')}
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                onChange={(e) => handleLocationChangeInternal(e.target.value)}
               />
             </div>
             
@@ -111,11 +178,11 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                 id="condition"
                 className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                 value={condition}
-                onChange={(e) => setCondition(e.target.value)}
+                onChange={(e) => handleConditionChangeInternal(e.target.value)}
               >
                 {conditions.map((cond) => (
-                  <option key={cond.id} value={cond.id}>
-                    {t(cond.name)}
+                  <option key={cond.value} value={cond.value}>
+                    {t(cond.value)}
                   </option>
                 ))}
               </select>
@@ -129,7 +196,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                 id="dateFilter"
                 className="mt-1 block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                 value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
+                onChange={(e) => handleDateFilterChangeInternal(e.target.value)}
               >
                 {dateFilterOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -150,7 +217,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                   placeholder={t('from')}
                   className="block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                   value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
+                  onChange={(e) => handlePriceChangeInternal('min', e.target.value)}
                   min="0"
                 />
                 <span className="text-gray-500">-</span>
@@ -160,7 +227,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                   placeholder={t('to')}
                   className="block w-full border border-gray-200 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-primary focus:ring-0 bg-white"
                   value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
+                  onChange={(e) => handlePriceChangeInternal('max', e.target.value)}
                   min="0"
                 />
               </div>

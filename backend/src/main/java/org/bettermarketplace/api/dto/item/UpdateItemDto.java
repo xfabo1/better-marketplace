@@ -8,12 +8,14 @@ import lombok.Builder;
 
 @Builder
 public record UpdateItemDto(
-		String name,
+		String title,
 		String description,
 		Currency currency,
 		BigDecimal price,
 		Long locationId,
-		String imageUrl,
 		String email,
-		String phoneNumber) {
+		String phoneNumber,
+		String category,
+		String subcategory,
+		String condition) {
 }

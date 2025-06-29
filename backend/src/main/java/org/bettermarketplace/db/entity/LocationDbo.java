@@ -16,4 +16,9 @@ public record LocationDbo(Long id,
 						  String city,
 						  double latitude,
 						  double longitude) {
+
+	@Override
+	public String toString() {
+		return countryCode + ", " + placeName + ", " + city + ", " + region + ", " + postalCode;
+	}
 }

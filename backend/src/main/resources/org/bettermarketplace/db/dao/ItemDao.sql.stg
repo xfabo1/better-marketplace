@@ -1,12 +1,13 @@
-findItems() ::= <<
-  SELECT *
-  FROM item
->>
-
 findItem(id) ::= <<
-  SELECT *
-  FROM item
-  WHERE id=:id
+  SELECT 
+    i.*,
+    u.username,
+    l.place_name,
+    l.postal_code
+  FROM item i
+  INNER JOIN marketplace_user u ON i.user_id = u.id
+  INNER JOIN location l ON i.location_id = l.id
+  WHERE i.id=:id
 >>
 
 insertItem(itemObject, userId, longitude, latitude, country) ::= <<
@@ -16,7 +17,7 @@ insertItem(itemObject, userId, longitude, latitude, country) ::= <<
     phone_number,
     user_id,
     description,
-    name,
+    title,
     price,
     currency,
     location_id,
@@ -33,7 +34,7 @@ insertItem(itemObject, userId, longitude, latitude, country) ::= <<
     :itemObject.phoneNumber,
     :userId,
     :itemObject.description,
-    :itemObject.name,
+    :itemObject.title,
     :itemObject.price,
     :itemObject.currency,
     :itemObject.locationId,
@@ -46,127 +47,151 @@ insertItem(itemObject, userId, longitude, latitude, country) ::= <<
   )
 >>
 
-updateItem(name, description, currency, price, locationId, imageUrl, email, phoneNumber, longitude, latitude, id, country, condition) ::= <<
-  UPDATE item
-  SET
-      <if(name)>name = :name,<endif>
-      <if(description)>description = :description,<endif>
-      <if(currency)>currency = :currency,<endif>
-      <if(price)>price = :price,<endif>
-      <if(locationId)>location_id = :locationId,<endif>
-      <if(imageUrl)>image_url = :imageUrl,<endif>
-      <if(email)>email = :email,<endif>
-      <if(phoneNumber)>phone_number = :phoneNumber,<endif>
-      <if(country)>country = :country,<endif>
-      <if(longitude && latitude)>geom = ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326),<endif>
-      <if(condition)>condition = :condition,<endif>
-      updated_at = CURRENT_TIMESTAMP
-  WHERE id = :id
->>
-
 deleteItem(id) ::= <<
   DELETE
   FROM item
   WHERE id=:id
 >>
 
-findItemsByUpdateTimeAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize) ::= <<
-   SELECT *
-   FROM item
+findItemsByUpdateTimeAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
+   SELECT 
+     i.title,
+     i.country,
+     i.currency,
+     i.price,
+     l.place_name,
+     l.postal_code,
+     i.category,
+     i.condition
+   FROM item i
+   INNER JOIN location l ON i.location_id = l.id
    WHERE TRUE
-   <if(minPrice)>AND price \>= :minPrice<endif>
-   <if(maxPrice)>AND price \<= :maxPrice<endif>
-   <if(country)> AND country = :country<endif>
+   <if(minPrice)>AND i.price \>= :minPrice<endif>
+   <if(maxPrice)>AND i.price \<= :maxPrice<endif>
+   <if(country)> AND i.country = :country<endif>
    /* Full-text search with null check */
-   <if(textSearch)>AND search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
+   <if(textSearch)>AND i.search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
    /* Spatial query with null checks */
    <if(latitude && longitude && maxMeterDistance)>
    AND ST_DWithin(
-       geom,
+       i.geom,
        ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
        :maxMeterDistance
    )
    <endif>
-   <if(condition)>AND condition = :condition<endif>
-   <if(lastUpdated)>
-   AND updated_at >= :lastUpdated
-   <endif>
-   ORDER BY updated_at ASC
+   <if(condition)>AND i.condition = :condition<endif>
+   ORDER BY i.updated_at ASC
+   OFFSET :offset
    LIMIT :pageSize
 >>
 
-findItemsByUpdateTimeDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize) ::= <<
-   SELECT *
-   FROM item
+findItemsByUpdateTimeDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
+   SELECT 
+     i.title,
+     i.country,
+     i.currency,
+     i.price,
+     l.place_name,
+     l.postal_code,
+     i.category,
+     i.condition
+   FROM item i
+   INNER JOIN location l ON i.location_id = l.id
    WHERE TRUE
-   <if(minPrice)>AND price \>= :minPrice<endif>
-   <if(maxPrice)>AND price \<= :maxPrice<endif>
-   <if(country)> AND country = :country<endif>
+   <if(minPrice)>AND i.price \>= :minPrice<endif>
+   <if(maxPrice)>AND i.price \<= :maxPrice<endif>
+   <if(country)> AND i.country = :country<endif>
    /* Full-text search with null check */
-   <if(textSearch)>AND search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
+   <if(textSearch)>AND i.search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
    /* Spatial query with null checks */
    <if(latitude && longitude && maxMeterDistance)>
    AND ST_DWithin(
-       geom,
+       i.geom,
        ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
        :maxMeterDistance
    )
    <endif>
-   <if(condition)>AND condition = :condition<endif>
-   <if(lastUpdated)>
-   AND updated_at \<= :lastUpdated
-   <endif>
-   ORDER BY updated_at DESC
+   <if(condition)>AND i.condition = :condition<endif>
+   ORDER BY i.updated_at DESC
+   OFFSET :offset
    LIMIT :pageSize
 >>
 
 
-findItemsByPriceAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize) ::= <<
-   SELECT *
-   FROM item
+findItemsByPriceAsc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
+   SELECT 
+     i.title,
+     i.country,
+     i.currency,
+     i.price,
+     l.place_name,
+     l.postal_code,
+     i.category,
+     i.condition
+   FROM item i
+   INNER JOIN location l ON i.location_id = l.id
    WHERE TRUE
-   <if(minPrice)>AND price \>= :minPrice<endif>
-   <if(maxPrice)>AND price \<= :maxPrice<endif>
-   <if(country)> AND country = :country<endif>
+   <if(minPrice)>AND i.price \>= :minPrice<endif>
+   <if(maxPrice)>AND i.price \<= :maxPrice<endif>
+   <if(country)> AND i.country = :country<endif>
    /* Full-text search with null check */
-   <if(textSearch)>AND search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
+   <if(textSearch)>AND i.search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
    /* Spatial query with null checks */
    <if(latitude && longitude && maxMeterDistance)>
    AND ST_DWithin(
-       geom,
+       i.geom,
        ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
        :maxMeterDistance
    )
    <endif>
-   <if(condition)>AND condition = :condition<endif>
-   <if(lastPrice)>
-   AND price >= :lastPrice
-   <endif>
-   ORDER BY price ASC
+   <if(condition)>AND i.condition = :condition<endif>
+   ORDER BY i.price ASC
+   OFFSET :offset
    LIMIT :pageSize
 >>
 
-findItemsByPriceDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize) ::= <<
-  SELECT *
-  FROM item
+findItemsByPriceDesc(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, offset, pageSize) ::= <<
+  SELECT 
+     i.title,
+     i.country,
+     i.currency,
+     i.price,
+     l.place_name,
+     l.postal_code,
+     i.category,
+     i.condition
+  FROM item i
+  INNER JOIN location l ON i.location_id = l.id
   WHERE TRUE
-  <if(minPrice)>AND price \>= :minPrice<endif>
-  <if(maxPrice)>AND price \<= :maxPrice<endif>
-  <if(country)> AND country = :country<endif>
+  <if(minPrice)>AND i.price \>= :minPrice<endif>
+  <if(maxPrice)>AND i.price \<= :maxPrice<endif>
+  <if(country)> AND i.country = :country<endif>
   /* Full-text search with null check */
-  <if(textSearch)>AND search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
+  <if(textSearch)>AND i.search_vector @@ plainto_tsquery('simple', :textSearch)<endif>
   /* Spatial query with null checks */
   <if(latitude && longitude && maxMeterDistance)>
   AND ST_DWithin(
-      geom,
+      i.geom,
       ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
       :maxMeterDistance
   )
   <endif>
-  <if(condition)>AND condition = :condition<endif>
-  <if(lastPrice)>
-  AND price \<= :lastPrice
-  <endif>
-  ORDER BY price DESC
+  <if(condition)>AND i.condition = :condition<endif>
+  ORDER BY i.price DESC
+  OFFSET :offset
   LIMIT :pageSize
+>>
+
+getPersonalItems(id) ::= <<
+     i.title,
+     i.country,
+     i.currency,
+     i.price,
+     l.place_name,
+     l.postal_code,
+     i.category,
+     i.condition
+  FROM item i
+  INNER JOIN location l ON i.location_id = l.id
+  WHERE i.user_id = :id
 >>

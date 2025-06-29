@@ -1,12 +1,12 @@
 package org.bettermarketplace.db.dao;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 import org.bettermarketplace.api.dto.item.CreateItemDto;
 import org.bettermarketplace.db.entity.ItemDbo;
+import org.bettermarketplace.db.entity.PreviewItemDbo;
 import org.bettermarketplace.model.Currency;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -32,25 +32,26 @@ public interface ItemDao {
 	@SqlUpdate
 	@DefineNamedBindings
 	void updateItem(
-			@Bind("name") String name,
+			@Bind("title") String title,
 			@Bind("description") String description,
 			@Bind("currency") Currency currency,
 			@Bind("price") BigDecimal price,
 			@Bind("locationId") Long locationId,
-			@Bind("imageUrl") String imageUrl,
 			@Bind("email") String email,
 			@Bind("phoneNumber") String phoneNumber,
 			@Bind("country") String country,
 			@Bind("longitude") Double longitude,
 			@Bind("latitude") Double latitude,
-			@Bind("id") Long id);
+			@Bind("id") Long id,
+			@Bind("condition") String condition);
 
 	@SqlUpdate
 	void deleteItem(@Bind("id") Long id);
 
 	@SqlQuery
 	@DefineNamedBindings
-	List<ItemDbo> findItemsByPriceAsc(
+	@RegisterConstructorMapper(PreviewItemDbo.class)
+	List<PreviewItemDbo> findItemsByPriceAsc(
 			@Bind("longitude") Double longitude,
 			@Bind("latitude") Double latitude,
 			@Bind("minPrice") Double minPrice,
@@ -58,15 +59,15 @@ public interface ItemDao {
 			@Bind("country") String country,
 			@Bind("textSearch") String textSearch,
 			@Bind("maxMeterDistance") Double maxMeterDistance,
-			@Bind("lastPrice") BigDecimal lastPrice,
-			@Bind("lastUpdated") Instant lastUpdated,
 			@Bind("condition") String condition,
+			@Bind("offset") int offset,
 			@Bind("pageSize") int pageSize
 	);
 
 	@SqlQuery
 	@DefineNamedBindings
-	List<ItemDbo> findItemsByPriceDesc(
+	@RegisterConstructorMapper(PreviewItemDbo.class)
+	List<PreviewItemDbo> findItemsByPriceDesc(
 			@Bind("longitude") Double longitude,
 			@Bind("latitude") Double latitude,
 			@Bind("minPrice") Double minPrice,
@@ -74,15 +75,15 @@ public interface ItemDao {
 			@Bind("country") String country,
 			@Bind("textSearch") String textSearch,
 			@Bind("maxMeterDistance") Double maxMeterDistance,
-			@Bind("lastPrice") BigDecimal lastPrice,
-			@Bind("lastUpdated") Instant lastUpdated,
 			@Bind("condition") String condition,
+			@Bind("offset") int offset,
 			@Bind("pageSize") int pageSize
 	);
 
 	@SqlQuery
 	@DefineNamedBindings
-	List<ItemDbo> findItemsByUpdateTimeAsc(
+	@RegisterConstructorMapper(PreviewItemDbo.class)
+	List<PreviewItemDbo> findItemsByUpdateTimeDesc(
 			@Bind("longitude") Double longitude,
 			@Bind("latitude") Double latitude,
 			@Bind("minPrice") Double minPrice,
@@ -90,15 +91,15 @@ public interface ItemDao {
 			@Bind("country") String country,
 			@Bind("textSearch") String textSearch,
 			@Bind("maxMeterDistance") Double maxMeterDistance,
-			@Bind("lastPrice") BigDecimal lastPrice,
-			@Bind("lastUpdated") Instant lastUpdated,
 			@Bind("condition") String condition,
+			@Bind("offset") int offset,
 			@Bind("pageSize") int pageSize
 	);
 
 	@SqlQuery
 	@DefineNamedBindings
-	List<ItemDbo> findItemsByUpdateTimeDesc(
+	@RegisterConstructorMapper(PreviewItemDbo.class)
+	List<PreviewItemDbo> findItemsByUpdateTimeAsc(
 			@Bind("longitude") Double longitude,
 			@Bind("latitude") Double latitude,
 			@Bind("minPrice") Double minPrice,
@@ -106,10 +107,30 @@ public interface ItemDao {
 			@Bind("country") String country,
 			@Bind("textSearch") String textSearch,
 			@Bind("maxMeterDistance") Double maxMeterDistance,
-			@Bind("lastPrice") BigDecimal lastPrice,
-			@Bind("lastUpdated") Instant lastUpdated,
 			@Bind("condition") String condition,
+			@Bind("offset") int offset,
 			@Bind("pageSize") int pageSize
 	);
+
+	@SqlQuery
+	@DefineNamedBindings
+	int getCountOfAllItems(
+			@Bind("longitude") Double longitude,
+			@Bind("latitude") Double latitude,
+			@Bind("minPrice") Double minPrice,
+			@Bind("maxPrice") Double maxPrice,
+			@Bind("country") String country,
+			@Bind("textSearch") String textSearch,
+			@Bind("maxMeterDistance") Double maxMeterDistance,
+			@Bind("condition") String condition
+	);
+
+	@SqlQuery
+	@DefineNamedBindings
+	@RegisterConstructorMapper(PreviewItemDbo.class)
+	List<PreviewItemDbo> getPersonalItems(Long id);
+
+	@SqlUpdate
+	void insertImageUrl(@Bind("imageUrl") String imageUrl);
 }
 
