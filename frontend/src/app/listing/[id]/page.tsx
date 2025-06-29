@@ -19,7 +19,6 @@ export default function ListingDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch item data from backend
   useEffect(() => {
     const fetchItem = async () => {
       if (!id) return;
@@ -45,7 +44,6 @@ export default function ListingDetailPage() {
     fetchItem();
   }, [id]);
 
-  // Show loading state
   if (isLoading) {
     return (
       <div className="flex flex-col min-h-screen bg-gray-50">
@@ -67,7 +65,6 @@ export default function ListingDetailPage() {
     );
   }
 
-  // Show error state
   if (error || !item) {
     return (
       <div className="flex flex-col min-h-screen bg-gray-50">
@@ -94,7 +91,6 @@ export default function ListingDetailPage() {
 
       <main className="flex-grow py-6 md:py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumbs */}
           <div className="mb-4 text-sm text-gray-500">
             <Link href="/" className="hover:text-primary">
               {t("home")}
@@ -114,9 +110,7 @@ export default function ListingDetailPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left column - Images and details */}
             <div className="lg:col-span-2">
-              {/* Image gallery */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
                 <div className="relative h-64 sm:h-96 w-full">
                   <Image

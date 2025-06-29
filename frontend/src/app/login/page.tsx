@@ -56,15 +56,9 @@ export default function LoginPage() {
 
     try {
       setIsLoading(true);
-      if (password) {
-        await login(email, password, "CZ", false);
-        router.push(redirectUrl);
-      } else {
-        await login(email, "", "CZ", false);
-        router.push(redirectUrl);
-      }
+      await login(email, password);
+      router.push(redirectUrl);
     } catch (err: unknown) {
-      console.error("Login error:", err);
       const error = err instanceof Error ? err : new Error(String(err));
       const errorMessage = error.message;
       
@@ -82,7 +76,7 @@ export default function LoginPage() {
         });
       } else {
         setError({
-          type: "unknown",
+          type: "server",
           message: t("login_error") || "Login error",
           details: errorMessage || "Please try again later.",
         });

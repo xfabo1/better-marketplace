@@ -3,7 +3,7 @@ const API_BASE_URL = "http://localhost:8080/api/better-marketplace";
 /**
  * Login user with email and password
  */
-export async function loginUser(email: string, password: string, t: (key: string) => string) {
+export async function loginUser(email: string, password: string) {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
@@ -16,18 +16,18 @@ export async function loginUser(email: string, password: string, t: (key: string
     });
 
     const apiResponse: { statusCode: number; message: string; body: any } = await response.json();
-    if (apiResponse.statusCode !== 200) {
+    if (!response.ok) {
       throw new Error(apiResponse.message);
     }
 
     return apiResponse.body;
   } catch (error) {
     if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-      throw new Error(t("network_error_server"));
+      throw new Error("network_error_server");
     }
 
     if (error instanceof SyntaxError) {
-      throw new Error(t("server_error"));
+      throw new Error("server_error");
     }
 
     throw error;
@@ -45,7 +45,6 @@ export async function registerUser(
     country: string;
     displayItemsFromOtherCountry: boolean;
   },
-  t: (key: string) => string
 ) {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
@@ -59,18 +58,18 @@ export async function registerUser(
     });
 
     const apiResponse: { statusCode: number; message: string; body: any } = await response.json();
-    if (apiResponse.statusCode !== 200) {
+    if (!response.ok) {
       throw new Error(apiResponse.message);
     }
 
     return apiResponse.body;
   } catch (error) {
     if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-      throw new Error(t("network_error_server"));
+      throw new Error("network_error_server");
     }
 
     if (error instanceof SyntaxError) {
-      throw new Error(t("server_error"));
+      throw new Error("server_error");
     }
 
     throw error;
@@ -80,7 +79,7 @@ export async function registerUser(
 /**
  * Logout the current user
  */
-export async function logoutUser(t: (key: string) => string) {
+export async function logoutUser() {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/logout`, {
       method: "POST",
@@ -89,18 +88,18 @@ export async function logoutUser(t: (key: string) => string) {
     });
 
     const apiResponse: { statusCode: number; message: string; body: any } = await response.json();
-    if (apiResponse.statusCode !== 200) {
+    if (!response.ok) {
       throw new Error(apiResponse.message);
     }
 
     return apiResponse.body;
   } catch (error) {
     if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-      throw new Error(t("network_error_server"));
+      throw new Error("network_error_server");
     }
 
     if (error instanceof SyntaxError) {
-      throw new Error(t("server_error"));
+      throw new Error("server_error");
     }
 
     throw error;

@@ -12,7 +12,7 @@ import { dateFilterOptions } from "@/data/dateFilterOptions";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { categories } from "@/data/categories";
 import { searchItems } from "@/api/itemApi";
-import { PreviewItemDto, SearchFilterDto } from "@/types/types";
+import { CategorySearchFilterDto, PreviewItemDto, SearchFilterDto } from "@/types/types";
 
 export default function CategoryPage() {
   const params = useParams();
@@ -33,7 +33,7 @@ export default function CategoryPage() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const itemsPerPage = 15; 
+  const itemsPerPage = 30; 
 
   useEffect(() => {
     const slugArray = Array.isArray(params.slug) ? params.slug : [params.slug];
@@ -92,8 +92,10 @@ export default function CategoryPage() {
   const fetchListings = async (category: string, subcategory: string | null) => {
     setLoading(true);
     try {
-      const searchFilter: SearchFilterDto = {
-        searchText: subcategory || category,
+      const searchFilter: CategorySearchFilterDto = {
+        subcategory: subcategoryName,
+        category: categoryName, 
+        searchText: searchQuery || undefined,
         condition: selectedCondition !== "all" ? selectedCondition : undefined,
         sorting: sortBy,
         minPrice: minPrice ? parseFloat(minPrice) : undefined,
@@ -140,31 +142,7 @@ export default function CategoryPage() {
     setIsSortMenuOpen(false);
   };
 
-  const filteredListings = listings.filter((listing) => {
-    if (locationQuery) {
-      const locationMatches = listing.placeName.toLowerCase().includes(locationQuery.toLowerCase());
-      const postalCodeMatches = listing.postalCode.includes(locationQuery);
-      if (!locationMatches && !postalCodeMatches) {
-        return false;
-      }
-    }
-    if (selectedCondition !== "all" && listing.condition !== selectedCondition) {
-      return false;
-    }
-    if (searchQuery && !listing.title.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
-    }
-    if (minPrice && listing.price < parseInt(minPrice)) {
-      return false;
-    }
-    
-    if (maxPrice && listing.price > parseInt(maxPrice)) {
-      return false;
-    }
-    
-    return true;
-  });
-  const sortedListings = [...filteredListings].sort((a, b) => {
+  const sortedListings = [...listings].sort((a, b) => {
     switch (sortBy) {
       case "newest":
       case "oldest":

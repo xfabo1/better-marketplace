@@ -7,14 +7,14 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { countries } from "@/data/countries";
 import { useAuth } from "@/contexts/AuthContext";
 
-// Component that uses useSearchParams
 function SettingsContent() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<"profile" | "security">("profile");
   const { t } = useLanguage();
   const { user, updateUserSettings } = useAuth();
+  const [showCrossCountryListings, setShowCrossCountryListings] = useState<boolean>(false);
+  const [country, setCountry] = useState<"CZ" | "SK">("CZ");
 
-  // Set active tab based on URL parameter if present
   useEffect(() => {
     const tab = searchParams.get("tab");
     if (tab === "security") {
@@ -24,44 +24,17 @@ function SettingsContent() {
     }
   }, [searchParams]);
 
-  // Mock user data
-  const [userData, setUserData] = useState({
-    email: "jan.novak@example.com",
-    phone: "+420 123 456 789",
-    country: "CZ", // Default to Czech Republic
-    showCrossCountryListings: true, // Default to showing cross-country listings
-    currency: "CZK", // Default to Czech Koruna
-  });
-
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Update user settings using the AuthContext function
     updateUserSettings({
-      country: userData.country as "CZ" | "SK",
-      showCrossCountryListings: userData.showCrossCountryListings,
+      country: country,
+      showCrossCountryListings: showCrossCountryListings,
     });
     alert(t("profile_updated"));
   };
 
-  // Load user data from auth context on component mount
-  useEffect(() => {
-    if (user) {
-      setUserData(prevState => ({
-        ...prevState,
-        email: user.email || prevState.email,
-        phone: user.phone || prevState.phone,
-        country: user.country || prevState.country,
-        showCrossCountryListings:
-          user.showCrossCountryListings !== undefined
-            ? user.showCrossCountryListings
-            : prevState.showCrossCountryListings,
-      }));
-    }
-  }, [user]);
-
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would call your API to update the password
     alert(t("password_changed"));
   };
 
@@ -109,26 +82,11 @@ function SettingsContent() {
                       type="email"
                       id="email"
                       className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-500 bg-gray-100 sm:text-sm cursor-not-allowed"
-                      value={userData.email}
+                      value={user?.email}
                       disabled
                       readOnly
                     />
                     <p className="mt-1 text-xs text-gray-500">{t("email_cannot_change")}</p>
-                  </div>
-
-                  <div className="mb-4">
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                      {t("phone")}
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-500 bg-gray-100 sm:text-sm cursor-not-allowed"
-                      value={userData.phone}
-                      disabled
-                      readOnly
-                    />
-                    <p className="mt-1 text-xs text-gray-500">{t("phone_cannot_change")}</p>
                   </div>
 
                   <div className="mb-4">
@@ -141,8 +99,8 @@ function SettingsContent() {
                     <select
                       id="country"
                       className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
-                      value={userData.country}
-                      onChange={e => setUserData({ ...userData, country: e.target.value })}
+                      value={country}
+                      onChange={e => setCountry(e.target.value as "CZ" | "SK")}
                     >
                       {countries.map(country => (
                         <option key={country.value} value={country.value}>
@@ -161,15 +119,15 @@ function SettingsContent() {
                           name="showCrossCountryListings"
                           type="checkbox"
                           className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          checked={userData.showCrossCountryListings}
+                          checked={showCrossCountryListings}
                           onChange={e =>
-                            setUserData({ ...userData, showCrossCountryListings: e.target.checked })
+                            setShowCrossCountryListings(e.target.checked)
                           }
                         />
                       </div>
                       <div className="ml-3">
                         <label htmlFor="showCrossCountryListings" className="text-sm text-gray-700">
-                          {userData.country === "cz"
+                          {country === "CZ"
                             ? t("show_slovak_listings")
                             : t("show_czech_listings")}
                         </label>

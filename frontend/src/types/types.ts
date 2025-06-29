@@ -42,7 +42,7 @@ export interface ItemFullDetailsDto {
   id: number;
   title: string;
   description: string;
-  images: File[];
+  images: string[];
   phoneNumber: string;
   username: string;
   email: string;
@@ -73,7 +73,20 @@ export interface SearchFilterDto {
   locationId?: number;
   minPrice?: number;
   maxPrice?: number;
-  dateAdded?: string; // ISO string
+  dateAdded?: string;
+  condition?: string;
+  searchText?: string;
+  sorting?: string;
+  maxMeterDistance?: number;
+}
+
+export interface CategorySearchFilterDto {
+  category: string;
+  subcategory: string;
+  locationId?: number;
+  minPrice?: number;
+  maxPrice?: number;
+  dateAdded?: string;
   condition?: string;
   searchText?: string;
   sorting?: string;

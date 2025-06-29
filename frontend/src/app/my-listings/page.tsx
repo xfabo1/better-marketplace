@@ -2,109 +2,15 @@
 
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categories } from "@/data/categories";
+import { PreviewItemDto } from "@/types/types";
 import { formatDate } from "@/utils/CommonUtils";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-// Mock data for user's listings
-const mockListings = [
-  {
-    id: "1",
-    title: "iPhone 12 Pro Max, 256GB, Pacific Blue",
-    price: 18500,
-    category: "electronics",
-    location: "Praha",
-    postalCode: "110 00",
-    imageUrl: "https://placehold.co/600x400/3b82f6/ffffff?text=iPhone+12",
-    createdAt: "2023-10-15",
-    status: "active",
-    condition: "Použité - jako nové",
-    conditionId: "used_like_new"
-  },
-  {
-    id: "2",
-    title: "Kožená sedačka IKEA, 3 místná",
-    price: 12000,
-    category: "furniture",
-    location: "Brno",
-    postalCode: "602 00",
-    imageUrl: "https://placehold.co/600x400/22c55e/ffffff?text=Sedačka",
-    createdAt: "2023-09-28",
-    status: "active",
-    condition: "Použité - dobrý stav",
-    conditionId: "used_good"
-  },
-  {
-    id: "3",
-    title: "Horské kolo Trek Marlin 7",
-    price: 15000,
-    category: "sport_hobby",
-    location: "Ostrava",
-    postalCode: "702 00",
-    imageUrl: "https://placehold.co/600x400/f59e0b/ffffff?text=Kolo",
-    createdAt: "2023-08-10",
-    status: "sold",
-    condition: "Použité - velmi dobrý stav",
-    conditionId: "used_very_good"
-  }
-];
-
 export default function MyListingsPage() {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'active' | 'sold'>('active');
-  
-  const filteredListings = mockListings.filter(listing => 
-    activeTab === 'active' ? listing.status === 'active' : listing.status === 'sold'
-  );
-  
-  // Add this helper function to map category slugs to proper translation keys
-  const getCategoryTranslationKey = (category: string): string => {
-    // Check if it's a main category
-    const mainCategory = categories.find(cat => cat.id === category);
-    if (mainCategory) {
-      return category;
-    }
-    
-    // Check if it's a subcategory
-    for (const cat of categories) {
-      if (cat.subcategories) {
-        const subcategory = cat.subcategories.find(subcat => subcat.id === category);
-        if (subcategory) {
-          return category;
-        }
-      }
-    }
-    
-    // Check if it's a slug that needs to be converted to id
-    const slugCategory = categories.find(cat => {
-      const slugPart = cat.href.split('/').pop();
-      return slugPart === category;
-    });
-    
-    if (slugCategory) {
-      return slugCategory.id;
-    }
-    
-    // Check if it's a subcategory slug
-    for (const cat of categories) {
-      if (cat.subcategories) {
-        const slugSubcategory = cat.subcategories.find(subcat => {
-          const slugPart = subcat.href.split('/').pop();
-          return slugPart === category;
-        });
-        
-        if (slugSubcategory) {
-          return slugSubcategory.id;
-        }
-      }
-    }
-    
-    // If not found, return the original category
-    return category;
-  };
-
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Header />
@@ -176,7 +82,7 @@ export default function MyListingsPage() {
                       </span>
                     </div>
                     <div className="mt-2 flex items-center text-sm text-gray-500">
-                      <span>{t(getCategoryTranslationKey(listing.category))}</span>
+                      <span>{t(listing.category)}</span>
                       <span className="mx-2">•</span>
                       <span>{listing.location}, {listing.postalCode}</span>
                     </div>

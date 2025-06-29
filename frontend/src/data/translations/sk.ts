@@ -187,7 +187,7 @@ export const skTranslations = {
   "select_category_error": "Vyberte kategóriu",
   "select_condition_error": "Vyberte stav",
   "enter_price": "Vyplňte cenu",
-  "valid_price": "Zadajte platnú cenu",
+  "invalid_price": "Zadajte platnú cenu",
   "max_price": "Cena nemôže byť vyššia než {max} Kč",
   "fill_description": "Vyplňte popis inzerátu",
   "max_description_length": "Popis môže mať maximálne {max} znakov",

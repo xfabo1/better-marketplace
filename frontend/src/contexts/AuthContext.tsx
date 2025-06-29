@@ -1,9 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
-import { loginUser, logoutUser } from '@/api/authApi';
-import { useLanguage } from './LanguageContext';
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { loginUser, logoutUser } from "@/api/authApi";
 
 type User = {
   name: string;
@@ -17,12 +15,10 @@ type AuthContextType = {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  updateUserSettings: (settings: { 
-    country?: "CZ" | "SK", 
-    showCrossCountryListings?: boolean
+  updateUserSettings: (settings: {
+    country?: "CZ" | "SK";
+    showCrossCountryListings?: boolean;
   }) => void;
-  isLoading: boolean;
-  handleAuthError: (error: unknown) => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -31,8 +27,6 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => {},
   logout: () => {},
   updateUserSettings: () => {},
-  isLoading: true,
-  handleAuthError: () => {},
 });
 
 type AuthProviderProps = {
@@ -41,89 +35,54 @@ type AuthProviderProps = {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
-  const router = useRouter();
-  const { t } = useLanguage();
 
   useEffect(() => {
     setIsClient(true);
-    
-    try {
-      const storedUser = localStorage.getItem('user');
+      const storedUser = localStorage.getItem("user");
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       }
-    } catch (error) {
-      console.error('Error checking authentication:', error);
-    } finally {
-      setIsLoading(false);
-    }
   }, []);
 
-  const handleAuthError = (error: unknown) => {
-    if (error && typeof error === 'object' && 'message' in error) {
-      const errorObj = error as { message: string };
-      
-      if (errorObj.message.includes('401') || errorObj.message.includes('unauthorized') || errorObj.message.includes('invalid_credentials')) {
-        setUser(null);
-        if (isClient) {
-          localStorage.removeItem('user');
-        }
-        
-        if (window.location.pathname !== '/login') {
-          router.push('/login');
-        }
-      }
-    }
-  };
-
   const login = async (email: string, password: string) => {
-    setIsLoading(true);
-    
     try {
-      const loggedInUser: User = await loginUser(email, password, t);
-      
+      const loggedInUser: User = await loginUser(email, password);
+
       if (isClient) {
-        localStorage.setItem('user', JSON.stringify(loggedInUser));
-        
+        localStorage.setItem("user", JSON.stringify(loggedInUser));
+
         setTimeout(() => {
-          window.location.href = '/';
+          window.location.href = "/";
         }, 10);
       }
-      
+
       setUser(loggedInUser);
     } catch (error) {
-      handleAuthError(error);
       throw error;
     } finally {
-      setIsLoading(false);
     }
   };
 
   const logout = () => {
     try {
-      logoutUser(t).catch(err => {
-        handleAuthError(err);
-      });
-      
+      logoutUser();
+
       if (isClient) {
-        localStorage.removeItem('user');
-        
+        localStorage.removeItem("user");
+
         setTimeout(() => {
-          window.location.href = '/';
+          window.location.href = "/";
         }, 10);
       }
-      
+
       setUser(null);
-    } catch (error) {
-      handleAuthError(error);
-    }
+    } catch (error) {}
   };
 
-  const updateUserSettings = (settings: { 
-    country?: "CZ" | "SK", 
-    showCrossCountryListings?: boolean
+  const updateUserSettings = (settings: {
+    country?: "CZ" | "SK";
+    showCrossCountryListings?: boolean;
   }) => {
     if (!user) return;
 
@@ -131,16 +90,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (isClient) {
         const updatedUser = {
           ...user,
-          ...settings
+          ...settings,
         };
-        
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        
+
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+
         setUser(updatedUser);
       }
     } catch (error) {
-      console.error('Error updating user settings:', error);
-      handleAuthError(error);
+      console.error("Error updating user settings:", error);
     }
   };
 
@@ -150,11 +108,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     logout,
     updateUserSettings,
-    isLoading,
-    handleAuthError,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export const useAuth = () => useContext(AuthContext); 
+export const useAuth = () => useContext(AuthContext);

@@ -187,7 +187,7 @@ export const enTranslations = {
   "select_category_error": "Please select a category",
   "select_condition_error": "Please select a condition",
   "enter_price": "Please enter a price",
-  "valid_price": "Please enter a valid price",
+  "invalid_price": "Please enter a valid price",
   "max_price": "Price cannot exceed {max} CZK",
   "fill_description": "Please enter a description",
   "max_description_length": "Description cannot exceed {max} characters",

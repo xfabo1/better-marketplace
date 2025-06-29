@@ -187,7 +187,7 @@ export const csTranslations = {
   "select_category_error": "Vyberte kategorii",
   "select_condition_error": "Vyberte stav",
   "enter_price": "Vyplňte cenu",
-  "valid_price": "Zadejte platnou cenu",
+  "invalid_price": "Zadejte platnou cenu",
   "max_price": "Cena nemůže být vyšší než {max} Kč",
   "fill_description": "Vyplňte popis inzerátu",
   "max_description_length": "Popis může mít maximálně {max} znaků",

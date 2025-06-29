@@ -13,14 +13,12 @@ import { PreviewItemDto } from "@/types/types";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// Items per page
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_PAGE = 30;
 
 export default function ListingsPage() {
   const searchParams = useSearchParams();
   const { t } = useLanguage();
 
-  // Initialize state from URL parameters
   const [locationQuery, setLocationQuery] = useState("");
   const [selectedCondition, setSelectedCondition] = useState("all_conditions");
   const [sortBy, setSortBy] = useState<string>("newest");
@@ -35,10 +33,8 @@ export default function ListingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [totalItems, setTotalItems] = useState(0);
 
-  // Calculate total pages
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
-  // Apply URL parameters on component mount
   useEffect(() => {
     if (searchParams) {
       const q = searchParams.get("q");

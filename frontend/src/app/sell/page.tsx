@@ -10,14 +10,10 @@ import Link from "next/link";
 import { createItem } from "@/api/itemApi";
 import { categories } from "@/data/categories";
 import { createConditions } from "@/data/conditions";
-import { CreateItemDto } from "@/types/types";
 
-// Character limits
 const TITLE_MAX_LENGTH = 100;
 const DESCRIPTION_MAX_LENGTH = 2000;
-const PRICE_MAX_VALUE = 10000000; // 10 million Kč
 
-// Component that uses useRouter
 function SellForm() {
   const router = useRouter();
   const { t } = useLanguage();
@@ -40,25 +36,21 @@ function SellForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [availableSubcategories, setAvailableSubcategories] = useState<{id: string; href: string}[]>([]);
 
-  // Set mounted to true when component mounts on the client
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Redirect unauthenticated users to login page
   useEffect(() => {
     if (mounted && !user) {
       router.push("/login?redirect=/sell");
     }
   }, [mounted, user, router]);
 
-  // Update available subcategories when category changes
   useEffect(() => {
     if (formData.category) {
       const selectedCategory = categories.find(cat => cat.id === formData.category);
       if (selectedCategory && selectedCategory.subcategories) {
         setAvailableSubcategories(selectedCategory.subcategories);
-        // Reset subcategory when category changes
         setFormData(prev => ({ ...prev, subcategory: "" }));
       } else {
         setAvailableSubcategories([]);
@@ -129,8 +121,6 @@ function SellForm() {
       const priceValue = Number(formData.price);
       if (isNaN(priceValue) || priceValue < 0) {
         newErrors.price = t("valid_price");
-      } else if (priceValue > PRICE_MAX_VALUE) {
-        newErrors.price = t("max_price").replace("{max}", PRICE_MAX_VALUE.toLocaleString());
       }
     }
 
@@ -276,7 +266,6 @@ function SellForm() {
               {errors.category && <p className="mt-2 text-sm text-red-600">{errors.category}</p>}
             </div>
 
-            {/* Subcategory dropdown - only shown when a category is selected */}
             {formData.category && availableSubcategories.length > 0 && (
               <div className="mb-4">
                 <label
