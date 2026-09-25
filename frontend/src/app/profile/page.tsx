@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 import { formatDate } from "@/utils/CommonUtils";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// Mock user data for the profile page
 const mockUserData = {
   id: "1",
   name: "Jan Novák",
@@ -28,11 +27,8 @@ export default function ProfilePage() {
   const { t } = useLanguage();
   const [userData, setUserData] = useState(mockUserData);
 
-  // In a real app, you would fetch the user data from an API
   useEffect(() => {
-    // Simulate API call
     const fetchUserData = async () => {
-      // If we have user data from the auth context, merge it with mock data
       if (user) {
         setUserData({
           ...mockUserData,
@@ -43,7 +39,6 @@ export default function ProfilePage() {
           showCrossCountryListings: user.showCrossCountryListings,
         });
       } else {
-        // Otherwise just use the mock data
         setUserData(mockUserData);
       }
     };
@@ -81,7 +76,6 @@ export default function ProfilePage() {
 
       <main className="flex-grow py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Profile header */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
             <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
               <div>
@@ -149,7 +143,6 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Statistics */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:px-6">
               <h2 className="text-lg font-medium text-gray-900">{t("overview")}</h2>

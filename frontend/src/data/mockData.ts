@@ -1,4 +1,3 @@
-// Types
 import { conditions } from "./conditions";
 
 export interface Listing {
@@ -15,7 +14,6 @@ export interface Listing {
   subcategory?: string;
 }
 
-// Mock listings data
 export const allListings: Listing[] = [
   {
     id: 1,
@@ -235,11 +233,9 @@ export const allListings: Listing[] = [
   },
 ];
 
-// Helper function to generate mock listings for a specific category
 export const generateMockListings = (category: string, subcategory: string | null): Listing[] => {
-  // Generate some mock listings for demo purposes
   const mockListings: Listing[] = [];
-  const count = Math.floor(Math.random() * 15) + 10; // 10-25 listings for better pagination demo
+  const count = Math.floor(Math.random() * 15) + 10;
   
   const cities = [
     { name: "Praha", postalCodes: ["110 00", "120 00", "130 00", "140 00", "150 00"] },
@@ -261,7 +257,6 @@ export const generateMockListings = (category: string, subcategory: string | nul
   
   const formatCategoryName = (slug: string) => {
     if (!slug) return "Neznámá kategorie";
-    // Convert slug to display name (e.g., "doprava" -> "Doprava")
     return slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
   };
   
@@ -269,18 +264,14 @@ export const generateMockListings = (category: string, subcategory: string | nul
     const randomCity = cities[Math.floor(Math.random() * cities.length)];
     const randomPostalCode = randomCity.postalCodes[Math.floor(Math.random() * randomCity.postalCodes.length)];
     
-    // Make sure we get a valid condition
     let randomCondition;
     if (conditions && conditions.length > 1) {
-      // Skip the "all" condition at index 0
       const index = Math.floor(Math.random() * (conditions.length - 1)) + 1;
       randomCondition = conditions[index];
     }
     
-    // Use default values if no condition was found
     const conditionId = randomCondition?.id || "used_good";
     
-    // Try to get a relevant title for the category
     let titleOptions = defaultTitles;
     const normalizedCategory = category ? category.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     if (normalizedCategory && categoryTitles[normalizedCategory]) {

@@ -8,7 +8,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-// Mock data for user's listings
 const mockListings = [
   {
     id: "1",
@@ -59,15 +58,12 @@ export default function MyListingsPage() {
     activeTab === 'active' ? listing.status === 'active' : listing.status === 'sold'
   );
   
-  // Add this helper function to map category slugs to proper translation keys
   const getCategoryTranslationKey = (category: string): string => {
-    // Check if it's a main category
     const mainCategory = categories.find(cat => cat.id === category);
     if (mainCategory) {
       return category;
     }
     
-    // Check if it's a subcategory
     for (const cat of categories) {
       if (cat.subcategories) {
         const subcategory = cat.subcategories.find(subcat => subcat.id === category);
@@ -77,7 +73,6 @@ export default function MyListingsPage() {
       }
     }
     
-    // Check if it's a slug that needs to be converted to id
     const slugCategory = categories.find(cat => {
       const slugPart = cat.href.split('/').pop();
       return slugPart === category;
@@ -87,7 +82,6 @@ export default function MyListingsPage() {
       return slugCategory.id;
     }
     
-    // Check if it's a subcategory slug
     for (const cat of categories) {
       if (cat.subcategories) {
         const slugSubcategory = cat.subcategories.find(subcat => {
@@ -101,7 +95,6 @@ export default function MyListingsPage() {
       }
     }
     
-    // If not found, return the original category
     return category;
   };
 
