@@ -4,9 +4,14 @@ import { registerUser } from "@/api/authApi";
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+// Codes the backend returns when a field fails validation
+const VALIDATION_ERRORS = ["invalid_username", "invalid_email", "invalid_password"];
+
 export default function RegisterPage() {
+  const router = useRouter();
   const { t } = useLanguage();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -30,13 +35,15 @@ export default function RegisterPage() {
         country: country,
         displayItemsFromOtherCountry: showCrossCountryListings
       });
-      
+      router.push("/login?registered=true");
     } catch (caught: unknown) {
       const error = caught as Error;
       if (error.message === "email_used") {
         setError(t('email_already_used') || "This email is already in use");
       } else if (error.message === "username_used") {
         setError(t('username_already_used') || "This username is already in use");
+      } else if (VALIDATION_ERRORS.includes(error.message)) {
+        setError(t(`${error.message}_error`));
       } else if (error.message?.includes("Network error")) {
         setError(t('network_error') || "Network connection error");
       } else {
@@ -79,6 +86,8 @@ export default function RegisterPage() {
                   name="name"
                   type="text"
                   required
+                  minLength={3}
+                  maxLength={50}
                   className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                   placeholder={t('your_name') || "Vaše jméno a příjmení"}
                   value={name}
@@ -113,6 +122,8 @@ export default function RegisterPage() {
                   type="password"
                   autoComplete="new-password"
                   required
+                  minLength={8}
+                  maxLength={72}
                   className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
                   placeholder={t('password') || "Heslo"}
                   value={password}
