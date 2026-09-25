@@ -7,8 +7,8 @@ import org.bettermarketplace.api.dto.filter.SearchFilter;
 import org.bettermarketplace.api.dto.item.CreateItemDto;
 import org.bettermarketplace.api.dto.item.UpdateItemDto;
 import org.bettermarketplace.db.dao.ItemDao;
+import org.bettermarketplace.db.dao.ItemSearchQuery;
 import org.bettermarketplace.db.entity.ItemDbo;
-import org.bettermarketplace.model.Country;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,46 +26,29 @@ public class ItemService {
 		return itemDao.findItem(id);
 	}
 
-	public List<ItemDbo> findItemsAsc(SearchFilter searchFilter, double longitude, double latitude, String country, int pageSize) {
-		return itemDao.findItemsByUpdateTimeAsc(
-				longitude,
-				latitude,
-				searchFilter.minPrice(),
-				searchFilter.maxPrice(),
-				country,
-				searchFilter.searchText(),
-				searchFilter.maxMeterDistance(),
-				searchFilter.lastPrice(),
-				searchFilter.lastUpdate(),
-				searchFilter.condition(),
-				pageSize
-		);
+	public List<ItemDbo> findItems(SearchFilter filter, int pageSize) {
+		return itemDao.searchItems(ItemSearchQuery.builder()
+				.minPrice(filter.minPrice())
+				.maxPrice(filter.maxPrice())
+				.textSearch(filter.searchText())
+				.condition(filter.condition())
+				.category(filter.category())
+				.subcategory(filter.subcategory())
+				.maxMeterDistance(filter.maxMeterDistance())
+				.sorting(filter.sorting())
+				.lastPrice(filter.lastPrice())
+				.lastUpdated(filter.lastUpdate())
+				.pageSize(pageSize)
+				.build());
 	}
 
-	public List<ItemDbo> findItemsDesc(SearchFilter searchFilter, double longitude, double latitude, String country, int pageSize) {
-		return itemDao.findItemsByUpdateTimeAsc(
-				longitude,
-				latitude,
-				searchFilter.minPrice(),
-				searchFilter.maxPrice(),
-				country,
-				searchFilter.searchText(),
-				searchFilter.maxMeterDistance(),
-				searchFilter.lastPrice(),
-				searchFilter.lastUpdate(),
-				searchFilter.condition(),
-				pageSize
-		);
+	public Long insertItem(CreateItemDto createItemDto, Long id, double longitude, double latitude) {
+		return itemDao.insertItem(createItemDto, id, latitude, longitude);
 	}
 
-	public Long insertItem(CreateItemDto createItemDto, Long id, double longitude, double latitude, String country) {
-		return itemDao.insertItem(createItemDto, id, longitude, latitude, country);
-	}
-
-	public void updateItem(UpdateItemDto updateItemDto, Long id, String country, Double longitude, Double latitude) {
+	public void updateItem(UpdateItemDto updateItemDto, Long id, Double longitude, Double latitude) {
 		itemDao.updateItem(updateItemDto.name(), updateItemDto.description(), updateItemDto.currency(),
 				updateItemDto.price(), updateItemDto.locationId(), updateItemDto.imageUrl(), updateItemDto.email(),
-				updateItemDto.phoneNumber(), country, longitude, latitude, id);
+				updateItemDto.phoneNumber(), longitude, latitude, id);
 	}
-
 }

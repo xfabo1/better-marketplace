@@ -1,5 +1,6 @@
 package org.bettermarketplace.api;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.bettermarketplace.api.dto.filter.SearchFilter;
@@ -9,15 +10,18 @@ import org.bettermarketplace.api.dto.item.PreviewItemDto;
 import org.bettermarketplace.api.dto.item.UpdateItemDto;
 import org.bettermarketplace.db.entity.ItemDbo;
 import org.bettermarketplace.db.entity.LocationDbo;
+import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.mapper.ItemMapper;
 import org.bettermarketplace.mapper.LocationMapper;
-import org.bettermarketplace.model.Country;
+import org.bettermarketplace.model.Sorting;
 import org.bettermarketplace.security.CookieUtil;
 import org.bettermarketplace.security.TokenService;
 import org.bettermarketplace.service.ItemService;
 import org.bettermarketplace.service.LocationService;
+import org.bettermarketplace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,24 +43,45 @@ public class ItemController {
 
 	private static final ItemMapper ITEM_MAPPER = ItemMapper.INSTANCE;
 	private static final LocationMapper LOCATION_MAPPER = LocationMapper.INSTANCE;
+	private static final int MAX_PAGE_SIZE = 100;
 
 	private final TokenService tokenService;
 	private final ItemService itemService;
 	private final LocationService locationService;
+	private final UserService userService;
 
 	@Autowired
 	public ItemController(ItemService itemService, LocationService locationService,
-			TokenService tokenService) {
+			TokenService tokenService, UserService userService) {
 		this.itemService = itemService;
 		this.locationService = locationService;
 		this.tokenService = tokenService;
+		this.userService = userService;
 	}
 
-	@GetMapping("/preview")
-	public ResponseEntity<PreviewItemDto> getPreviewItems(@RequestBody SearchFilter searchFilter,
-			@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
-		return ResponseEntity.ok().build();
+	@GetMapping
+	public List<PreviewItemDto> searchItems(
+			@RequestParam(value = "q", required = false) String searchText,
+			@RequestParam(value = "minPrice", required = false) Double minPrice,
+			@RequestParam(value = "maxPrice", required = false) Double maxPrice,
+			@RequestParam(value = "condition", required = false) String condition,
+			@RequestParam(value = "category", required = false) String category,
+			@RequestParam(value = "subcategory", required = false) String subcategory,
+			@RequestParam(value = "sort", required = false) String sort,
+			@RequestParam(value = "pageSize", defaultValue = "50") int pageSize) {
+		var filter = SearchFilter.builder()
+				.searchText(StringUtils.hasText(searchText) ? searchText.trim() : null)
+				.minPrice(minPrice)
+				.maxPrice(maxPrice)
+				.condition(StringUtils.hasText(condition) ? condition : null)
+				.category(StringUtils.hasText(category) ? category : null)
+				.subcategory(StringUtils.hasText(subcategory) ? subcategory : null)
+				.sorting(Sorting.fromString(sort).orElse(Sorting.NEWEST))
+				.build();
 
+		return itemService.findItems(filter, Math.clamp(pageSize, 1, MAX_PAGE_SIZE)).stream()
+				.map(ITEM_MAPPER::toPreview)
+				.toList();
 	}
 
 	@GetMapping("/item/{id}")
@@ -70,7 +95,6 @@ public class ItemController {
 
 			var locationDbo = locationService.findLocation(itemDbo.get().locationId());
 
-			// Ths is the same situation as above and this should never happen
 			if (locationDbo.isEmpty()) {
 				log.error("Location with ID {} not found in item with ID {}", itemDbo.get().locationId(),
 						itemDbo.get().id());
@@ -96,7 +120,7 @@ public class ItemController {
 			}
 
 			var itemId = itemService.insertItem(createItemDto, userAuthDetails.getUserId(), location.get().longitude(),
-					location.get().latitude(), location.get().countryCode());
+					location.get().latitude());
 			return ResponseEntity.status(201).body(itemId);
 		} catch (Exception e) {
 			return ResponseEntity.status(500).build();
@@ -109,13 +133,16 @@ public class ItemController {
 		try {
 			var token = CookieUtil.extractTokenFromCookie(request);
 			var userAuthDetails = tokenService.getUserDetails(token);
-			if (!Objects.equals(userAuthDetails.getUserId(), id)) {
-				return ResponseEntity.status(401).build();
+			var item = itemService.findItem(id);
+			if (item.isEmpty()) {
+				return ResponseEntity.notFound().build();
+			}
+			if (!Objects.equals(userAuthDetails.getUserId(), item.get().userId())) {
+				return ResponseEntity.status(403).build();
 			}
 
 			Double latitude = null;
 			Double longitude = null;
-			String country = null;
 
 			if (updateItemDto.locationId() != null) {
 
@@ -126,13 +153,9 @@ public class ItemController {
 
 				latitude = location.get().latitude();
 				longitude = location.get().longitude();
-				country = location.get().countryCode();
 			}
 
-
-
-
-			itemService.updateItem(updateItemDto, id, country, longitude, latitude);
+			itemService.updateItem(updateItemDto, id, longitude, latitude);
 
 			return ResponseEntity.status(201).build();
 		} catch (Exception e) {
@@ -143,18 +166,26 @@ public class ItemController {
 
 	private ItemFullDetailsDto combineLocationAndUserWithItem(ItemDbo itemDbo, LocationDbo locationDbo) {
 		var location = LOCATION_MAPPER.from(locationDbo);
+		var seller = userService.getUser(itemDbo.userId());
 		return ItemFullDetailsDto.builder()
+				.id(itemDbo.id())
 				.name(itemDbo.name())
 				.price(itemDbo.price())
 				.currency(itemDbo.currency())
 				.description(itemDbo.description())
 				.imageUrl(itemDbo.imageUrl())
+				.category(itemDbo.category())
+				.subcategory(itemDbo.subcategory())
+				.condition(itemDbo.condition())
+				.username(seller.map(UserDbo::username).orElse(null))
+				.sellerMemberSince(seller.map(UserDbo::createdAt).orElse(null))
 				.email(itemDbo.email())
-				.locationName(location.toString())
-				.country(location.getCountryCode())
+				.phoneNumber(itemDbo.phoneNumber())
+				.placeName(location.getPlaceName())
+				.city(location.getCity())
+				.postalCode(location.getPostalCode())
 				.createdAt(itemDbo.createdAt())
 				.updatedAt(itemDbo.updatedAt())
-				.phoneNumber(itemDbo.phoneNumber())
 				.build();
 	}
 }

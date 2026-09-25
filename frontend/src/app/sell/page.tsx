@@ -8,15 +8,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { createItem } from "@/api/itemApi";
-import { categories } from "@/data/categories";
-import { conditions } from "@/data/conditions";
+import { categories, type Subcategory } from "@/constants/categories";
+import { conditions } from "@/constants/conditions";
 
-// Character limits
 const TITLE_MAX_LENGTH = 100;
 const DESCRIPTION_MAX_LENGTH = 2000;
-const PRICE_MAX_VALUE = 10000000; // 10 million Kč
+const PRICE_MAX_VALUE = 10000000;
 
-// Component that uses useRouter
 function SellForm() {
   const router = useRouter();
   const { t } = useLanguage();
@@ -28,7 +26,6 @@ function SellForm() {
     subcategory: "",
     condition: "",
     price: "",
-    currency: "czk", // Default to Czech Koruna
     description: "",
     location: "",
     contactPhone: "",
@@ -37,27 +34,23 @@ function SellForm() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [availableSubcategories, setAvailableSubcategories] = useState<any[]>([]);
+  const [availableSubcategories, setAvailableSubcategories] = useState<Subcategory[]>([]);
 
-  // Set mounted to true when component mounts on the client
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Redirect unauthenticated users to login page
   useEffect(() => {
     if (mounted && !user) {
       router.push("/login?redirect=/sell");
     }
   }, [mounted, user, router]);
 
-  // Update available subcategories when category changes
   useEffect(() => {
     if (formData.category) {
       const selectedCategory = categories.find(cat => cat.id === formData.category);
       if (selectedCategory && selectedCategory.subcategories) {
         setAvailableSubcategories(selectedCategory.subcategories);
-        // Reset subcategory when category changes
         setFormData(prev => ({ ...prev, subcategory: "" }));
       } else {
         setAvailableSubcategories([]);
@@ -73,7 +66,6 @@ function SellForm() {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
 
-    // Clear error when field is edited
     if (errors[name]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -85,11 +77,10 @@ function SellForm() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      // Convert FileList to array and append to existing images
       const newImages = Array.from(e.target.files);
       setFormData(prev => ({
         ...prev,
-        images: [...prev.images, ...newImages].slice(0, 5), // Limit to 5 images
+        images: [...prev.images, ...newImages].slice(0, 5),
       }));
     }
   };
@@ -165,28 +156,26 @@ function SellForm() {
     setIsSubmitting(true);
 
     try {
-      // Call the API to create the item
       const itemData = {
         name: formData.title,
         price: parseFloat(formData.price),
-        currency: formData.currency.toUpperCase(),
+        currency: "CZK",
         description: formData.description,
         imageUrl:
           formData.images.length > 0
             ? URL.createObjectURL(formData.images[0])
             : "https://placehold.co/800x600/e6f7ef/10b981/png?text=No+Image",
-        locationId: 1, // Use a default locationId of 1
+        locationId: 1, // TODO: hardcoded until the form has a location picker
         email: formData.contactEmail || user?.email || "",
         phoneNumber: formData.contactPhone || user?.phone || "",
-        // Include subcategory in the request
         category: formData.category,
         subcategory: formData.subcategory,
+        condition: formData.condition,
       };
 
       const itemId = await createItem(itemData);
       console.log("Created item with ID:", itemId);
 
-      // Redirect to my listings page after successful submission
       router.push("/my-listings");
     } catch (error) {
       console.error("Error creating listing:", error);
@@ -203,7 +192,6 @@ function SellForm() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6 mb-6">
             <h1 className="text-2xl font-medium text-gray-900 mb-6">{t("create_listing")}</h1>
-            {/* Simplified form skeleton during SSR */}
             <div className="space-y-6">
               <div className="mb-4">
                 <div className="block text-sm font-medium text-gray-700 mb-1">
@@ -211,7 +199,6 @@ function SellForm() {
                 </div>
                 <div className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm"></div>
               </div>
-              {/* Additional simplified form fields could be added here */}
             </div>
           </div>
         </div>
@@ -277,7 +264,6 @@ function SellForm() {
               {errors.category && <p className="mt-2 text-sm text-red-600">{errors.category}</p>}
             </div>
 
-            {/* Subcategory dropdown - only shown when a category is selected */}
             {formData.category && availableSubcategories.length > 0 && (
               <div className="mb-4">
                 <label
@@ -326,7 +312,7 @@ function SellForm() {
                 onChange={handleChange}
               >
                 <option value="">{t("select_condition")}</option>
-                {conditions.map(condition => (
+                {conditions.filter(condition => condition.id !== "all").map(condition => (
                   <option key={condition.id} value={condition.id}>
                     {t(condition.name)}
                   </option>
@@ -335,10 +321,10 @@ function SellForm() {
               {errors.condition && <p className="mt-2 text-sm text-red-600">{errors.condition}</p>}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div>
               <div className="mb-4">
                 <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("price")} *
+                  {t("price")} (Kč) *
                 </label>
                 <input
                   type="number"
@@ -355,31 +341,6 @@ function SellForm() {
                   step="1"
                 />
                 {errors.price && <p className="mt-2 text-sm text-red-600">{errors.price}</p>}
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("currency") || "Měna"}
-                </label>
-                <select
-                  id="currency"
-                  name="currency"
-                  className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
-                  value={formData.currency}
-                  onChange={handleChange}
-                >
-                  {user?.country === "CZ" ? (
-                    <>
-                      <option value="czk">{t("czech_koruna") || "Česká koruna (Kč)"}</option>
-                      <option value="eur">{t("euro") || "Euro (€)"}</option>
-                    </>
-                  ) : (
-                    <>
-                      <option value="eur">{t("euro") || "Euro (€)"}</option>
-                      <option value="czk">{t("czech_koruna") || "Česká koruna (Kč)"}</option>
-                    </>
-                  )}
-                </select>
               </div>
             </div>
 
@@ -579,7 +540,6 @@ function SellForm() {
   );
 }
 
-// Fallback component for Suspense
 function SellFormFallback() {
   return (
     <main className="flex-grow py-8">

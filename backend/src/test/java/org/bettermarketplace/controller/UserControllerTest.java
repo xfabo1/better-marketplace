@@ -14,7 +14,7 @@ import org.bettermarketplace.api.dto.user.UserDto;
 import org.bettermarketplace.config.ObjectMapperConfiguration;
 import org.bettermarketplace.config.TestSecurityConfig;
 import org.bettermarketplace.db.entity.UserDbo;
-import org.bettermarketplace.model.Country;
+import org.bettermarketplace.security.TokenService;
 import org.bettermarketplace.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +41,8 @@ public class UserControllerTest {
 
 	@MockitoBean
 	private UserService userService;
+	@MockitoBean
+	private TokenService tokenService;
 
 	@Test
 	void getUser_validRequest_userReturned() throws Exception {
@@ -48,8 +50,6 @@ public class UserControllerTest {
 				.username("test")
 				.email("random@gmail.com")
 				.id(1L)
-				.country(Country.CZ)
-				.displayItemsFromOtherCountry(false)
 				.createdAt(Instant.now())
 				.build();
 		when(userService.getUser(anyLong())).thenReturn(Optional.of(user));

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { categories } from "@/data/categories";
+import { categories } from "@/constants/categories";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Sidebar() {
@@ -11,7 +11,7 @@ export default function Sidebar() {
   const { t } = useLanguage();
 
   const toggleCategory = (categoryId: string, e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation
+    e.preventDefault();
     if (expandedCategory === categoryId) {
       setExpandedCategory(null);
     } else {
@@ -62,14 +62,13 @@ export default function Sidebar() {
                   </span>
                 </button>
                 
-                {/* Subcategories */}
                 {expandedCategory === category.id && category.subcategories && (
                   <div className="ml-4 mt-1 pl-2 border-l border-gray-200">
                     {category.subcategories.map((subcategory) => (
                       subcategory && (
                         <Link
                           key={subcategory.id || `subcategory-${Math.random()}`}
-                          href={subcategory.href || '#'}
+                          href={subcategory.href}
                           className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
                         >
                           {t(subcategory.id)}

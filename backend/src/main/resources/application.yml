@@ -10,12 +10,14 @@ logging:
 spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+    # "dev" also loads the sample users and items; set LIQUIBASE_CONTEXTS=prod in production
+    contexts: ${LIQUIBASE_CONTEXTS:dev}
   application:
     name: better-marketplace
   datasource:
     driver-class-name: org.postgresql.Driver
     username: marketplace-user
-    password: changemelater
+    password: ${DB_PASSWORD:changemelater}
     url: jdbc:postgresql://localhost:5432/marketplace
   openfeign:
     client:

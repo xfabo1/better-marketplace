@@ -4,18 +4,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { formatDate } from "@/utils/CommonUtils";
+import { formatDate } from "@/lib/format";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// Mock user data for the profile page
 const mockUserData = {
   id: "1",
   name: "Jan Novák",
   email: "jan.novak@example.com",
   phone: "+420 123 456 789",
   registeredAt: "2021-05-15",
-  country: "cz",
-  showCrossCountryListings: true,
   stats: {
     totalListings: 18,
     activeListing: 12,
@@ -28,22 +25,16 @@ export default function ProfilePage() {
   const { t } = useLanguage();
   const [userData, setUserData] = useState(mockUserData);
 
-  // In a real app, you would fetch the user data from an API
   useEffect(() => {
-    // Simulate API call
     const fetchUserData = async () => {
-      // If we have user data from the auth context, merge it with mock data
       if (user) {
         setUserData({
           ...mockUserData,
           name: user.name,
           email: user.email,
           phone: user.phone,
-          country: user.country,
-          showCrossCountryListings: user.showCrossCountryListings,
         });
       } else {
-        // Otherwise just use the mock data
         setUserData(mockUserData);
       }
     };
@@ -81,7 +72,6 @@ export default function ProfilePage() {
 
       <main className="flex-grow py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Profile header */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
             <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
               <div>
@@ -114,12 +104,6 @@ export default function ProfilePage() {
                       <p className="text-sm font-medium text-gray-500">{t("phone")}</p>
                       <p className="mt-1 text-sm text-gray-900">{userData.phone}</p>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">{t("country")}</p>
-                      <p className="mt-1 text-sm text-gray-900">
-                        {userData.country === "cz" ? t("czech_republic") : t("slovakia")}
-                      </p>
-                    </div>
                   </div>
                 </div>
                 <div className="px-4 py-4">
@@ -133,23 +117,12 @@ export default function ProfilePage() {
                         {formatDate(userData.registeredAt)}
                       </p>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">
-                        {userData.country === "cz"
-                          ? t("show_slovak_listings")
-                          : t("show_czech_listings")}
-                      </p>
-                      <p className="mt-1 text-sm text-gray-900">
-                        {userData.showCrossCountryListings ? t("yes") : t("no")}
-                      </p>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Statistics */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:px-6">
               <h2 className="text-lg font-medium text-gray-900">{t("overview")}</h2>
