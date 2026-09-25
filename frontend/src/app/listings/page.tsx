@@ -8,6 +8,7 @@ import { categories } from "@/data/categories";
 import { conditions } from "@/data/conditions";
 import { dateFilterOptions } from "@/data/dateFilterOptions";
 import { sortOptions } from "@/data/sortOptions";
+import type { PreviewItem } from "@/types/item";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -18,15 +19,8 @@ const MAX_FETCHED_ITEMS = 100;
 
 const NO_IMAGE_URL = "https://placehold.co/600x400/e6f7ef/10b981/png?text=No+Image";
 
-interface Item {
-  id: number;
-  name: string;
-  price: number;
-  currency: string;
-  imageUrl: string | null;
-  condition: string;
-  createdAt: string;
-  // Frontend specific fields that we'll add after fetching
+// A search result plus the fields the card shows that we'll add after fetching
+interface Listing extends PreviewItem {
   location?: string;
   postalCode?: string;
   conditionId?: string;
@@ -57,7 +51,7 @@ function ListingsContent() {
   const [dateFilter, setDateFilter] = useState("all");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [listings, setListings] = useState<Item[]>([]);
+  const [listings, setListings] = useState<Listing[]>([]);
 
   useEffect(() => {
     if (searchParams) {
@@ -96,7 +90,7 @@ function ListingsContent() {
         });
         if (!isCurrent) return;
 
-        const transformedItems = items.map((item: Item) => ({
+        const transformedItems = items.map(item => ({
           ...item,
           title: item.name,
           conditionId: item.condition,

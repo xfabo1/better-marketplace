@@ -7,38 +7,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { formatDate } from "@/utils/CommonUtils";
+import type { ItemDetails, PreviewItem } from "@/types/item";
 import { useEffect, useState } from "react";
 
 const NO_IMAGE_URL = "https://placehold.co/800x600/e6f7ef/10b981/png?text=No+Image";
 const SIMILAR_ITEMS_COUNT = 3;
-
-interface ItemDetails {
-  id: number;
-  name: string;
-  description: string | null;
-  imageUrl: string | null;
-  price: number;
-  currency: string;
-  category: string | null;
-  subcategory: string | null;
-  condition: string;
-  username: string | null;
-  sellerMemberSince: string | null;
-  email: string;
-  phoneNumber: string;
-  placeName: string;
-  city: string;
-  postalCode: string;
-  createdAt: string;
-}
-
-interface SimilarItem {
-  id: number;
-  name: string;
-  price: number;
-  currency: string;
-  imageUrl: string | null;
-}
 
 export default function ListingDetailPage() {
   const { id } = useParams();
@@ -47,7 +20,7 @@ export default function ListingDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [item, setItem] = useState<ItemDetails | null>(null);
-  const [similarItems, setSimilarItems] = useState<SimilarItem[]>([]);
+  const [similarItems, setSimilarItems] = useState<PreviewItem[]>([]);
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -78,7 +51,7 @@ export default function ListingDetailPage() {
       subcategory: item.subcategory ?? undefined,
       pageSize: SIMILAR_ITEMS_COUNT + 1,
     })
-      .then((items: SimilarItem[]) =>
+      .then(items =>
         setSimilarItems(items.filter(similar => similar.id !== item.id).slice(0, SIMILAR_ITEMS_COUNT))
       )
       .catch(() => setSimilarItems([]));

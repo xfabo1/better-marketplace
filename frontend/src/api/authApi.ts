@@ -1,4 +1,5 @@
 import { ApiError, apiFetch } from "@/lib/api-client";
+import type { RegisterRequest } from "@/types/user";
 
 export async function loginUser(email: string, password: string) {
   try {
@@ -11,7 +12,7 @@ export async function loginUser(email: string, password: string) {
   }
 }
 
-export async function registerUser(userData: { username: string; email: string; password: string }) {
+export async function registerUser(userData: RegisterRequest) {
   return apiFetch<string>("/auth/register", { method: "POST", body: userData, responseType: "text" });
 }
 
