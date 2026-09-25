@@ -10,6 +10,7 @@ import org.bettermarketplace.api.dto.item.PreviewItemDto;
 import org.bettermarketplace.api.dto.item.UpdateItemDto;
 import org.bettermarketplace.db.entity.ItemDbo;
 import org.bettermarketplace.db.entity.LocationDbo;
+import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.mapper.ItemMapper;
 import org.bettermarketplace.mapper.LocationMapper;
 import org.bettermarketplace.model.Country;
@@ -18,6 +19,7 @@ import org.bettermarketplace.security.CookieUtil;
 import org.bettermarketplace.security.TokenService;
 import org.bettermarketplace.service.ItemService;
 import org.bettermarketplace.service.LocationService;
+import org.bettermarketplace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -47,13 +49,15 @@ public class ItemController {
 	private final TokenService tokenService;
 	private final ItemService itemService;
 	private final LocationService locationService;
+	private final UserService userService;
 
 	@Autowired
 	public ItemController(ItemService itemService, LocationService locationService,
-			TokenService tokenService) {
+			TokenService tokenService, UserService userService) {
 		this.itemService = itemService;
 		this.locationService = locationService;
 		this.tokenService = tokenService;
+		this.userService = userService;
 	}
 
 	@GetMapping
@@ -168,18 +172,27 @@ public class ItemController {
 
 	private ItemFullDetailsDto combineLocationAndUserWithItem(ItemDbo itemDbo, LocationDbo locationDbo) {
 		var location = LOCATION_MAPPER.from(locationDbo);
+		var seller = userService.getUser(itemDbo.userId());
 		return ItemFullDetailsDto.builder()
+				.id(itemDbo.id())
 				.name(itemDbo.name())
 				.price(itemDbo.price())
 				.currency(itemDbo.currency())
 				.description(itemDbo.description())
 				.imageUrl(itemDbo.imageUrl())
+				.category(itemDbo.category())
+				.subcategory(itemDbo.subcategory())
+				.condition(itemDbo.condition())
+				.username(seller.map(UserDbo::username).orElse(null))
+				.sellerMemberSince(seller.map(UserDbo::createdAt).orElse(null))
 				.email(itemDbo.email())
-				.locationName(location.toString())
+				.phoneNumber(itemDbo.phoneNumber())
 				.country(location.getCountryCode())
+				.placeName(location.getPlaceName())
+				.city(location.getCity())
+				.postalCode(location.getPostalCode())
 				.createdAt(itemDbo.createdAt())
 				.updatedAt(itemDbo.updatedAt())
-				.phoneNumber(itemDbo.phoneNumber())
 				.build();
 	}
 }
