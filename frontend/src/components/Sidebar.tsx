@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { categories } from "@/data/categories";
+import { categories } from "@/constants/categories";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Sidebar() {

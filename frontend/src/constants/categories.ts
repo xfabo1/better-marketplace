@@ -143,3 +143,14 @@ export const categories: Category[] = [
     ],
   },
 ]; 
+/**
+ * The id (which is also the translation key) of the category or subcategory given by its id or by its URL slug,
+ * e.g. "doprava" -> "transport". Unknown values are returned unchanged.
+ */
+export function toCategoryId(idOrSlug: string): string {
+  const all = categories.flatMap(category => [category, ...(category.subcategories ?? [])]);
+  const match =
+    all.find(category => category.id === idOrSlug) ??
+    all.find(category => category.href.split("/").pop() === idOrSlug);
+  return match?.id ?? idOrSlug;
+}

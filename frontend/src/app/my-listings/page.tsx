@@ -2,8 +2,8 @@
 
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categories } from "@/data/categories";
-import { formatDate } from "@/utils/CommonUtils";
+import { toCategoryId } from "@/constants/categories";
+import { formatDate, formatPrice } from "@/lib/format";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -58,46 +58,6 @@ export default function MyListingsPage() {
     activeTab === 'active' ? listing.status === 'active' : listing.status === 'sold'
   );
   
-  const getCategoryTranslationKey = (category: string): string => {
-    const mainCategory = categories.find(cat => cat.id === category);
-    if (mainCategory) {
-      return category;
-    }
-    
-    for (const cat of categories) {
-      if (cat.subcategories) {
-        const subcategory = cat.subcategories.find(subcat => subcat.id === category);
-        if (subcategory) {
-          return category;
-        }
-      }
-    }
-    
-    const slugCategory = categories.find(cat => {
-      const slugPart = cat.href.split('/').pop();
-      return slugPart === category;
-    });
-    
-    if (slugCategory) {
-      return slugCategory.id;
-    }
-    
-    for (const cat of categories) {
-      if (cat.subcategories) {
-        const slugSubcategory = cat.subcategories.find(subcat => {
-          const slugPart = subcat.href.split('/').pop();
-          return slugPart === category;
-        });
-        
-        if (slugSubcategory) {
-          return slugSubcategory.id;
-        }
-      }
-    }
-    
-    return category;
-  };
-
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Header />
@@ -165,11 +125,11 @@ export default function MyListingsPage() {
                         {listing.title}
                       </h3>
                       <span className="text-lg font-medium text-primary">
-                        {listing.price.toLocaleString()} Kč
+                        {formatPrice(listing.price, "Kč")}
                       </span>
                     </div>
                     <div className="mt-2 flex items-center text-sm text-gray-500">
-                      <span>{t(getCategoryTranslationKey(listing.category))}</span>
+                      <span>{t(toCategoryId(listing.category))}</span>
                       <span className="mx-2">•</span>
                       <span>{listing.location}, {listing.postalCode}</span>
                     </div>

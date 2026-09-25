@@ -3,14 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { conditions } from "@/data/conditions";
-
-const dateFilterOptions = [
-  { label: "all_dates", value: "all" },
-  { label: "today", value: "today" },
-  { label: "this_week", value: "week" },
-  { label: "this_month", value: "month" },
-];
+import { conditions } from "@/constants/conditions";
+import { dateFilterOptions } from "@/constants/dateFilterOptions";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;

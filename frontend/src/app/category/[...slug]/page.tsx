@@ -1,4 +1,4 @@
-import { categories } from "@/data/categories";
+import { categories } from "@/constants/categories";
 import { notFound, redirect } from "next/navigation";
 
 // The sidebar links use Czech slugs (/category/doprava/motorky); items are stored with the category ids

@@ -4,10 +4,12 @@ import { getItems } from "@/api/itemApi";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categories } from "@/data/categories";
-import { conditions } from "@/data/conditions";
-import { dateFilterOptions } from "@/data/dateFilterOptions";
-import { sortOptions } from "@/data/sortOptions";
+import { toCategoryId } from "@/constants/categories";
+import { NO_IMAGE_URL } from "@/constants/images";
+import { conditions } from "@/constants/conditions";
+import { dateFilterOptions } from "@/constants/dateFilterOptions";
+import { sortOptions } from "@/constants/sortOptions";
+import { formatDate, formatPrice } from "@/lib/format";
 import type { PreviewItem } from "@/types/item";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,8 +18,6 @@ import { Suspense, useEffect, useState } from "react";
 
 const ITEMS_PER_PAGE = 9;
 const MAX_FETCHED_ITEMS = 100;
-
-const NO_IMAGE_URL = "https://placehold.co/600x400/e6f7ef/10b981/png?text=No+Image";
 
 // A search result plus the fields the card shows that we'll add after fetching
 interface Listing extends PreviewItem {
@@ -181,57 +181,6 @@ function ListingsContent() {
   const handleConditionChange = (condition: string) => {
     setSelectedCondition(condition);
     setCurrentPage(1);
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date
-      .toLocaleDateString("cs-CZ", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
-      .replace(/\s/g, "");
-  };
-
-  const getCategoryTranslationKey = (category: string): string => {
-    const mainCategory = categories.find(cat => cat.id === category);
-    if (mainCategory) {
-      return category;
-    }
-
-    for (const cat of categories) {
-      if (cat.subcategories) {
-        const subcategory = cat.subcategories.find(subcat => subcat.id === category);
-        if (subcategory) {
-          return category;
-        }
-      }
-    }
-
-    const slugCategory = categories.find(cat => {
-      const slugPart = cat.href.split("/").pop();
-      return slugPart === category;
-    });
-
-    if (slugCategory) {
-      return slugCategory.id;
-    }
-
-    for (const cat of categories) {
-      if (cat.subcategories) {
-        const slugSubcategory = cat.subcategories.find(subcat => {
-          const slugPart = subcat.href.split("/").pop();
-          return slugPart === category;
-        });
-
-        if (slugSubcategory) {
-          return slugSubcategory.id;
-        }
-      }
-    }
-
-    return category;
   };
 
   const CustomSearchBar = () => {
@@ -522,7 +471,7 @@ function ListingsContent() {
                       <div className="p-2 flex-grow flex flex-col">
                         <div className="flex justify-between items-center mb-1">
                           <div className="text-xs text-primary font-medium truncate max-w-[70%]">
-                            {t(getCategoryTranslationKey(listing.name))}
+                            {t(toCategoryId(listing.name))}
                           </div>
                           <div className="text-xs text-gray-500 hidden sm:block">
                             {formatDate(listing.createdAt || "")}
@@ -536,7 +485,7 @@ function ListingsContent() {
                         </div>
                         <div className="mt-auto flex justify-between items-center">
                           <span className="text-sm font-bold text-gray-900">
-                            {listing.price.toLocaleString()} {listing.currency}
+                            {formatPrice(listing.price, listing.currency)}
                           </span>
                           <span className="text-xs text-gray-500 truncate max-w-[40%]">
                             {listing.location}
