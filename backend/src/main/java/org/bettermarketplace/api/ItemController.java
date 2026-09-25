@@ -1,5 +1,6 @@
 package org.bettermarketplace.api;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.bettermarketplace.api.dto.filter.SearchFilter;
@@ -39,6 +40,7 @@ public class ItemController {
 
 	private static final ItemMapper ITEM_MAPPER = ItemMapper.INSTANCE;
 	private static final LocationMapper LOCATION_MAPPER = LocationMapper.INSTANCE;
+	private static final int MAX_PAGE_SIZE = 100;
 
 	private final TokenService tokenService;
 	private final ItemService itemService;
@@ -50,6 +52,13 @@ public class ItemController {
 		this.itemService = itemService;
 		this.locationService = locationService;
 		this.tokenService = tokenService;
+	}
+
+	@GetMapping
+	public List<PreviewItemDto> getNewestItems(@RequestParam(value = "pageSize", defaultValue = "50") int pageSize) {
+		return itemService.findNewestItems(Math.clamp(pageSize, 1, MAX_PAGE_SIZE)).stream()
+				.map(ITEM_MAPPER::toPreview)
+				.toList();
 	}
 
 	@GetMapping("/preview")

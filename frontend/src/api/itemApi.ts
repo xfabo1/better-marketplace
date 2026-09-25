@@ -3,7 +3,7 @@ const API_BASE_URL = "http://localhost:8080/api/better-marketplace";
 
 export async function getItems() {
   try {
-    const response = await fetch(`${API_BASE_URL}/v1/items/listings`, {
+    const response = await fetch(`${API_BASE_URL}/v1/items`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

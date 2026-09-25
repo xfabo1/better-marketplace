@@ -15,20 +15,20 @@ import { Suspense, useEffect, useState } from "react";
 
 const ITEMS_PER_PAGE = 9;
 
+const NO_IMAGE_URL = "https://placehold.co/600x400/e6f7ef/10b981/png?text=No+Image";
+
 interface Item {
   id: number;
   name: string;
   price: number;
   currency: string;
-  description: string;
-  imageUrl: string;
-  locationId: number;
-  creatorId: number;
+  imageUrl: string | null;
+  condition: string;
+  createdAt: string;
   // Frontend specific fields that we'll add after fetching
   location?: string;
   postalCode?: string;
   conditionId?: string;
-  createdAt?: string;
   title?: string;
 }
 
@@ -87,11 +87,10 @@ function ListingsContent() {
         const transformedItems = items.map((item: Item) => ({
           ...item,
           title: item.name,
-          // For now, use placeholder values for fields not available in the backend
+          conditionId: item.condition,
+          // TODO: the list endpoint does not return the location yet
           location: "Unknown",
           postalCode: "000 00",
-          conditionId: "used",
-          createdAt: new Date().toISOString(),
         }));
 
         setListings(transformedItems);
@@ -535,7 +534,7 @@ function ListingsContent() {
                     <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
                       <div className="relative h-32 w-full">
                         <Image
-                          src={listing.imageUrl}
+                          src={listing.imageUrl || NO_IMAGE_URL}
                           alt={listing.title || "Listing"}
                           fill
                           sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"

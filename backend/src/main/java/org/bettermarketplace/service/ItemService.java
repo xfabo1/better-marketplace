@@ -58,6 +58,10 @@ public class ItemService {
 		);
 	}
 
+	public List<ItemDbo> findNewestItems(int pageSize) {
+		return itemDao.findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, null, null, pageSize);
+	}
+
 	public Long insertItem(CreateItemDto createItemDto, Long id, double longitude, double latitude, String country) {
 		return itemDao.insertItem(createItemDto, id, longitude, latitude, country);
 	}
