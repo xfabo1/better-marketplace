@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
@@ -69,6 +70,7 @@ public class ItemControllerTest {
 
 		var result = mockMvc.perform(get(ITEMS_PATH))
 				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].createdAt").value("2026-01-15T10:00:00Z"))
 				.andReturn()
 				.getResponse()
 				.getContentAsString();

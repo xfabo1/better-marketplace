@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
@@ -14,6 +15,10 @@ public class ObjectMapperConfiguration {
 	@Bean
 	@Primary
 	public ObjectMapper objectMapper() {
-		return new Jackson2ObjectMapperBuilder().modules(new JavaTimeModule()).build();
+		return new Jackson2ObjectMapperBuilder()
+				.modules(new JavaTimeModule())
+				// ISO-8601 text ("2026-01-15T10:00:00Z") instead of epoch seconds, which JavaScript's Date misreads
+				.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+				.build();
 	}
 }
