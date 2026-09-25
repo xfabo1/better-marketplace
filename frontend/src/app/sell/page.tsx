@@ -8,7 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { createItem } from "@/api/itemApi";
-import { categories } from "@/data/categories";
+import { categories, type Subcategory } from "@/data/categories";
 import { conditions } from "@/data/conditions";
 
 // Character limits
@@ -37,7 +37,7 @@ function SellForm() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [availableSubcategories, setAvailableSubcategories] = useState<any[]>([]);
+  const [availableSubcategories, setAvailableSubcategories] = useState<Subcategory[]>([]);
 
   // Set mounted to true when component mounts on the client
   useEffect(() => {

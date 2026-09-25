@@ -75,7 +75,8 @@ export default function LoginPage() {
         // Redirect to the redirect URL or homepage
         router.push(redirectUrl);
       }
-    } catch (err: any) {
+    } catch (caught: unknown) {
+      const err = caught as Error & { status?: number; statusText?: string };
       console.error("Login error:", err);
 
       // Format error message based on error type
@@ -92,7 +93,7 @@ export default function LoginPage() {
           details:
             t("network_error_details") || "Check your internet connection or try again later.",
         });
-      } else if (err.status >= 500) {
+      } else if ((err.status ?? 0) >= 500) {
         setError({
           type: "server",
           message: t("server_error") || "Server error",
