@@ -63,7 +63,7 @@ public class ItemService {
 	}
 
 	public Long insertItem(CreateItemDto createItemDto, Long id, double longitude, double latitude, String country) {
-		return itemDao.insertItem(createItemDto, id, longitude, latitude, country);
+		return itemDao.insertItem(createItemDto, id, latitude, longitude, country);
 	}
 
 	public void updateItem(UpdateItemDto updateItemDto, Long id, String country, Double longitude, Double latitude) {
