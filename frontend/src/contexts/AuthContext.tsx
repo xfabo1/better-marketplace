@@ -110,8 +110,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       setUser(loggedInUser);
     } catch (error) {
+      // A 401 here means wrong credentials, not an expired session, so the login page shows the error itself
       console.error('Login error:', error);
-      handleAuthError(error);
       throw error;
     } finally {
       setIsLoading(false);
