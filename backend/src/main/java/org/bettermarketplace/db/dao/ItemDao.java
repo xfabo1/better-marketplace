@@ -29,7 +29,7 @@ public interface ItemDao {
 	@SqlUpdate
 	@GetGeneratedKeys
 	Long insertItem(@BindMethods("itemObject") CreateItemDto createItemDto, @Bind("userId") Long userId,
-			@Bind("latitude") double latitude, @Bind("longitude") double longitude, @Bind("country") String country);
+			@Bind("latitude") double latitude, @Bind("longitude") double longitude);
 
 	@SqlUpdate
 	@DefineNamedBindings
@@ -42,7 +42,6 @@ public interface ItemDao {
 			@Bind("imageUrl") String imageUrl,
 			@Bind("email") String email,
 			@Bind("phoneNumber") String phoneNumber,
-			@Bind("country") String country,
 			@Bind("longitude") Double longitude,
 			@Bind("latitude") Double latitude,
 			@Bind("id") Long id);
@@ -67,7 +66,7 @@ public interface ItemDao {
 
 	private List<ItemDbo> searchItems(ItemSearchQuery query, BigDecimal lastPrice, Instant lastUpdated,
 			String orderBy, String cursorOperator) {
-		return searchItems(query.longitude(), query.latitude(), query.minPrice(), query.maxPrice(), query.country(),
+		return searchItems(query.longitude(), query.latitude(), query.minPrice(), query.maxPrice(),
 				query.textSearch(), query.maxMeterDistance(), lastPrice, lastUpdated, query.condition(),
 				query.category(), query.subcategory(), query.pageSize(), orderBy, cursorOperator);
 	}
@@ -80,7 +79,6 @@ public interface ItemDao {
 			@Bind("latitude") Double latitude,
 			@Bind("minPrice") Double minPrice,
 			@Bind("maxPrice") Double maxPrice,
-			@Bind("country") String country,
 			@Bind("textSearch") String textSearch,
 			@Bind("maxMeterDistance") Double maxMeterDistance,
 			@Bind("lastPrice") BigDecimal lastPrice,

@@ -16,9 +16,6 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [country, setCountry] = useState("CZ");
-  const [showCrossCountryListings, setShowCrossCountryListings] = useState(false);
-  const [tooltipVisible, setTooltipVisible] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -32,8 +29,6 @@ export default function RegisterPage() {
         username: name,
         email,
         password,
-        country: country,
-        displayItemsFromOtherCountry: showCrossCountryListings
       });
       router.push("/login?registered=true");
     } catch (caught: unknown) {
@@ -129,67 +124,6 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('country') || "Země"}
-                </label>
-                <select
-                  id="country"
-                  name="country"
-                  required
-                  className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                >
-                  <option value="CZ">{t('czech_republic') || "Česká republika"}</option>
-                  <option value="SK">{t('slovakia') || "Slovensko"}</option>
-                </select>
-              </div>
-
-              <div className="mb-4">
-                <div className="flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="showCrossCountryListings"
-                      name="showCrossCountryListings"
-                      type="checkbox"
-                      className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                      checked={showCrossCountryListings}
-                      onChange={(e) => setShowCrossCountryListings(e.target.checked)}
-                    />
-                  </div>
-                  <div className="ml-3 flex">
-                    <label htmlFor="showCrossCountryListings" className="text-sm text-gray-700">
-                      {country === 'CZ' 
-                        ? (t('show_slovak_listings') || "Zobrazovat inzeráty ze Slovenska") 
-                        : (t('show_czech_listings') || "Zobrazovat inzeráty z České republiky")}
-                    </label>
-                    <div className="relative ml-2">
-                      <button
-                        type="button"
-                        className="text-gray-400 hover:text-gray-500 focus:outline-none"
-                        onMouseEnter={() => setTooltipVisible(true)}
-                        onMouseLeave={() => setTooltipVisible(false)}
-                      >
-                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </button>
-                      {tooltipVisible && (
-                        <div className="absolute z-10 w-64 px-3 py-2 text-sm text-left text-white bg-gray-900 rounded-lg shadow-sm -right-2 bottom-full mb-2">
-                          {t('cross_country_listings_info') || "Toto nastavení můžete kdykoliv změnit v profilu. Ovlivňuje, zda uvidíte inzeráty z druhé země."}
-                          <div className="absolute w-2 h-2 bg-gray-900 rotate-45 -bottom-1 right-3"></div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
 

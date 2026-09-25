@@ -3,7 +3,6 @@ package org.bettermarketplace.api.dto.item;
 import java.math.BigDecimal;
 import java.time.Instant;
 
-import org.bettermarketplace.model.Country;
 import org.bettermarketplace.model.Currency;
 
 import lombok.Builder;
@@ -23,7 +22,6 @@ public record ItemFullDetailsDto(
 		Instant sellerMemberSince,
 		String email,
 		String phoneNumber,
-		Country country,
 		String placeName,
 		String city,
 		String postalCode,

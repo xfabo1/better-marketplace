@@ -42,7 +42,6 @@
             <column name="password" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="display_items_from_other_country" type="boolean" defaultValue="true"/>
             <column name="created_at" type="timestamp" defaultValue="now()"/>
             <column name="updated_at" type="timestamp" defaultValue="now()"/>
             <column name="username" type="varchar(255)">
@@ -50,9 +49,6 @@
             </column>
             <column name="email" type="varchar(255)">
                 <constraints unique="true" nullable="false"/>
-            </column>
-            <column name="country" type="varchar(10)">
-                <constraints nullable="false"/>
             </column>
         </createTable>
         <createTable tableName="item">
@@ -89,9 +85,6 @@
                 <constraints nullable="false" foreignKeyName="item_location_id" referencedTableName="location" referencedColumnNames="id"/>
             </column>
             <column name="image_url" type="varchar(1000)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="country" type="varchar(5)">
                 <constraints nullable="false"/>
             </column>
             <column name="category" type="varchar(100)">

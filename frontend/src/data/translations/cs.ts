@@ -199,14 +199,9 @@ export const csTranslations = {
   "current_password": "Současné heslo",
   "new_password": "Nové heslo",
   "confirm_password": "Potvrdit nové heslo",
-  "save_changes": "Uložit změny",
-  "profile_updated": "Profil byl úspěšně aktualizován!",
   "password_changed": "Heslo bylo úspěšně změněno!",
   "email_cannot_change": "Email nelze změnit",
   "phone_cannot_change": "Telefonní číslo nelze změnit",
-  "location_restricted": "Můžete vybrat pouze Českou republiku nebo Slovensko",
-  "czech_republic": "Česká republika",
-  "slovakia": "Slovensko",
   
   // My Listings page
   "new_listing": "Nový inzerát",
@@ -288,17 +283,8 @@ export const csTranslations = {
   "logging_in": "Přihlašování...",
   "registering": "Registrace...",
   "or_continue_with": "Nebo pokračovat s",
-  "country": "Země",
-  "show_czech_listings": "Zobrazovat inzeráty z České republiky",
-  "show_slovak_listings": "Zobrazovat inzeráty ze Slovenska",
-  "cross_country_listings_info": "Toto nastavení můžete kdykoliv změnit v profilu. Ovlivňuje, zda uvidíte inzeráty z druhé země.",
-  "yes": "Ano",
-  "no": "Ne",
   "preferred_currency": "Preferovaná měna",
-  "currency": "Měna",
   "currency_info": "Tato měna bude použita při vytváření vašich inzerátů.",
-  "czech_koruna": "Česká koruna (Kč)",
-  "euro": "Euro (€)",
   
   // Authentication errors
   "invalid_credentials": "Nesprávné přihlašovací údaje",

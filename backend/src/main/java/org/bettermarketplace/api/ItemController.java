@@ -13,7 +13,6 @@ import org.bettermarketplace.db.entity.LocationDbo;
 import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.mapper.ItemMapper;
 import org.bettermarketplace.mapper.LocationMapper;
-import org.bettermarketplace.model.Country;
 import org.bettermarketplace.model.Sorting;
 import org.bettermarketplace.security.CookieUtil;
 import org.bettermarketplace.security.TokenService;
@@ -121,7 +120,7 @@ public class ItemController {
 			}
 
 			var itemId = itemService.insertItem(createItemDto, userAuthDetails.getUserId(), location.get().longitude(),
-					location.get().latitude(), location.get().countryCode());
+					location.get().latitude());
 			return ResponseEntity.status(201).body(itemId);
 		} catch (Exception e) {
 			return ResponseEntity.status(500).build();
@@ -144,7 +143,6 @@ public class ItemController {
 
 			Double latitude = null;
 			Double longitude = null;
-			String country = null;
 
 			if (updateItemDto.locationId() != null) {
 
@@ -155,13 +153,9 @@ public class ItemController {
 
 				latitude = location.get().latitude();
 				longitude = location.get().longitude();
-				country = location.get().countryCode();
 			}
 
-
-
-
-			itemService.updateItem(updateItemDto, id, country, longitude, latitude);
+			itemService.updateItem(updateItemDto, id, longitude, latitude);
 
 			return ResponseEntity.status(201).build();
 		} catch (Exception e) {
@@ -187,7 +181,6 @@ public class ItemController {
 				.sellerMemberSince(seller.map(UserDbo::createdAt).orElse(null))
 				.email(itemDbo.email())
 				.phoneNumber(itemDbo.phoneNumber())
-				.country(location.getCountryCode())
 				.placeName(location.getPlaceName())
 				.city(location.getCity())
 				.postalCode(location.getPostalCode())

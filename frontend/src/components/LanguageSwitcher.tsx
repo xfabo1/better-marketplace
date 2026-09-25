@@ -17,11 +17,6 @@ const languages: LanguageOption[] = [
     flag: 'CS'
   },
   {
-    code: 'sk',
-    name: 'Slovenčina',
-    flag: 'SK'
-  },
-  {
     code: 'en',
     name: 'English',
     flag: 'EN'

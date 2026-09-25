@@ -22,7 +22,6 @@ public record ItemSearchQuery(
 		Double maxMeterDistance,
 		Double minPrice,
 		Double maxPrice,
-		String country,
 		String textSearch,
 		String condition,
 		String category,

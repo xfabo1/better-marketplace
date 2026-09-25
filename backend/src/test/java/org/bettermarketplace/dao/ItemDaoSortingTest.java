@@ -33,7 +33,7 @@ class ItemDaoSortingTest {
 	void searchItems_noSorting_newestFirstWithUpdateCursor() {
 		itemDao.searchItems(queryWithBothCursors(null));
 
-		verify(itemDao).searchItems(null, null, null, null, null, null, null, null, LAST_UPDATED, null, null, null, 10,
+		verify(itemDao).searchItems(null, null, null, null, null, null, null, LAST_UPDATED, null, null, null, 10,
 				"updated_at DESC", "<=");
 	}
 
@@ -41,7 +41,7 @@ class ItemDaoSortingTest {
 	void searchItems_oldest_updatedAscendingWithUpdateCursor() {
 		itemDao.searchItems(queryWithBothCursors(Sorting.OLDEST));
 
-		verify(itemDao).searchItems(null, null, null, null, null, null, null, null, LAST_UPDATED, null, null, null, 10,
+		verify(itemDao).searchItems(null, null, null, null, null, null, null, LAST_UPDATED, null, null, null, 10,
 				"updated_at ASC", ">=");
 	}
 
@@ -49,7 +49,7 @@ class ItemDaoSortingTest {
 	void searchItems_priceAsc_priceAscendingWithPriceCursor() {
 		itemDao.searchItems(queryWithBothCursors(Sorting.PRICE_ASC));
 
-		verify(itemDao).searchItems(null, null, null, null, null, null, null, LAST_PRICE, null, null, null, null, 10,
+		verify(itemDao).searchItems(null, null, null, null, null, null, LAST_PRICE, null, null, null, null, 10,
 				"price ASC", ">=");
 	}
 
@@ -57,7 +57,7 @@ class ItemDaoSortingTest {
 	void searchItems_priceDesc_priceDescendingWithPriceCursor() {
 		itemDao.searchItems(queryWithBothCursors(Sorting.PRICE_DESC));
 
-		verify(itemDao).searchItems(null, null, null, null, null, null, null, LAST_PRICE, null, null, null, null, 10,
+		verify(itemDao).searchItems(null, null, null, null, null, null, LAST_PRICE, null, null, null, null, 10,
 				"price DESC", "<=");
 	}
 
@@ -69,7 +69,6 @@ class ItemDaoSortingTest {
 				.maxMeterDistance(5000.0)
 				.minPrice(100.0)
 				.maxPrice(200.0)
-				.country("CZ")
 				.textSearch("bike")
 				.condition("new")
 				.category("transport")
@@ -78,7 +77,7 @@ class ItemDaoSortingTest {
 				.pageSize(10)
 				.build());
 
-		verify(itemDao).searchItems(16.6, 49.2, 100.0, 200.0, "CZ", "bike", 5000.0, null, null, "new", "transport", "cars", 10,
+		verify(itemDao).searchItems(16.6, 49.2, 100.0, 200.0, "bike", 5000.0, null, null, "new", "transport", "cars", 10,
 				"updated_at DESC", "<=");
 	}
 

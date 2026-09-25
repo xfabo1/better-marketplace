@@ -13,8 +13,6 @@ const mockUserData = {
   email: "jan.novak@example.com",
   phone: "+420 123 456 789",
   registeredAt: "2021-05-15",
-  country: "cz",
-  showCrossCountryListings: true,
   stats: {
     totalListings: 18,
     activeListing: 12,
@@ -35,8 +33,6 @@ export default function ProfilePage() {
           name: user.name,
           email: user.email,
           phone: user.phone,
-          country: user.country,
-          showCrossCountryListings: user.showCrossCountryListings,
         });
       } else {
         setUserData(mockUserData);
@@ -108,12 +104,6 @@ export default function ProfilePage() {
                       <p className="text-sm font-medium text-gray-500">{t("phone")}</p>
                       <p className="mt-1 text-sm text-gray-900">{userData.phone}</p>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">{t("country")}</p>
-                      <p className="mt-1 text-sm text-gray-900">
-                        {userData.country === "cz" ? t("czech_republic") : t("slovakia")}
-                      </p>
-                    </div>
                   </div>
                 </div>
                 <div className="px-4 py-4">
@@ -125,16 +115,6 @@ export default function ProfilePage() {
                       <p className="text-sm font-medium text-gray-500">{t("registration")}</p>
                       <p className="mt-1 text-sm text-gray-900">
                         {formatDate(userData.registeredAt)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">
-                        {userData.country === "cz"
-                          ? t("show_slovak_listings")
-                          : t("show_czech_listings")}
-                      </p>
-                      <p className="mt-1 text-sm text-gray-900">
-                        {userData.showCrossCountryListings ? t("yes") : t("no")}
                       </p>
                     </div>
                   </div>

@@ -26,7 +26,6 @@ function SellForm() {
     subcategory: "",
     condition: "",
     price: "",
-    currency: "czk",
     description: "",
     location: "",
     contactPhone: "",
@@ -160,7 +159,7 @@ function SellForm() {
       const itemData = {
         name: formData.title,
         price: parseFloat(formData.price),
-        currency: formData.currency.toUpperCase(),
+        currency: "CZK",
         description: formData.description,
         imageUrl:
           formData.images.length > 0
@@ -322,10 +321,10 @@ function SellForm() {
               {errors.condition && <p className="mt-2 text-sm text-red-600">{errors.condition}</p>}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div>
               <div className="mb-4">
                 <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("price")} *
+                  {t("price")} (Kč) *
                 </label>
                 <input
                   type="number"
@@ -342,31 +341,6 @@ function SellForm() {
                   step="1"
                 />
                 {errors.price && <p className="mt-2 text-sm text-red-600">{errors.price}</p>}
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("currency") || "Měna"}
-                </label>
-                <select
-                  id="currency"
-                  name="currency"
-                  className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
-                  value={formData.currency}
-                  onChange={handleChange}
-                >
-                  {user?.country === "CZ" ? (
-                    <>
-                      <option value="czk">{t("czech_koruna") || "Česká koruna (Kč)"}</option>
-                      <option value="eur">{t("euro") || "Euro (€)"}</option>
-                    </>
-                  ) : (
-                    <>
-                      <option value="eur">{t("euro") || "Euro (€)"}</option>
-                      <option value="czk">{t("czech_koruna") || "Česká koruna (Kč)"}</option>
-                    </>
-                  )}
-                </select>
               </div>
             </div>
 
