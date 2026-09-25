@@ -43,7 +43,7 @@ public class ItemService {
 	}
 
 	public List<ItemDbo> findItemsDesc(SearchFilter searchFilter, double longitude, double latitude, String country, int pageSize) {
-		return itemDao.findItemsByUpdateTimeAsc(
+		return itemDao.findItemsByUpdateTimeDesc(
 				longitude,
 				latitude,
 				searchFilter.minPrice(),
