@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Sample users and items for local development. Runs only when the "dev" context is active
+         (spring.liquibase.contexts), so it never reaches a production database. -->
+    <changeSet id="04-01-dev-seed-data" author="xfabo1" context="dev">
+        <sqlFile path="../seed/dev-seed.sql" relativeToChangelogFile="true" encoding="UTF-8"
+                 splitStatements="true" endDelimiter=";"/>
+    </changeSet>
+</databaseChangeLog>
