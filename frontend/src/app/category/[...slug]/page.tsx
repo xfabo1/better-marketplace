@@ -1,21 +1,22 @@
 import { categories } from "@/constants/categories";
 import { notFound, redirect } from "next/navigation";
 
-// The sidebar links use Czech slugs (/category/doprava/motorky); items are stored with the category ids
-// (transport / motorcycles), so translate the slug and show the filtered listings page.
+// /category/transport or /category/transport/motorcycles shows the listings page filtered by that category
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
-  const href = `/category/${slug.map(decodeURIComponent).join("/")}`;
+  const [categoryId, subcategoryId, ...rest] = slug;
 
-  for (const category of categories) {
-    if (category.href === href) {
-      redirect(`/listings?category=${category.id}`);
-    }
-    const subcategory = category.subcategories?.find(sub => sub.href === href);
-    if (subcategory) {
-      redirect(`/listings?category=${category.id}&subcategory=${subcategory.id}`);
-    }
+  const category = categories.find(candidate => candidate.id === categoryId);
+  if (!category || rest.length > 0) {
+    notFound();
   }
 
-  notFound();
+  if (!subcategoryId) {
+    redirect(`/listings?category=${category.id}`);
+  }
+
+  if (!category.subcategories?.some(subcategory => subcategory.id === subcategoryId)) {
+    notFound();
+  }
+  redirect(`/listings?category=${category.id}&subcategory=${subcategoryId}`);
 }

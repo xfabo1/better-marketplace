@@ -4,7 +4,6 @@ import { getItems } from "@/api/itemApi";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { toCategoryId } from "@/constants/categories";
 import { NO_IMAGE_URL } from "@/constants/images";
 import { conditions } from "@/constants/conditions";
 import { dateFilterOptions } from "@/constants/dateFilterOptions";
@@ -471,7 +470,7 @@ function ListingsContent() {
                       <div className="p-2 flex-grow flex flex-col">
                         <div className="flex justify-between items-center mb-1">
                           <div className="text-xs text-primary font-medium truncate max-w-[70%]">
-                            {t(toCategoryId(listing.name))}
+                            {t(listing.name)}
                           </div>
                           <div className="text-xs text-gray-500 hidden sm:block">
                             {formatDate(listing.createdAt || "")}

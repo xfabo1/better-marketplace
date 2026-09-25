@@ -2,7 +2,6 @@
 
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { toCategoryId } from "@/constants/categories";
 import { formatDate, formatPrice } from "@/lib/format";
 import Image from "next/image";
 import Link from "next/link";
@@ -129,7 +128,7 @@ export default function MyListingsPage() {
                       </span>
                     </div>
                     <div className="mt-2 flex items-center text-sm text-gray-500">
-                      <span>{t(toCategoryId(listing.category))}</span>
+                      <span>{t(listing.category)}</span>
                       <span className="mx-2">•</span>
                       <span>{listing.location}, {listing.postalCode}</span>
                     </div>
