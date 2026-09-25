@@ -13,12 +13,14 @@ import org.bettermarketplace.db.entity.LocationDbo;
 import org.bettermarketplace.mapper.ItemMapper;
 import org.bettermarketplace.mapper.LocationMapper;
 import org.bettermarketplace.model.Country;
+import org.bettermarketplace.model.Sorting;
 import org.bettermarketplace.security.CookieUtil;
 import org.bettermarketplace.security.TokenService;
 import org.bettermarketplace.service.ItemService;
 import org.bettermarketplace.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,17 +57,24 @@ public class ItemController {
 	}
 
 	@GetMapping
-	public List<PreviewItemDto> getNewestItems(@RequestParam(value = "pageSize", defaultValue = "50") int pageSize) {
-		return itemService.findNewestItems(Math.clamp(pageSize, 1, MAX_PAGE_SIZE)).stream()
+	public List<PreviewItemDto> searchItems(
+			@RequestParam(value = "q", required = false) String searchText,
+			@RequestParam(value = "minPrice", required = false) Double minPrice,
+			@RequestParam(value = "maxPrice", required = false) Double maxPrice,
+			@RequestParam(value = "condition", required = false) String condition,
+			@RequestParam(value = "sort", required = false) String sort,
+			@RequestParam(value = "pageSize", defaultValue = "50") int pageSize) {
+		var filter = SearchFilter.builder()
+				.searchText(StringUtils.hasText(searchText) ? searchText.trim() : null)
+				.minPrice(minPrice)
+				.maxPrice(maxPrice)
+				.condition(StringUtils.hasText(condition) ? condition : null)
+				.sorting(Sorting.fromString(sort).orElse(Sorting.NEWEST))
+				.build();
+
+		return itemService.findItems(filter, Math.clamp(pageSize, 1, MAX_PAGE_SIZE)).stream()
 				.map(ITEM_MAPPER::toPreview)
 				.toList();
-	}
-
-	@GetMapping("/preview")
-	public ResponseEntity<PreviewItemDto> getPreviewItems(@RequestBody SearchFilter searchFilter,
-			@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
-		return ResponseEntity.ok().build();
-
 	}
 
 	@GetMapping("/item/{id}")

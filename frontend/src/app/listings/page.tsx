@@ -14,6 +14,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 const ITEMS_PER_PAGE = 9;
+const MAX_FETCHED_ITEMS = 100;
 
 const NO_IMAGE_URL = "https://placehold.co/600x400/e6f7ef/10b981/png?text=No+Image";
 
@@ -77,12 +78,24 @@ function ListingsContent() {
   }, [searchParams]);
 
   useEffect(() => {
+    // Ignores responses that arrive after the filters have changed again, so an older, slower request cannot
+    // overwrite the results of a newer one
+    let isCurrent = true;
+
     const fetchItems = async () => {
       try {
         setIsLoading(true);
         setError(null);
 
-        const items = await getItems();
+        const items = await getItems({
+          q: searchQuery,
+          minPrice,
+          maxPrice,
+          condition: selectedCondition === "all" ? undefined : selectedCondition,
+          sort: sortBy,
+          pageSize: MAX_FETCHED_ITEMS,
+        });
+        if (!isCurrent) return;
 
         const transformedItems = items.map((item: Item) => ({
           ...item,
@@ -95,16 +108,21 @@ function ListingsContent() {
 
         setListings(transformedItems);
       } catch (error) {
+        if (!isCurrent) return;
         console.error("Error fetching items:", error);
         setError("Failed to load listings. Please try again later.");
       } finally {
-        setIsLoading(false);
+        if (isCurrent) setIsLoading(false);
       }
     };
 
     fetchItems();
-  }, []);
+    return () => {
+      isCurrent = false;
+    };
+  }, [searchQuery, minPrice, maxPrice, selectedCondition, sortBy]);
 
+  // Search, condition, price and sorting are done by the backend; location and date are still filtered here
   const filteredListings = listings.filter(listing => {
     if (locationQuery && listing.location) {
       const locationMatches = listing.location.toLowerCase().includes(locationQuery.toLowerCase());
@@ -112,22 +130,6 @@ function ListingsContent() {
       if (!locationMatches && !postalCodeMatches) {
         return false;
       }
-    }
-
-    if (selectedCondition !== "all" && listing.conditionId !== selectedCondition) {
-      return false;
-    }
-
-    if (searchQuery && !listing.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
-    }
-
-    if (minPrice && listing.price < parseInt(minPrice)) {
-      return false;
-    }
-
-    if (maxPrice && listing.price > parseInt(maxPrice)) {
-      return false;
     }
 
     if (dateFilter !== "all" && listing.createdAt) {
@@ -160,23 +162,8 @@ function ListingsContent() {
     return true;
   });
 
-  const sortedListings = [...filteredListings].sort((a, b) => {
-    switch (sortBy) {
-      case "newest":
-        return new Date(b.createdAt || "").getTime() - new Date(a.createdAt || "").getTime();
-      case "oldest":
-        return new Date(a.createdAt || "").getTime() - new Date(b.createdAt || "").getTime();
-      case "price_asc":
-        return a.price - b.price;
-      case "price_desc":
-        return b.price - a.price;
-      default:
-        return 0;
-    }
-  });
-
-  const totalPages = Math.ceil(sortedListings.length / ITEMS_PER_PAGE);
-  const paginatedListings = sortedListings.slice(
+  const totalPages = Math.ceil(filteredListings.length / ITEMS_PER_PAGE);
+  const paginatedListings = filteredListings.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );

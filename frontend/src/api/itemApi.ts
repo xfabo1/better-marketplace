@@ -1,9 +1,25 @@
 // The backend is on a different origin (port 8080), so requests need credentials: "include" to send the auth cookie
 const API_BASE_URL = "http://localhost:8080/api/better-marketplace";
 
-export async function getItems() {
+export type ItemSearchParams = {
+  q?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  condition?: string;
+  sort?: string;
+  pageSize?: number;
+};
+
+export async function getItems(params: ItemSearchParams = {}) {
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== "") {
+      query.set(key, String(value));
+    }
+  }
+
   try {
-    const response = await fetch(`${API_BASE_URL}/v1/items`, {
+    const response = await fetch(`${API_BASE_URL}/v1/items?${query}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
