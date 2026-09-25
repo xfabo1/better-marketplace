@@ -511,6 +511,34 @@ public class ItemSearchDaoIT extends PostgisTest {
 		assertThat(firstPageNames).doesNotContainAnyElementsOf(secondPageNames);
 	}
 
+	@Test
+	public void searchItems_withCategoryAndSubcategory_returnsFilteredItems() {
+		createCategorizedItem("Car", "transport", "cars");
+		createCategorizedItem("Motorcycle", "transport", "motorcycles");
+		createCategorizedItem("Phone", "electronics", "phones");
+
+		List<ItemDbo> transport = itemDao.searchItems(ItemSearchQuery.builder()
+				.sorting(Sorting.OLDEST)
+				.category("transport")
+				.pageSize(10)
+				.build());
+		List<ItemDbo> motorcycles = itemDao.searchItems(ItemSearchQuery.builder()
+				.category("transport")
+				.subcategory("motorcycles")
+				.pageSize(10)
+				.build());
+
+		assertThat(transport).extracting(ItemDbo::name).containsExactly("Car", "Motorcycle");
+		assertThat(motorcycles).extracting(ItemDbo::name).containsExactly("Motorcycle");
+	}
+
+	private void createCategorizedItem(String name, String category, String subcategory) {
+		CreateItemDto item = new CreateItemDto(name, "Test description for " + name, Currency.CZK,
+				BigDecimal.valueOf(100), brnoLocationId, IMAGE_URL, USER_EMAIL, PHONE, category, subcategory, "new");
+		createdItemIds.add(itemDao.insertItem(item, userId, BRNO_LOCATION.getLatitude(), BRNO_LOCATION.getLongitude(),
+				"CZ"));
+	}
+
 	private void createTestItem(String name, BigDecimal price, Long locationId) {
 		createTestItem(name, "Test description for " + name, price, locationId, "CZ");
 	}

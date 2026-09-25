@@ -44,6 +44,8 @@ export default function ListingsPage() {
 
 function ListingsContent() {
   const searchParams = useSearchParams();
+  const category = searchParams.get("category") ?? undefined;
+  const subcategory = searchParams.get("subcategory") ?? undefined;
   const { t } = useLanguage();
 
   const [locationQuery, setLocationQuery] = useState("");
@@ -87,6 +89,8 @@ function ListingsContent() {
           minPrice,
           maxPrice,
           condition: selectedCondition === "all" ? undefined : selectedCondition,
+          category,
+          subcategory,
           sort: sortBy,
           pageSize: MAX_FETCHED_ITEMS,
         });
@@ -111,7 +115,7 @@ function ListingsContent() {
     return () => {
       isCurrent = false;
     };
-  }, [searchQuery, minPrice, maxPrice, selectedCondition, sortBy]);
+  }, [searchQuery, minPrice, maxPrice, selectedCondition, category, subcategory, sortBy]);
 
   // Search, condition, price and sorting are done by the backend; location and date are still filtered here
   const filteredListings = listings.filter(listing => {
@@ -469,7 +473,9 @@ function ListingsContent() {
 
         <main className="flex-grow p-4 md:p-8">
           <div className="mb-6">
-            <h1 className="text-2xl font-medium text-gray-900 mb-4">{t("browse_listings")}</h1>
+            <h1 className="text-2xl font-medium text-gray-900 mb-4">
+              {t(subcategory ?? category ?? "browse_listings")}
+            </h1>
 
             <div className="mb-6">
               <CustomSearchBar />

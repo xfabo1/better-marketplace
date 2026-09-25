@@ -50,18 +50,26 @@ public interface ItemDao {
 	@SqlUpdate
 	void deleteItem(@Bind("id") Long id);
 
+	/**
+	 * Sorts either by price or by updated time. For the next page, pass the price (price sortings) or the updatedAt
+	 * (time sortings) of the last item of the previous page; results continue from there in the sort direction.
+	 */
 	default List<ItemDbo> searchItems(ItemSearchQuery query) {
 		var sorting = query.sorting() == null ? Sorting.NEWEST : query.sorting();
-		// The cursor continues after the last item of the previous page, so it compares in the sort direction and
-		// only the cursor that matches the sorted column is used.
-		var sortsByPrice = sorting == Sorting.PRICE_ASC || sorting == Sorting.PRICE_DESC;
-		var ascending = sorting == Sorting.OLDEST || sorting == Sorting.PRICE_ASC;
-		var orderBy = (sortsByPrice ? "price" : "updated_at") + (ascending ? " ASC" : " DESC");
 
+		return switch (sorting) {
+			case PRICE_ASC -> searchItems(query, query.lastPrice(), null, "price ASC", ">=");
+			case PRICE_DESC -> searchItems(query, query.lastPrice(), null, "price DESC", "<=");
+			case OLDEST -> searchItems(query, null, query.lastUpdated(), "updated_at ASC", ">=");
+			case NEWEST -> searchItems(query, null, query.lastUpdated(), "updated_at DESC", "<=");
+		};
+	}
+
+	private List<ItemDbo> searchItems(ItemSearchQuery query, BigDecimal lastPrice, Instant lastUpdated,
+			String orderBy, String cursorOperator) {
 		return searchItems(query.longitude(), query.latitude(), query.minPrice(), query.maxPrice(), query.country(),
-				query.textSearch(), query.maxMeterDistance(), sortsByPrice ? query.lastPrice() : null,
-				sortsByPrice ? null : query.lastUpdated(), query.condition(), query.pageSize(), orderBy,
-				ascending ? ">=" : "<=");
+				query.textSearch(), query.maxMeterDistance(), lastPrice, lastUpdated, query.condition(),
+				query.category(), query.subcategory(), query.pageSize(), orderBy, cursorOperator);
 	}
 
 	/** Use {@link #searchItems(ItemSearchQuery)}; this overload only exists to bind the template parameters. */
@@ -78,6 +86,8 @@ public interface ItemDao {
 			@Bind("lastPrice") BigDecimal lastPrice,
 			@Bind("lastUpdated") Instant lastUpdated,
 			@Bind("condition") String condition,
+			@Bind("category") String category,
+			@Bind("subcategory") String subcategory,
 			@Bind("pageSize") int pageSize,
 			@Define("orderBy") String orderBy,
 			@Define("cursorOperator") String cursorOperator);

@@ -62,6 +62,8 @@ public class ItemController {
 			@RequestParam(value = "minPrice", required = false) Double minPrice,
 			@RequestParam(value = "maxPrice", required = false) Double maxPrice,
 			@RequestParam(value = "condition", required = false) String condition,
+			@RequestParam(value = "category", required = false) String category,
+			@RequestParam(value = "subcategory", required = false) String subcategory,
 			@RequestParam(value = "sort", required = false) String sort,
 			@RequestParam(value = "pageSize", defaultValue = "50") int pageSize) {
 		var filter = SearchFilter.builder()
@@ -69,6 +71,8 @@ public class ItemController {
 				.minPrice(minPrice)
 				.maxPrice(maxPrice)
 				.condition(StringUtils.hasText(condition) ? condition : null)
+				.category(StringUtils.hasText(category) ? category : null)
+				.subcategory(StringUtils.hasText(subcategory) ? subcategory : null)
 				.sorting(Sorting.fromString(sort).orElse(Sorting.NEWEST))
 				.build();
 
