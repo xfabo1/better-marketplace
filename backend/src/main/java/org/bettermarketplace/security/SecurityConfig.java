@@ -4,6 +4,7 @@ import org.bettermarketplace.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -74,19 +76,16 @@ public class SecurityConfig {
 				.csrf(AbstractHttpConfigurer::disable)
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.authorizeHttpRequests(auth -> auth
+						// logout is open so an expired session can still clear its cookie
 						.requestMatchers("/auth/login",
-						                 "/auth/register").permitAll()
+						                 "/auth/register",
+						                 "/auth/logout").permitAll()
 						.requestMatchers(HttpMethod.GET, "/**").permitAll()
-						.requestMatchers(HttpMethod.POST, "/**")
-						.hasAuthority("SCOPE_write")
-						.requestMatchers(HttpMethod.DELETE, "/**")
-						.hasAuthority("SCOPE_write")
-						.requestMatchers(HttpMethod.PUT, "/**")
-						.hasAuthority("SCOPE_write")
-						.requestMatchers(HttpMethod.PATCH, "/**")
-						.hasAuthority("SCOPE_write")
 						.anyRequest()
 						.authenticated())
+				// Not logged in -> 401 (instead of Spring's default 403), so the frontend can tell it apart from "not allowed"
+				.exceptionHandling(handling -> handling
+						.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
 				.httpBasic(AbstractHttpConfigurer::disable)
 				.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

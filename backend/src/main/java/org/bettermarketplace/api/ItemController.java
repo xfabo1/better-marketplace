@@ -109,8 +109,12 @@ public class ItemController {
 		try {
 			var token = CookieUtil.extractTokenFromCookie(request);
 			var userAuthDetails = tokenService.getUserDetails(token);
-			if (!Objects.equals(userAuthDetails.getUserId(), id)) {
-				return ResponseEntity.status(401).build();
+			var item = itemService.findItem(id);
+			if (item.isEmpty()) {
+				return ResponseEntity.notFound().build();
+			}
+			if (!Objects.equals(userAuthDetails.getUserId(), item.get().userId())) {
+				return ResponseEntity.status(403).build();
 			}
 
 			Double latitude = null;

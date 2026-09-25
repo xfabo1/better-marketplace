@@ -21,7 +21,6 @@ import jakarta.servlet.http.HttpServletResponse;
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
-    private static final String AUTH_COOKIE_NAME = "auth_token";
 
     public TokenAuthenticationFilter(TokenService tokenService) {
         this.tokenService = tokenService;
@@ -40,11 +39,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 if (tokenService.isTokenAboutToExpire(token)) {
                     var newToken = tokenService.refreshToken(token);
 
-                    var authCookie = new Cookie(AUTH_COOKIE_NAME, newToken);
+                    // Must match the cookie set in AuthController.login, otherwise the browser keeps the revoked token
+                    var authCookie = new Cookie(CookieUtil.AUTH_COOKIE_NAME, newToken);
                     authCookie.setHttpOnly(true);
-                    authCookie.setSecure(true);
+                    authCookie.setSecure(false); // Set to true in production with HTTPS
                     authCookie.setPath("/");
-                    authCookie.setAttribute("SameSite", "Strict");
+                    authCookie.setAttribute("SameSite", "Lax");
+                    authCookie.setMaxAge((int) tokenService.getTokenTtl().toSeconds());
                     response.addCookie(authCookie);
 
                     token = newToken;
