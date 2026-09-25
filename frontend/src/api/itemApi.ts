@@ -77,6 +77,7 @@ export async function createItem(itemData: {
   phoneNumber: string;
   category?: string;
   subcategory?: string;
+  condition: string;
 }) {
   try {
     console.log(`Creating new item at ${API_BASE_URL}/v1/items/item`);
