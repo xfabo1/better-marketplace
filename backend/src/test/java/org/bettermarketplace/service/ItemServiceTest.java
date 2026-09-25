@@ -2,9 +2,13 @@ package org.bettermarketplace.service;
 
 import static org.mockito.Mockito.verify;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+
 import org.bettermarketplace.api.dto.filter.SearchFilter;
 import org.bettermarketplace.api.dto.item.CreateItemDto;
 import org.bettermarketplace.db.dao.ItemDao;
+import org.bettermarketplace.db.dao.ItemSearchQuery;
 import org.bettermarketplace.model.Sorting;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,38 +38,31 @@ class ItemServiceTest {
 	}
 
 	@Test
-	void findItems_noSorting_newestFirst() {
-		itemService.findItems(SearchFilter.builder().build(), 20);
-
-		verify(itemDao).findItemsByUpdateTimeDesc(null, null, null, null, null, null, null, null, null, null, 20);
-	}
-
-	@Test
-	void findItems_oldest_updateTimeAscending() {
-		itemService.findItems(SearchFilter.builder().sorting(Sorting.OLDEST).build(), 20);
-
-		verify(itemDao).findItemsByUpdateTimeAsc(null, null, null, null, null, null, null, null, null, null, 20);
-	}
-
-	@Test
-	void findItems_priceDescWithFilters_filtersPassedToPriceQuery() {
+	void findItems_filter_mappedToSearchQuery() {
+		var lastUpdate = Instant.parse("2026-01-15T10:00:00Z");
 		var filter = SearchFilter.builder()
-				.sorting(Sorting.PRICE_DESC)
 				.searchText("bike")
 				.minPrice(100.0)
 				.maxPrice(2000.0)
 				.condition("new")
+				.maxMeterDistance(5000.0)
+				.sorting(Sorting.PRICE_DESC)
+				.lastPrice(BigDecimal.TEN)
+				.lastUpdate(lastUpdate)
 				.build();
 
 		itemService.findItems(filter, 20);
 
-		verify(itemDao).findItemsByPriceDesc(null, null, 100.0, 2000.0, null, "bike", null, null, null, "new", 20);
-	}
-
-	@Test
-	void findItems_priceAsc_priceAscendingQuery() {
-		itemService.findItems(SearchFilter.builder().sorting(Sorting.PRICE_ASC).build(), 20);
-
-		verify(itemDao).findItemsByPriceAsc(null, null, null, null, null, null, null, null, null, null, 20);
+		verify(itemDao).searchItems(ItemSearchQuery.builder()
+				.textSearch("bike")
+				.minPrice(100.0)
+				.maxPrice(2000.0)
+				.condition("new")
+				.maxMeterDistance(5000.0)
+				.sorting(Sorting.PRICE_DESC)
+				.lastPrice(BigDecimal.TEN)
+				.lastUpdated(lastUpdate)
+				.pageSize(20)
+				.build());
 	}
 }
