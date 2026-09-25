@@ -56,8 +56,6 @@ function ListingsContent() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [listings, setListings] = useState<Item[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (searchParams) {
@@ -84,9 +82,6 @@ function ListingsContent() {
 
     const fetchItems = async () => {
       try {
-        setIsLoading(true);
-        setError(null);
-
         const items = await getItems({
           q: searchQuery,
           minPrice,
@@ -108,11 +103,7 @@ function ListingsContent() {
 
         setListings(transformedItems);
       } catch (error) {
-        if (!isCurrent) return;
-        console.error("Error fetching items:", error);
-        setError("Failed to load listings. Please try again later.");
-      } finally {
-        if (isCurrent) setIsLoading(false);
+        if (isCurrent) console.error("Error fetching items:", error);
       }
     };
 
