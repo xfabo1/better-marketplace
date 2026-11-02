@@ -33,7 +33,8 @@ export default function RegisterPage() {
       });
       
       // Redirect is handled in the login function
-    } catch (error: any) {
+    } catch (caught: unknown) {
+      const error = caught as Error;
       // Handle specific error messages from the backend
       if (error.message === "email_used") {
         setError(t('email_already_used') || "This email is already in use");

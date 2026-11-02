@@ -21,6 +21,25 @@ interface Item {
   creatorId: number;
 }
 
+// Item enriched with the fields the page shows (mostly placeholders until the backend provides them)
+interface Listing extends Item {
+  title: string;
+  category: string;
+  condition: string;
+  conditionId: string;
+  location: string;
+  postalCode: string;
+  createdAt: string;
+  seller: {
+    name: string;
+    memberSince: string;
+    otherListings: number;
+  };
+  contactPhone: string;
+  contactEmail: string;
+  images: string[];
+}
+
 // Mock data for similar listings (to be replaced with API call later)
 const similarListings = [
   {
@@ -59,7 +78,7 @@ export default function ListingDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   // Enhanced listing with frontend-specific fields
-  const [listing, setListing] = useState<any>(null);
+  const [listing, setListing] = useState<Listing | null>(null);
 
   // Fetch item data from backend
   useEffect(() => {

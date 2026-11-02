@@ -11,7 +11,7 @@ import { sortOptions } from "@/data/sortOptions";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 // Items per page
 const ITEMS_PER_PAGE = 9;
@@ -34,7 +34,16 @@ interface Item {
   title?: string;
 }
 
+// useSearchParams() needs a Suspense boundary, otherwise the production build fails to prerender this page
 export default function ListingsPage() {
+  return (
+    <Suspense fallback={null}>
+      <ListingsContent />
+    </Suspense>
+  );
+}
+
+function ListingsContent() {
   const searchParams = useSearchParams();
   const { t } = useLanguage();
 

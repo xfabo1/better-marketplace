@@ -25,7 +25,7 @@ type AuthContextType = {
     showCrossCountryListings?: boolean
   }) => void;
   isLoading: boolean;
-  handleAuthError: (error: any) => void;
+  handleAuthError: (error: unknown) => void;
 };
 
 // Create context with default values
@@ -70,9 +70,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   // Handle authentication errors
-  const handleAuthError = (error: any) => {
+  const handleAuthError = (error: unknown) => {
+    const httpError = error as { status?: number; response?: { status?: number } } | null | undefined;
     // Check if it's a 401 error
-    if (error?.response?.status === 401 || error?.status === 401) {
+    if (httpError?.response?.status === 401 || httpError?.status === 401) {
       // Clear user data
       setUser(null);
       if (isClient) {
