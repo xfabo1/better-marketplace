@@ -8,8 +8,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { createItem } from "@/api/itemApi";
-import { categories, type Subcategory } from "@/data/categories";
-import { conditions } from "@/data/conditions";
+import { categories, type Subcategory } from "@/constants/categories";
+import { conditions } from "@/constants/conditions";
 
 const TITLE_MAX_LENGTH = 100;
 const DESCRIPTION_MAX_LENGTH = 2000;

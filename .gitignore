@@ -35,3 +35,5 @@ build/
 ### Node modules ###
 **/node_modules/**
 **/.next/**
+# Local environment overrides (e.g. frontend/.env.local)
+**/.env*.local
