@@ -171,6 +171,7 @@ function SellForm() {
         phoneNumber: formData.contactPhone || user?.phone || "",
         category: formData.category,
         subcategory: formData.subcategory,
+        condition: formData.condition,
       };
 
       const itemId = await createItem(itemData);
@@ -312,7 +313,7 @@ function SellForm() {
                 onChange={handleChange}
               >
                 <option value="">{t("select_condition")}</option>
-                {conditions.map(condition => (
+                {conditions.filter(condition => condition.id !== "all").map(condition => (
                   <option key={condition.id} value={condition.id}>
                     {t(condition.name)}
                   </option>

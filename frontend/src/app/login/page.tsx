@@ -22,7 +22,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<FormattedError | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -58,8 +57,6 @@ export default function LoginPage() {
     }
 
     try {
-      setIsLoading(true);
-
       if (password) {
         await login(email, password);
         router.push(redirectUrl);
@@ -99,7 +96,6 @@ export default function LoginPage() {
       }
     } finally {
       setIsSubmitting(false);
-      setIsLoading(false);
     }
   };
 

@@ -8,9 +8,11 @@ import java.util.Optional;
 import org.bettermarketplace.api.dto.item.CreateItemDto;
 import org.bettermarketplace.db.entity.ItemDbo;
 import org.bettermarketplace.model.Currency;
+import org.bettermarketplace.model.Sorting;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindMethods;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -48,41 +50,24 @@ public interface ItemDao {
 	@SqlUpdate
 	void deleteItem(@Bind("id") Long id);
 
-	@SqlQuery
-	@DefineNamedBindings
-	List<ItemDbo> findItemsByPriceAsc(
-			@Bind("longitude") Double longitude,
-			@Bind("latitude") Double latitude,
-			@Bind("minPrice") Double minPrice,
-			@Bind("maxPrice") Double maxPrice,
-			@Bind("country") String country,
-			@Bind("textSearch") String textSearch,
-			@Bind("maxMeterDistance") Double maxMeterDistance,
-			@Bind("lastPrice") BigDecimal lastPrice,
-			@Bind("lastUpdated") Instant lastUpdated,
-			@Bind("condition") String condition,
-			@Bind("pageSize") int pageSize
-	);
+	default List<ItemDbo> searchItems(ItemSearchQuery query) {
+		var sorting = query.sorting() == null ? Sorting.NEWEST : query.sorting();
+		// The cursor continues after the last item of the previous page, so it compares in the sort direction and
+		// only the cursor that matches the sorted column is used.
+		var sortsByPrice = sorting == Sorting.PRICE_ASC || sorting == Sorting.PRICE_DESC;
+		var ascending = sorting == Sorting.OLDEST || sorting == Sorting.PRICE_ASC;
+		var orderBy = (sortsByPrice ? "price" : "updated_at") + (ascending ? " ASC" : " DESC");
 
-	@SqlQuery
-	@DefineNamedBindings
-	List<ItemDbo> findItemsByPriceDesc(
-			@Bind("longitude") Double longitude,
-			@Bind("latitude") Double latitude,
-			@Bind("minPrice") Double minPrice,
-			@Bind("maxPrice") Double maxPrice,
-			@Bind("country") String country,
-			@Bind("textSearch") String textSearch,
-			@Bind("maxMeterDistance") Double maxMeterDistance,
-			@Bind("lastPrice") BigDecimal lastPrice,
-			@Bind("lastUpdated") Instant lastUpdated,
-			@Bind("condition") String condition,
-			@Bind("pageSize") int pageSize
-	);
+		return searchItems(query.longitude(), query.latitude(), query.minPrice(), query.maxPrice(), query.country(),
+				query.textSearch(), query.maxMeterDistance(), sortsByPrice ? query.lastPrice() : null,
+				sortsByPrice ? null : query.lastUpdated(), query.condition(), query.pageSize(), orderBy,
+				ascending ? ">=" : "<=");
+	}
 
+	/** Use {@link #searchItems(ItemSearchQuery)}; this overload only exists to bind the template parameters. */
 	@SqlQuery
 	@DefineNamedBindings
-	List<ItemDbo> findItemsByUpdateTimeAsc(
+	List<ItemDbo> searchItems(
 			@Bind("longitude") Double longitude,
 			@Bind("latitude") Double latitude,
 			@Bind("minPrice") Double minPrice,
@@ -93,23 +78,7 @@ public interface ItemDao {
 			@Bind("lastPrice") BigDecimal lastPrice,
 			@Bind("lastUpdated") Instant lastUpdated,
 			@Bind("condition") String condition,
-			@Bind("pageSize") int pageSize
-	);
-
-	@SqlQuery
-	@DefineNamedBindings
-	List<ItemDbo> findItemsByUpdateTimeDesc(
-			@Bind("longitude") Double longitude,
-			@Bind("latitude") Double latitude,
-			@Bind("minPrice") Double minPrice,
-			@Bind("maxPrice") Double maxPrice,
-			@Bind("country") String country,
-			@Bind("textSearch") String textSearch,
-			@Bind("maxMeterDistance") Double maxMeterDistance,
-			@Bind("lastPrice") BigDecimal lastPrice,
-			@Bind("lastUpdated") Instant lastUpdated,
-			@Bind("condition") String condition,
-			@Bind("pageSize") int pageSize
-	);
+			@Bind("pageSize") int pageSize,
+			@Define("orderBy") String orderBy,
+			@Define("cursorOperator") String cursorOperator);
 }
-
