@@ -6,6 +6,8 @@ export type ItemSearchParams = {
   minPrice?: string;
   maxPrice?: string;
   condition?: string;
+  category?: string;
+  subcategory?: string;
   sort?: string;
   pageSize?: number;
 };

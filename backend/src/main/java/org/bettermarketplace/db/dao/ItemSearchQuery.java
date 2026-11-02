@@ -25,6 +25,8 @@ public record ItemSearchQuery(
 		String country,
 		String textSearch,
 		String condition,
+		String category,
+		String subcategory,
 		Sorting sorting,
 		BigDecimal lastPrice,
 		Instant lastUpdated,

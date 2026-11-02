@@ -32,6 +32,8 @@ public class ItemService {
 				.maxPrice(filter.maxPrice())
 				.textSearch(filter.searchText())
 				.condition(filter.condition())
+				.category(filter.category())
+				.subcategory(filter.subcategory())
 				.maxMeterDistance(filter.maxMeterDistance())
 				.sorting(filter.sorting())
 				.lastPrice(filter.lastPrice())
