@@ -7,14 +7,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { countries } from "@/data/countries";
 import { useAuth } from "@/contexts/AuthContext";
 
-// Component that uses useSearchParams
 function SettingsContent() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<"profile" | "security">("profile");
   const { t } = useLanguage();
   const { user, updateUserSettings } = useAuth();
 
-  // Set active tab based on URL parameter if present
   useEffect(() => {
     const tab = searchParams.get("tab");
     if (tab === "security") {
@@ -24,18 +22,16 @@ function SettingsContent() {
     }
   }, [searchParams]);
 
-  // Mock user data
   const [userData, setUserData] = useState({
     email: "jan.novak@example.com",
     phone: "+420 123 456 789",
-    country: "CZ", // Default to Czech Republic
-    showCrossCountryListings: true, // Default to showing cross-country listings
-    currency: "CZK", // Default to Czech Koruna
+    country: "CZ",
+    showCrossCountryListings: true,
+    currency: "CZK",
   });
 
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Update user settings using the AuthContext function
     updateUserSettings({
       country: userData.country as "CZ" | "SK",
       showCrossCountryListings: userData.showCrossCountryListings,
@@ -43,7 +39,6 @@ function SettingsContent() {
     alert(t("profile_updated"));
   };
 
-  // Load user data from auth context on component mount
   useEffect(() => {
     if (user) {
       setUserData(prevState => ({
@@ -61,7 +56,7 @@ function SettingsContent() {
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would call your API to update the password
+    // TODO: not implemented, there is no password-change endpoint in the backend yet
     alert(t("password_changed"));
   };
 
@@ -253,7 +248,6 @@ function SettingsContent() {
   );
 }
 
-// Loading fallback for Suspense
 function SettingsContentFallback() {
   return (
     <main className="flex-grow py-8">
@@ -281,7 +275,6 @@ function SettingsContentFallback() {
   );
 }
 
-// Main component that uses Suspense
 export default function SettingsPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">

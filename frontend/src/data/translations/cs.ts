@@ -1,4 +1,3 @@
-// Czech translations
 export const csTranslations = {
   // Header
   "browse": "Procházet",

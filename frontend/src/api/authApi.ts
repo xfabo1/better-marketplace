@@ -1,11 +1,6 @@
-// Authentication API client for Better Marketplace
-// This file contains functions to interact with the backend auth endpoints
-
+// The backend is on a different origin (port 8080), so requests need credentials: 'include' to send the auth cookie
 const API_BASE_URL = 'http://localhost:8080/api/better-marketplace';
 
-/**
- * Login user with email and password
- */
 export async function loginUser(email: string, password: string) {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -13,18 +8,16 @@ export async function loginUser(email: string, password: string) {
       headers: {
         'Content-Type': 'application/json',
       },
-      credentials: 'include', // Important for cookies
-      mode: 'cors', // Explicitly set CORS mode
+      credentials: 'include',
+      mode: 'cors',
       body: JSON.stringify({ email, password }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
       
-      // Create a more detailed error object
       const error = new Error(errorText || 'Login failed');
       
-      // Handle specific error cases
       if (response.status === 401) {
         error.message = 'invalid_credentials';
       }
@@ -35,7 +28,6 @@ export async function loginUser(email: string, password: string) {
     const data = await response.json();
     return data;
   } catch (error) {
-    // If it's a network error, provide a more user-friendly message
     if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
       throw Error('Network error: Unable to connect to the server');
     }
@@ -44,9 +36,6 @@ export async function loginUser(email: string, password: string) {
   }
 }
 
-/**
- * Register a new user
- */
 export async function registerUser(userData: {
   username: string;
   email: string;
@@ -56,7 +45,6 @@ export async function registerUser(userData: {
 }) {
   try {
     
-    // Ensure country is uppercase
     const requestData = {
       ...userData,
       country: userData.country.toUpperCase()
@@ -67,16 +55,14 @@ export async function registerUser(userData: {
       headers: {
         'Content-Type': 'application/json',
       },
-      credentials: 'include', // Important for cookies
-      mode: 'cors', // Explicitly set CORS mode
+      credentials: 'include',
+      mode: 'cors',
       body: JSON.stringify(requestData),
     });
-
 
     if (!response.ok) {
       const errorText = await response.text();
       
-      // Handle specific error cases
       if (errorText === 'email_used') {
         throw new Error('email_used');
       } else if (errorText === 'username_used') {
@@ -98,14 +84,11 @@ export async function registerUser(userData: {
   }
 }
 
-/**
- * Logout the current user
- */
 export async function logoutUser() {
     const response = await fetch(`${API_BASE_URL}/auth/logout`, {
       method: 'POST',
-      credentials: 'include', // Important for cookies
-      mode: 'cors', // Explicitly set CORS mode
+      credentials: 'include',
+      mode: 'cors',
     });
 
     if (!response.ok) {

@@ -70,7 +70,6 @@ public class ItemController {
 
 			var locationDbo = locationService.findLocation(itemDbo.get().locationId());
 
-			// Ths is the same situation as above and this should never happen
 			if (locationDbo.isEmpty()) {
 				log.error("Location with ID {} not found in item with ID {}", itemDbo.get().locationId(),
 						itemDbo.get().id());

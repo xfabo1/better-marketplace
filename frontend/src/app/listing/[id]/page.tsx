@@ -9,7 +9,6 @@ import { useParams } from "next/navigation";
 import { formatDate } from "@/utils/CommonUtils";
 import { useEffect, useState } from "react";
 
-// Interface for Item from backend
 interface Item {
   id: number;
   name: string;
@@ -40,7 +39,7 @@ interface Listing extends Item {
   images: string[];
 }
 
-// Mock data for similar listings (to be replaced with API call later)
+// TODO: load similar listings from the backend
 const similarListings = [
   {
     id: "2",
@@ -77,10 +76,8 @@ export default function ListingDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Enhanced listing with frontend-specific fields
   const [listing, setListing] = useState<Listing | null>(null);
 
-  // Fetch item data from backend
   useEffect(() => {
     const fetchItem = async () => {
       if (!id) return;
@@ -92,16 +89,15 @@ export default function ListingDetailPage() {
         const itemData = await getItemById(id.toString());
         setItem(itemData);
         
-        // Transform backend item to match frontend listing structure
         setListing({
           ...itemData,
           title: itemData.name,
-          category: "other", // Default category
-          condition: "Used", // Default condition
-          conditionId: "used", // Default condition ID
-          location: "Unknown", // This should come from locationId
+          category: "other",
+          condition: "Used",
+          conditionId: "used",
+          location: "Unknown",
           postalCode: "000 00",
-          createdAt: new Date().toISOString(), // Default to current date
+          createdAt: new Date().toISOString(),
           seller: {
             name: "Unknown Seller",
             memberSince: "2023-01",
@@ -125,7 +121,6 @@ export default function ListingDetailPage() {
     fetchItem();
   }, [id]);
 
-  // Show loading state
   if (isLoading) {
     return (
       <div className="flex flex-col min-h-screen bg-gray-50">
@@ -142,7 +137,6 @@ export default function ListingDetailPage() {
     );
   }
 
-  // Show error state
   if (error || !listing) {
     return (
       <div className="flex flex-col min-h-screen bg-gray-50">
@@ -169,7 +163,6 @@ export default function ListingDetailPage() {
 
       <main className="flex-grow py-6 md:py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumbs */}
           <div className="mb-4 text-sm text-gray-500">
             <Link href="/" className="hover:text-primary">
               {t('home')}
@@ -191,9 +184,7 @@ export default function ListingDetailPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left column - Images and details */}
             <div className="lg:col-span-2">
-              {/* Image gallery */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
                 <div className="relative h-64 sm:h-96 w-full">
                   <Image
@@ -205,7 +196,6 @@ export default function ListingDetailPage() {
                   />
                 </div>
 
-                {/* Thumbnails */}
                 {listing.images.length > 1 && (
                   <div className="flex p-4 gap-2 overflow-x-auto">
                     {listing.images.map((image: string, index: number) => (
@@ -231,7 +221,6 @@ export default function ListingDetailPage() {
                 )}
               </div>
 
-              {/* Listing details */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
                 <div className="p-6">
                   <h1 className="text-2xl font-medium text-gray-900 mb-2">
@@ -274,7 +263,6 @@ export default function ListingDetailPage() {
                 </div>
               </div>
 
-              {/* Similar listings */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div className="p-6">
                   <h2 className="text-lg font-medium text-gray-900 mb-4">
@@ -314,7 +302,6 @@ export default function ListingDetailPage() {
               </div>
             </div>
             
-            {/* Right column - Seller info & actions */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
                 <div className="p-6">

@@ -13,10 +13,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
-// Items per page
 const ITEMS_PER_PAGE = 9;
 
-// Interface for Item from backend
 interface Item {
   id: number;
   name: string;
@@ -47,7 +45,6 @@ function ListingsContent() {
   const searchParams = useSearchParams();
   const { t } = useLanguage();
 
-  // Initialize state from URL parameters
   const [locationQuery, setLocationQuery] = useState("");
   const [selectedCondition, setSelectedCondition] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
@@ -61,7 +58,6 @@ function ListingsContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Apply URL parameters on component mount
   useEffect(() => {
     if (searchParams) {
       const q = searchParams.get("q");
@@ -80,7 +76,6 @@ function ListingsContent() {
     }
   }, [searchParams]);
 
-  // Fetch items from backend
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -89,15 +84,14 @@ function ListingsContent() {
 
         const items = await getItems();
 
-        // Transform backend items to match frontend listing structure
         const transformedItems = items.map((item: Item) => ({
           ...item,
           title: item.name,
           // For now, use placeholder values for fields not available in the backend
-          location: "Unknown", // This should come from locationId
+          location: "Unknown",
           postalCode: "000 00",
-          conditionId: "used", // Default condition
-          createdAt: new Date().toISOString(), // Default to current date
+          conditionId: "used",
+          createdAt: new Date().toISOString(),
         }));
 
         setListings(transformedItems);
@@ -112,9 +106,7 @@ function ListingsContent() {
     fetchItems();
   }, []);
 
-  // Filter listings based on selected filters
   const filteredListings = listings.filter(listing => {
-    // Filter by location (city name or postal code)
     if (locationQuery && listing.location) {
       const locationMatches = listing.location.toLowerCase().includes(locationQuery.toLowerCase());
       const postalCodeMatches = listing.postalCode?.includes(locationQuery) || false;
@@ -123,17 +115,14 @@ function ListingsContent() {
       }
     }
 
-    // Filter by condition
     if (selectedCondition !== "all" && listing.conditionId !== selectedCondition) {
       return false;
     }
 
-    // Filter by search query
     if (searchQuery && !listing.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
 
-    // Filter by price range
     if (minPrice && listing.price < parseInt(minPrice)) {
       return false;
     }
@@ -142,7 +131,6 @@ function ListingsContent() {
       return false;
     }
 
-    // Filter by date
     if (dateFilter !== "all" && listing.createdAt) {
       const today = new Date();
       const listingDate = new Date(listing.createdAt);
@@ -173,7 +161,6 @@ function ListingsContent() {
     return true;
   });
 
-  // Sort listings based on selected sort option
   const sortedListings = [...filteredListings].sort((a, b) => {
     switch (sortBy) {
       case "newest":
@@ -189,7 +176,6 @@ function ListingsContent() {
     }
   });
 
-  // Calculate pagination
   const totalPages = Math.ceil(sortedListings.length / ITEMS_PER_PAGE);
   const paginatedListings = sortedListings.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -217,13 +203,11 @@ function ListingsContent() {
     setCurrentPage(1);
   };
 
-  // Handle condition change
   const handleConditionChange = (condition: string) => {
     setSelectedCondition(condition);
     setCurrentPage(1);
   };
 
-  // Format date function
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date
@@ -235,15 +219,12 @@ function ListingsContent() {
       .replace(/\s/g, "");
   };
 
-  // Add this helper function to map category slugs to proper translation keys
   const getCategoryTranslationKey = (category: string): string => {
-    // Check if it's a main category
     const mainCategory = categories.find(cat => cat.id === category);
     if (mainCategory) {
       return category;
     }
 
-    // Check if it's a subcategory
     for (const cat of categories) {
       if (cat.subcategories) {
         const subcategory = cat.subcategories.find(subcat => subcat.id === category);
@@ -253,7 +234,6 @@ function ListingsContent() {
       }
     }
 
-    // Check if it's a slug that needs to be converted to id
     const slugCategory = categories.find(cat => {
       const slugPart = cat.href.split("/").pop();
       return slugPart === category;
@@ -263,7 +243,6 @@ function ListingsContent() {
       return slugCategory.id;
     }
 
-    // Check if it's a subcategory slug
     for (const cat of categories) {
       if (cat.subcategories) {
         const slugSubcategory = cat.subcategories.find(subcat => {
@@ -277,11 +256,9 @@ function ListingsContent() {
       }
     }
 
-    // If not found, return the original category
     return category;
   };
 
-  // Custom SearchBar with added sort button
   const CustomSearchBar = () => {
     const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
@@ -594,7 +571,6 @@ function ListingsContent() {
                 ))}
               </div>
 
-              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex justify-center mt-10">
                   <nav className="flex items-center">

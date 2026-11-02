@@ -1,11 +1,6 @@
-// Item API client for Better Marketplace
-// This file contains functions to interact with the backend item endpoints
-
+// The backend is on a different origin (port 8080), so requests need credentials: "include" to send the auth cookie
 const API_BASE_URL = "http://localhost:8080/api/better-marketplace";
 
-/**
- * Get all items (listings)
- */
 export async function getItems() {
   try {
     const response = await fetch(`${API_BASE_URL}/v1/items/listings`, {
@@ -13,8 +8,8 @@ export async function getItems() {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Important for cookies
-      mode: "cors", // Explicitly set CORS mode
+      credentials: "include",
+      mode: "cors",
     });
 
     if (!response.ok) {
@@ -25,7 +20,6 @@ export async function getItems() {
     const data = await response.json();
     return data;
   } catch (error) {
-    // If it's a network error, provide a more user-friendly message
     if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
       const networkError = new Error("Network error: Unable to connect to the server");
       throw networkError;
@@ -35,9 +29,6 @@ export async function getItems() {
   }
 }
 
-/**
- * Get a specific item by ID
- */
 export async function getItemById(id: string | number) {
   try {
 
@@ -46,8 +37,8 @@ export async function getItemById(id: string | number) {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Important for cookies
-      mode: "cors", // Explicitly set CORS mode
+      credentials: "include",
+      mode: "cors",
     });
 
     if (!response.ok) {
@@ -65,7 +56,6 @@ export async function getItemById(id: string | number) {
     return data;
   } catch (error) {
 
-    // If it's a network error, provide a more user-friendly message
     if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
       const networkError = new Error("Network error: Unable to connect to the server");
       console.error("Network error details:", error);
@@ -76,9 +66,6 @@ export async function getItemById(id: string | number) {
   }
 }
 
-/**
- * Create a new item (listing)
- */
 export async function createItem(itemData: {
   name: string;
   price: number;
@@ -99,8 +86,8 @@ export async function createItem(itemData: {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Important for cookies
-      mode: "cors", // Explicitly set CORS mode
+      credentials: "include",
+      mode: "cors",
       body: JSON.stringify(itemData),
     });
 
@@ -114,11 +101,10 @@ export async function createItem(itemData: {
 
     const data = await response.json();
     console.log("Item created successfully, received ID:", data);
-    return data; // This should be the ID of the created item
+    return data;
   } catch (error) {
     console.error("Error creating item:", error);
 
-    // If it's a network error, provide a more user-friendly message
     if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
       const networkError = new Error("Network error: Unable to connect to the server");
       console.error("Network error details:", error);
@@ -129,9 +115,6 @@ export async function createItem(itemData: {
   }
 }
 
-/**
- * Update an existing item
- */
 export async function updateItem(
   id: string | number,
   updateData: {
@@ -153,8 +136,8 @@ export async function updateItem(
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Important for cookies
-      mode: "cors", // Explicitly set CORS mode
+      credentials: "include",
+      mode: "cors",
       body: JSON.stringify(updateData),
     });
 
@@ -176,7 +159,6 @@ export async function updateItem(
   } catch (error) {
     console.error("Error updating item:", error);
 
-    // If it's a network error, provide a more user-friendly message
     if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
       const networkError = new Error("Network error: Unable to connect to the server");
       console.error("Network error details:", error);

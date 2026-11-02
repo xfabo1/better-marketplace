@@ -1,12 +1,8 @@
-// Item condition definitions
-
-// Condition option interface
 export interface ConditionOption {
   id: string;
   name: string; // Translation key
 }
 
-// Condition options available for filtering and selection
 export const conditions: ConditionOption[] = [
   { id: "all", name: "all_conditions" },
   { id: "new", name: "new" },

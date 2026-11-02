@@ -1,6 +1,3 @@
-// Categories and subcategories data structure for the application
-
-// Category interface
 export interface Category {
   id: string;
   name: string;
@@ -8,14 +5,12 @@ export interface Category {
   subcategories?: Subcategory[];
 }
 
-// Subcategory interface
 export interface Subcategory {
   id: string;
   name: string;
   href: string;
 }
 
-// Categories data structure
 export const categories: Category[] = [
   {
     id: "transport",
