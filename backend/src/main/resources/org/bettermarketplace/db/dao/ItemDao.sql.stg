@@ -70,7 +70,7 @@ deleteItem(id) ::= <<
   WHERE id=:id
 >>
 
-searchItems(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, pageSize, orderBy, cursorOperator) ::= <<
+searchItems(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMeterDistance, lastPrice, lastUpdated, condition, category, subcategory, pageSize, orderBy, cursorOperator) ::= <<
    SELECT *
    FROM item
    WHERE TRUE
@@ -86,6 +86,8 @@ searchItems(longitude, latitude, minPrice, maxPrice, country, textSearch, maxMet
    )
    <endif>
    <if(condition)>AND condition = :condition<endif>
+   <if(category)>AND category = :category<endif>
+   <if(subcategory)>AND subcategory = :subcategory<endif>
    <if(lastPrice)>AND price <cursorOperator> :lastPrice<endif>
    <if(lastUpdated)>AND updated_at <cursorOperator> :lastUpdated<endif>
    ORDER BY <orderBy>

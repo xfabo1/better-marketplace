@@ -90,6 +90,8 @@ public class ItemControllerTest {
 						.param("minPrice", "100")
 						.param("maxPrice", "2000")
 						.param("condition", "used_good")
+						.param("category", "transport")
+						.param("subcategory", "cars")
 						.param("sort", "price_asc"))
 				.andExpect(status().isOk());
 
@@ -98,6 +100,8 @@ public class ItemControllerTest {
 				.returns(100.0, SearchFilter::minPrice)
 				.returns(2000.0, SearchFilter::maxPrice)
 				.returns("used_good", SearchFilter::condition)
+				.returns("transport", SearchFilter::category)
+				.returns("cars", SearchFilter::subcategory)
 				.returns(Sorting.PRICE_ASC, SearchFilter::sorting);
 	}
 
