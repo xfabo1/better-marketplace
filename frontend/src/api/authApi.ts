@@ -40,16 +40,8 @@ export async function registerUser(userData: {
   username: string;
   email: string;
   password: string;
-  country: string;
-  displayItemsFromOtherCountry: boolean;
 }) {
   try {
-    
-    const requestData = {
-      ...userData,
-      country: userData.country.toUpperCase()
-    };
-    
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: {
@@ -57,7 +49,7 @@ export async function registerUser(userData: {
       },
       credentials: 'include',
       mode: 'cors',
-      body: JSON.stringify(requestData),
+      body: JSON.stringify(userData),
     });
 
     if (!response.ok) {

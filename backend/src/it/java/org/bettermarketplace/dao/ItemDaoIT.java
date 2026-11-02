@@ -32,9 +32,7 @@ public class ItemDaoIT extends PostgisTest {
 	private static final RegisterUserDto USER = RegisterUserDto.builder()
 			.username("filda")
 			.email(EMAIL)
-			.country(Country.CZ)
 			.password("password")
-			.displayItemsFromOtherCountry(false)
 			.build();
 
 	private static final Location LOCATION = Location.builder()
@@ -77,7 +75,7 @@ public class ItemDaoIT extends PostgisTest {
 				.imageUrl(IMAGE_URL)
 				.phoneNumber(PHONE).build();
 
-		var id = itemDao.insertItem(item, userId, 30.0, 30.1, "CZ");
+		var id = itemDao.insertItem(item, userId, 30.0, 30.1);
 
 		var itemDbo = itemDao.findItem(id);
 
@@ -110,7 +108,7 @@ public class ItemDaoIT extends PostgisTest {
 				.condition("new")
 				.phoneNumber(PHONE).build();
 
-		var id = itemDao.insertItem(item, userId, 30.0, 30.1, "CZ");
+		var id = itemDao.insertItem(item, userId, 30.0, 30.1);
 		var itemDbo = itemDao.findItem(id);
 
 		assertThat(itemDbo).isPresent();
@@ -133,7 +131,7 @@ public class ItemDaoIT extends PostgisTest {
 
 		itemDao.updateItem(updateItem.name(), updateItem.description(), updateItem.currency(), updateItem.price(),
 				updateItem.locationId(), updateItem.imageUrl(), updateItem.email(), updateItem.phoneNumber(), null,
-				null, null, id);
+				null, id);
 
 		var updatedItem = itemDao.findItem(id);
 

@@ -26,6 +26,7 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [redirectUrl, setRedirectUrl] = useState("/");
+  const [justRegistered, setJustRegistered] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -33,6 +34,7 @@ export default function LoginPage() {
     if (redirect) {
       setRedirectUrl(redirect);
     }
+    setJustRegistered(params.get("registered") === "true");
   }, []);
 
   useEffect(() => {
@@ -156,6 +158,12 @@ export default function LoginPage() {
                 />
               </div>
             </div>
+
+            {justRegistered && !error && (
+              <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md text-sm">
+                {t("registration_success")}
+              </div>
+            )}
 
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-md p-4">

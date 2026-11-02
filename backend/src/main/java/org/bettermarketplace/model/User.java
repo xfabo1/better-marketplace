@@ -17,8 +17,6 @@ public class User {
 	private String username;
 	private String email;
 	private String password;
-	private Country country;
-	private boolean displayItemsFromOtherCountry;
 	private Instant createdAt;
 	private Instant updatedAt;
 }

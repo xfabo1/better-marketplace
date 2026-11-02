@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class LocationCronJob {
 
-	private static final String SLOVAKIA_REFINE = "country_code:\"SK\"";
 	private static final String CZECHIA_REFINE = "country_code:\"CZ\"";
 
 	private LocationService locationService;
@@ -20,7 +19,6 @@ public class LocationCronJob {
 
 	@Scheduled(cron = "0 0 0 * * SUN")
 	public void fetchAllPostalCodes() {
-		locationService.processPostalCodes(SLOVAKIA_REFINE);
 		locationService.processPostalCodes(CZECHIA_REFINE);
 	}
 }

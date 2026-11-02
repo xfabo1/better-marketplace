@@ -32,9 +32,9 @@ class ItemServiceTest {
 	void insertItem_coordinates_passedToDaoInItsOrder() {
 		var dto = CreateItemDto.builder().name("Bike").build();
 
-		itemService.insertItem(dto, 1L, BRNO_LONGITUDE, BRNO_LATITUDE, "CZ");
+		itemService.insertItem(dto, 1L, BRNO_LONGITUDE, BRNO_LATITUDE);
 
-		verify(itemDao).insertItem(dto, 1L, BRNO_LATITUDE, BRNO_LONGITUDE, "CZ");
+		verify(itemDao).insertItem(dto, 1L, BRNO_LATITUDE, BRNO_LONGITUDE);
 	}
 
 	@Test

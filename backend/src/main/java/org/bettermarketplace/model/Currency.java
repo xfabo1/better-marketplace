@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum Currency {
-	CZK, EUR;
+	CZK;
 
 	@JsonCreator
 	public static Optional<Currency> fromString(String value) {

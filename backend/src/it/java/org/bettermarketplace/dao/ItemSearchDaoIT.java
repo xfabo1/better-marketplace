@@ -52,16 +52,6 @@ public class ItemSearchDaoIT extends PostgisTest {
 			.region("Praha")
 			.build();
 
-	private static final Location BRATISLAVA_LOCATION = Location.builder()
-			.city("Bratislava")
-			.countryCode(Country.SK)
-			.placeName("Bratislava Test Location")
-			.latitude(48.1486)
-			.longitude(17.1077)
-			.postalCode("81101")
-			.region("Bratislavský kraj")
-			.build();
-
 	@Autowired
 	private LocationDao locationDao;
 	@Autowired
@@ -72,16 +62,14 @@ public class ItemSearchDaoIT extends PostgisTest {
 	private Long userId;
 	private Long brnoLocationId;
 	private Long pragueLocationId;
-	private Long bratislavaLocationId;
 	private final List<Long> createdItemIds = new ArrayList<>();
 
 	@BeforeAll
 	public void setUp() {
-		RegisterUserDto testUser = new RegisterUserDto("testuser", USER_EMAIL, "password123", true, Country.CZ);
+		RegisterUserDto testUser = new RegisterUserDto("testuser", USER_EMAIL, "password123");
 		userId = userDao.insertUser(testUser, "password123");
 		brnoLocationId = locationDao.insertLocation(BRNO_LOCATION);
 		pragueLocationId = locationDao.insertLocation(PRAGUE_LOCATION);
-		bratislavaLocationId = locationDao.insertLocation(BRATISLAVA_LOCATION);
 	}
 
 	@AfterEach
@@ -196,23 +184,6 @@ public class ItemSearchDaoIT extends PostgisTest {
 		assertThat(results).hasSize(2);
 		assertThat(results.get(0).price()).isEqualByComparingTo(BigDecimal.valueOf(300));
 		assertThat(results.get(1).price()).isEqualByComparingTo(BigDecimal.valueOf(150));
-	}
-
-	@Test
-	public void searchItems_priceAsc_withCountryFilter_returnsFilteredItems() {
-		createTestItem("CZ Item 1", BigDecimal.valueOf(100), brnoLocationId, "CZ");
-		createTestItem("CZ Item 2", BigDecimal.valueOf(200), pragueLocationId, "CZ");
-		createTestItem("SK Item", BigDecimal.valueOf(150), bratislavaLocationId, "SK");
-
-		List<ItemDbo> results = itemDao.searchItems(ItemSearchQuery.builder()
-				.sorting(Sorting.PRICE_ASC)
-				.country("CZ")
-				.pageSize(10)
-				.build());
-
-		assertThat(results).hasSize(2);
-		assertThat(results.get(0).name()).isEqualTo("CZ Item 1");
-		assertThat(results.get(1).name()).isEqualTo("CZ Item 2");
 	}
 
 	@Test
@@ -535,39 +506,20 @@ public class ItemSearchDaoIT extends PostgisTest {
 	private void createCategorizedItem(String name, String category, String subcategory) {
 		CreateItemDto item = new CreateItemDto(name, "Test description for " + name, Currency.CZK,
 				BigDecimal.valueOf(100), brnoLocationId, IMAGE_URL, USER_EMAIL, PHONE, category, subcategory, "new");
-		createdItemIds.add(itemDao.insertItem(item, userId, BRNO_LOCATION.getLatitude(), BRNO_LOCATION.getLongitude(),
-				"CZ"));
+		createdItemIds.add(itemDao.insertItem(item, userId, BRNO_LOCATION.getLatitude(),
+				BRNO_LOCATION.getLongitude()));
 	}
 
 	private void createTestItem(String name, BigDecimal price, Long locationId) {
-		createTestItem(name, "Test description for " + name, price, locationId, "CZ");
-	}
-
-	private void createTestItem(String name, BigDecimal price, Long locationId, String country) {
-		createTestItem(name, "Test description for " + name, price, locationId, country);
+		createTestItem(name, "Test description for " + name, price, locationId);
 	}
 
 	private void createTestItem(String name, String description, BigDecimal price, Long locationId) {
-		createTestItem(name, description, price, locationId, "CZ");
-	}
-
-	private void createTestItem(String name, String description, BigDecimal price, Long locationId, String country) {
 		CreateItemDto item = new CreateItemDto(name, description, Currency.CZK, price, locationId, IMAGE_URL,
 				USER_EMAIL, PHONE, null, null, "new");
 
-		double latitude, longitude;
-		if (locationId.equals(brnoLocationId)) {
-			latitude = BRNO_LOCATION.getLatitude();
-			longitude = BRNO_LOCATION.getLongitude();
-		} else if (locationId.equals(pragueLocationId)) {
-			latitude = PRAGUE_LOCATION.getLatitude();
-			longitude = PRAGUE_LOCATION.getLongitude();
-		} else {
-			latitude = BRATISLAVA_LOCATION.getLatitude();
-			longitude = BRATISLAVA_LOCATION.getLongitude();
-		}
-
-		Long itemId = itemDao.insertItem(item, userId, latitude, longitude, country);
+		var location = locationId.equals(brnoLocationId) ? BRNO_LOCATION : PRAGUE_LOCATION;
+		Long itemId = itemDao.insertItem(item, userId, location.getLatitude(), location.getLongitude());
 		createdItemIds.add(itemId);
 	}
 } 
