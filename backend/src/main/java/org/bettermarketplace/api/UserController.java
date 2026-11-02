@@ -1,7 +1,11 @@
 package org.bettermarketplace.api;
 
+import java.util.Objects;
+
 import org.bettermarketplace.api.dto.user.UserDto;
 import org.bettermarketplace.mapper.UserMapper;
+import org.bettermarketplace.security.CookieUtil;
+import org.bettermarketplace.security.TokenService;
 import org.bettermarketplace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,6 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Validated
 @RestController
 @RequestMapping("/v1/users")
@@ -21,14 +27,21 @@ public class UserController {
 	private static final UserMapper MAPPER = UserMapper.INSTANCE;
 
 	private final UserService userService;
+	private final TokenService tokenService;
 
 	@Autowired
-	public UserController(UserService userService) {
+	public UserController(UserService userService, TokenService tokenService) {
 		this.userService = userService;
+		this.tokenService = tokenService;
 	}
 
 	@DeleteMapping(value = "/user/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
+	public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id, HttpServletRequest request) {
+		var userAuthDetails = tokenService.getUserDetails(CookieUtil.extractTokenFromCookie(request));
+		if (userAuthDetails == null || !Objects.equals(userAuthDetails.getUserId(), id)) {
+			return ResponseEntity.status(403).build();
+		}
+
 		userService.deleteUser(id);
 		return ResponseEntity.ok().build();
 	}

@@ -15,6 +15,7 @@ import org.bettermarketplace.config.ObjectMapperConfiguration;
 import org.bettermarketplace.config.TestSecurityConfig;
 import org.bettermarketplace.db.entity.UserDbo;
 import org.bettermarketplace.model.Country;
+import org.bettermarketplace.security.TokenService;
 import org.bettermarketplace.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +42,8 @@ public class UserControllerTest {
 
 	@MockitoBean
 	private UserService userService;
+	@MockitoBean
+	private TokenService tokenService;
 
 	@Test
 	void getUser_validRequest_userReturned() throws Exception {
