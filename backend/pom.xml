@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.6</version>
+        <version>3.5.16</version>
         <relativePath/>
     </parent>
     <groupId>org</groupId>
@@ -14,17 +14,16 @@
     <name>better-marketplace</name>
     <description>better-marketplace</description>
     <properties>
-        <java.version>23</java.version>
-        <spring-boot.version>3.4.6</spring-boot.version>
+        <java.version>25</java.version>
+        <spring-boot.version>3.5.16</spring-boot.version>
         <jdbi.version>3.49.4</jdbi.version>
-        <lombok.version>1.18.36</lombok.version>
+        <lombok.version>1.18.48</lombok.version>
         <postgresql.version>42.7.4</postgresql.version>
-        <jackson.version>2.18.2</jackson.version>
         <testcontainers.version>1.20.4</testcontainers.version>
-        <liquibase.version>4.30.0</liquibase.version>
         <h2.version>2.1.214</h2.version>
-        <feign.version>4.2.0</feign.version>
-        <resilience4j.version>3.2.0</resilience4j.version>
+        <!-- Spring Cloud 2025.0.x, the release train for Spring Boot 3.5 -->
+        <feign.version>4.3.3</feign.version>
+        <resilience4j.version>3.3.3</resilience4j.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     </properties>
@@ -100,7 +99,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
