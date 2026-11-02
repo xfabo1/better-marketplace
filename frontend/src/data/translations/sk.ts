@@ -1,4 +1,3 @@
-// Slovak translations
 export const skTranslations = {
   // Header
   "browse": "Prehliadať",

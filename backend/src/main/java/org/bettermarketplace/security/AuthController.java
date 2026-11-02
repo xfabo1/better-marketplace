@@ -67,8 +67,7 @@ public class AuthController {
 		authCookie.setHttpOnly(true);
 		authCookie.setSecure(false); // Set to true in production with HTTPS
 		authCookie.setPath("/");
-		authCookie.setAttribute("SameSite", "Lax"); // Changed from Strict to Lax for better cross-origin experience
-		// Cookie lives exactly as long as the token behind it
+		authCookie.setAttribute("SameSite", "Lax");
 		authCookie.setMaxAge((int) tokenService.getTokenTtl().toSeconds());
 		response.addCookie(authCookie);
 
@@ -80,16 +79,14 @@ public class AuthController {
 		String token = extractTokenFromCookie(request);
 
 		if (StringUtils.hasText(token)) {
-			// Revoke token on server side
 			tokenService.revokeToken(token);
 		}
 
-		// Clear the cookie
 		Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, null);
 		authCookie.setHttpOnly(true);
 		authCookie.setSecure(false); // Set to true in production with HTTPS
 		authCookie.setPath("/");
-		authCookie.setMaxAge(0); // Set age to 0 to delete the cookie
+		authCookie.setMaxAge(0);
 		response.addCookie(authCookie);
 
 		return ResponseEntity.ok().build();
@@ -112,13 +109,12 @@ public class AuthController {
 
 			return ResponseEntity.ok("registered");
 		} catch (Exception e) {
-			// Log the details, but never send them to the client (they can contain SQL / DB internals)
+			// Never send the exception message to the client, it can contain SQL / DB internals
 			log.error("Registration failed", e);
 			return ResponseEntity.status(500).body("registration_error");
 		}
 	}
 
-	/** Answers invalid login / register bodies with a short code like {@code invalid_password}. */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<String> handleValidation(MethodArgumentNotValidException e) {
 		var field = e.getBindingResult().getFieldErrors().stream()

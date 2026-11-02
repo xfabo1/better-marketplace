@@ -13,7 +13,6 @@ export default function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const { t } = useLanguage();
 
-  // Only run client-side
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -73,7 +72,6 @@ export default function Header() {
                   {t('my_listings')}
                 </Link>
                 
-                {/* User dropdown menu */}
                 <div className="relative ml-3">
                   <div>
                     <button

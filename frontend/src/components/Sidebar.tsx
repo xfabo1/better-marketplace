@@ -11,7 +11,7 @@ export default function Sidebar() {
   const { t } = useLanguage();
 
   const toggleCategory = (categoryId: string, e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation
+    e.preventDefault();
     if (expandedCategory === categoryId) {
       setExpandedCategory(null);
     } else {
@@ -62,7 +62,6 @@ export default function Sidebar() {
                   </span>
                 </button>
                 
-                {/* Subcategories */}
                 {expandedCategory === category.id && category.subcategories && (
                   <div className="ml-4 mt-1 pl-2 border-l border-gray-200">
                     {category.subcategories.map((subcategory) => (
