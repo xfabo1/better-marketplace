@@ -103,7 +103,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return;
       }
       
-      const response = await loginUser(email, password);
+      await loginUser(email, password);
       
       const loggedInUser = {
         name: email.split('@')[0], // Temporary name from email

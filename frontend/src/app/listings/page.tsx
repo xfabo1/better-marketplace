@@ -14,21 +14,22 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 const ITEMS_PER_PAGE = 9;
+const MAX_FETCHED_ITEMS = 100;
+
+const NO_IMAGE_URL = "https://placehold.co/600x400/e6f7ef/10b981/png?text=No+Image";
 
 interface Item {
   id: number;
   name: string;
   price: number;
   currency: string;
-  description: string;
-  imageUrl: string;
-  locationId: number;
-  creatorId: number;
+  imageUrl: string | null;
+  condition: string;
+  createdAt: string;
   // Frontend specific fields that we'll add after fetching
   location?: string;
   postalCode?: string;
   conditionId?: string;
-  createdAt?: string;
   title?: string;
 }
 
@@ -55,8 +56,6 @@ function ListingsContent() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [listings, setListings] = useState<Item[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (searchParams) {
@@ -77,35 +76,44 @@ function ListingsContent() {
   }, [searchParams]);
 
   useEffect(() => {
+    // Ignores responses that arrive after the filters have changed again, so an older, slower request cannot
+    // overwrite the results of a newer one
+    let isCurrent = true;
+
     const fetchItems = async () => {
       try {
-        setIsLoading(true);
-        setError(null);
-
-        const items = await getItems();
+        const items = await getItems({
+          q: searchQuery,
+          minPrice,
+          maxPrice,
+          condition: selectedCondition === "all" ? undefined : selectedCondition,
+          sort: sortBy,
+          pageSize: MAX_FETCHED_ITEMS,
+        });
+        if (!isCurrent) return;
 
         const transformedItems = items.map((item: Item) => ({
           ...item,
           title: item.name,
-          // For now, use placeholder values for fields not available in the backend
+          conditionId: item.condition,
+          // TODO: the list endpoint does not return the location yet
           location: "Unknown",
           postalCode: "000 00",
-          conditionId: "used",
-          createdAt: new Date().toISOString(),
         }));
 
         setListings(transformedItems);
       } catch (error) {
-        console.error("Error fetching items:", error);
-        setError("Failed to load listings. Please try again later.");
-      } finally {
-        setIsLoading(false);
+        if (isCurrent) console.error("Error fetching items:", error);
       }
     };
 
     fetchItems();
-  }, []);
+    return () => {
+      isCurrent = false;
+    };
+  }, [searchQuery, minPrice, maxPrice, selectedCondition, sortBy]);
 
+  // Search, condition, price and sorting are done by the backend; location and date are still filtered here
   const filteredListings = listings.filter(listing => {
     if (locationQuery && listing.location) {
       const locationMatches = listing.location.toLowerCase().includes(locationQuery.toLowerCase());
@@ -113,22 +121,6 @@ function ListingsContent() {
       if (!locationMatches && !postalCodeMatches) {
         return false;
       }
-    }
-
-    if (selectedCondition !== "all" && listing.conditionId !== selectedCondition) {
-      return false;
-    }
-
-    if (searchQuery && !listing.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
-    }
-
-    if (minPrice && listing.price < parseInt(minPrice)) {
-      return false;
-    }
-
-    if (maxPrice && listing.price > parseInt(maxPrice)) {
-      return false;
     }
 
     if (dateFilter !== "all" && listing.createdAt) {
@@ -161,23 +153,8 @@ function ListingsContent() {
     return true;
   });
 
-  const sortedListings = [...filteredListings].sort((a, b) => {
-    switch (sortBy) {
-      case "newest":
-        return new Date(b.createdAt || "").getTime() - new Date(a.createdAt || "").getTime();
-      case "oldest":
-        return new Date(a.createdAt || "").getTime() - new Date(b.createdAt || "").getTime();
-      case "price_asc":
-        return a.price - b.price;
-      case "price_desc":
-        return b.price - a.price;
-      default:
-        return 0;
-    }
-  });
-
-  const totalPages = Math.ceil(sortedListings.length / ITEMS_PER_PAGE);
-  const paginatedListings = sortedListings.slice(
+  const totalPages = Math.ceil(filteredListings.length / ITEMS_PER_PAGE);
+  const paginatedListings = filteredListings.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -535,7 +512,7 @@ function ListingsContent() {
                     <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
                       <div className="relative h-32 w-full">
                         <Image
-                          src={listing.imageUrl}
+                          src={listing.imageUrl || NO_IMAGE_URL}
                           alt={listing.title || "Listing"}
                           fill
                           sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"

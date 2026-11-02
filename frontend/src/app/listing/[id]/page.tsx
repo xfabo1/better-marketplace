@@ -72,7 +72,6 @@ export default function ListingDetailPage() {
   const { t } = useLanguage();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showContactInfo, setShowContactInfo] = useState(false);
-  const [item, setItem] = useState<Item | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -87,8 +86,7 @@ export default function ListingDetailPage() {
         setError(null);
         
         const itemData = await getItemById(id.toString());
-        setItem(itemData);
-        
+
         setListing({
           ...itemData,
           title: itemData.name,
@@ -111,7 +109,7 @@ export default function ListingDetailPage() {
             "https://placehold.co/800x600/e6f7ef/10b981/png?text=Placeholder+3",
           ],
         });
-      } catch (error) {
+      } catch {
         setError("Failed to load listing. Please try again later.");
       } finally {
         setIsLoading(false);

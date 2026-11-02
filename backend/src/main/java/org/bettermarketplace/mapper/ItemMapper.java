@@ -2,6 +2,8 @@ package org.bettermarketplace.mapper;
 
 import org.bettermarketplace.api.dto.item.CreateItemDto;
 import org.bettermarketplace.api.dto.item.ItemFullDetailsDto;
+import org.bettermarketplace.api.dto.item.PreviewItemDto;
+import org.bettermarketplace.db.entity.ItemDbo;
 import org.bettermarketplace.model.Item;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,4 +16,6 @@ public interface ItemMapper {
 
 	@Mapping(target = "creatorId", source = "userIdParam")
 	Item from(CreateItemDto createItemDto, Long userIdParam);
+
+	PreviewItemDto toPreview(ItemDbo itemDbo);
 }
