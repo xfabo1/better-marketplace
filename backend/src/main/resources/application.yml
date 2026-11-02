@@ -15,7 +15,7 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     username: marketplace-user
-    password: changemelater
+    password: ${DB_PASSWORD:changemelater}
     url: jdbc:postgresql://localhost:5432/marketplace
   openfeign:
     client:
