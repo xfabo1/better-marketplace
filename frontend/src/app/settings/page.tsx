@@ -4,14 +4,13 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { countries } from "@/data/countries";
 import { useAuth } from "@/contexts/AuthContext";
 
 function SettingsContent() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<"profile" | "security">("profile");
   const { t } = useLanguage();
-  const { user, updateUserSettings } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     const tab = searchParams.get("tab");
@@ -25,19 +24,7 @@ function SettingsContent() {
   const [userData, setUserData] = useState({
     email: "jan.novak@example.com",
     phone: "+420 123 456 789",
-    country: "CZ",
-    showCrossCountryListings: true,
-    currency: "CZK",
   });
-
-  const handleProfileSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    updateUserSettings({
-      country: userData.country as "CZ" | "SK",
-      showCrossCountryListings: userData.showCrossCountryListings,
-    });
-    alert(t("profile_updated"));
-  };
 
   useEffect(() => {
     if (user) {
@@ -45,11 +32,6 @@ function SettingsContent() {
         ...prevState,
         email: user.email || prevState.email,
         phone: user.phone || prevState.phone,
-        country: user.country || prevState.country,
-        showCrossCountryListings:
-          user.showCrossCountryListings !== undefined
-            ? user.showCrossCountryListings
-            : prevState.showCrossCountryListings,
       }));
     }
   }, [user]);
@@ -95,7 +77,7 @@ function SettingsContent() {
             {activeTab === "profile" && (
               <div>
                 <h2 className="text-xl font-medium text-gray-900 mb-6">{t("personal_info")}</h2>
-                <form onSubmit={handleProfileSubmit} className="space-y-6 max-w-2xl">
+                <div className="space-y-6 max-w-2xl">
                   <div className="mb-4">
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                       {t("email")}
@@ -125,62 +107,7 @@ function SettingsContent() {
                     />
                     <p className="mt-1 text-xs text-gray-500">{t("phone_cannot_change")}</p>
                   </div>
-
-                  <div className="mb-4">
-                    <label
-                      htmlFor="country"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      {t("country")}
-                    </label>
-                    <select
-                      id="country"
-                      className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
-                      value={userData.country}
-                      onChange={e => setUserData({ ...userData, country: e.target.value })}
-                    >
-                      {countries.map(country => (
-                        <option key={country.value} value={country.value}>
-                          {t(country.label)}
-                        </option>
-                      ))}
-                    </select>
-                    <p className="mt-1 text-xs text-gray-500">{t("location_restricted")}</p>
-                  </div>
-
-                  <div className="mb-4">
-                    <div className="flex items-start">
-                      <div className="flex items-center h-5">
-                        <input
-                          id="showCrossCountryListings"
-                          name="showCrossCountryListings"
-                          type="checkbox"
-                          className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          checked={userData.showCrossCountryListings}
-                          onChange={e =>
-                            setUserData({ ...userData, showCrossCountryListings: e.target.checked })
-                          }
-                        />
-                      </div>
-                      <div className="ml-3">
-                        <label htmlFor="showCrossCountryListings" className="text-sm text-gray-700">
-                          {userData.country === "cz"
-                            ? t("show_slovak_listings")
-                            : t("show_czech_listings")}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-4">
-                    <button
-                      type="submit"
-                      className="w-full sm:w-auto inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
-                    >
-                      {t("save_changes")}
-                    </button>
-                  </div>
-                </form>
+                </div>
               </div>
             )}
 

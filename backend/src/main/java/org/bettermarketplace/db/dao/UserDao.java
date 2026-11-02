@@ -46,8 +46,6 @@ public interface UserDao {
 	@DefineNamedBindings
 	int updateUser(
 			@Bind("password") String password,
-			@Bind("displayItemsFromOtherCountry") Boolean displayItemsFromOtherCountry,
-			@Bind("country") String country,
 			@Bind("id") Long id
 	);
 }

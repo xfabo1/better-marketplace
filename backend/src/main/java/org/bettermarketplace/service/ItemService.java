@@ -42,13 +42,13 @@ public class ItemService {
 				.build());
 	}
 
-	public Long insertItem(CreateItemDto createItemDto, Long id, double longitude, double latitude, String country) {
-		return itemDao.insertItem(createItemDto, id, latitude, longitude, country);
+	public Long insertItem(CreateItemDto createItemDto, Long id, double longitude, double latitude) {
+		return itemDao.insertItem(createItemDto, id, latitude, longitude);
 	}
 
-	public void updateItem(UpdateItemDto updateItemDto, Long id, String country, Double longitude, Double latitude) {
+	public void updateItem(UpdateItemDto updateItemDto, Long id, Double longitude, Double latitude) {
 		itemDao.updateItem(updateItemDto.name(), updateItemDto.description(), updateItemDto.currency(),
 				updateItemDto.price(), updateItemDto.locationId(), updateItemDto.imageUrl(), updateItemDto.email(),
-				updateItemDto.phoneNumber(), country, longitude, latitude, id);
+				updateItemDto.phoneNumber(), longitude, latitude, id);
 	}
 }

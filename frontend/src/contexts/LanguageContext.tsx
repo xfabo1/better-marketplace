@@ -28,7 +28,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setIsClient(true);
     
     const storedLanguage = localStorage.getItem('language') as Language | null;
-    if (storedLanguage && ['cs', 'sk', 'en'].includes(storedLanguage)) {
+    if (storedLanguage && ['cs', 'en'].includes(storedLanguage)) {
       setLanguageState(storedLanguage);
     }
   }, []);

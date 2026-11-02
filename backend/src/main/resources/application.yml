@@ -10,6 +10,8 @@ logging:
 spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+    # "dev" also loads the sample users and items; set LIQUIBASE_CONTEXTS=prod in production
+    contexts: ${LIQUIBASE_CONTEXTS:dev}
   application:
     name: better-marketplace
   datasource:

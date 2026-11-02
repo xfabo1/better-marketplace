@@ -9,19 +9,13 @@ type User = {
   name: string;
   email: string;
   phone: string;
-  country: "CZ" | "SK";
-  showCrossCountryListings: boolean;
 } | null;
 
 type AuthContextType = {
   user: User;
   isAuthenticated: boolean;
-  login: (email: string, password?: string, country?: "CZ" | "SK", showCrossCountryListings?: boolean) => Promise<void>;
+  login: (email: string, password?: string) => Promise<void>;
   logout: () => void;
-  updateUserSettings: (settings: { 
-    country?: "CZ" | "SK", 
-    showCrossCountryListings?: boolean
-  }) => void;
   isLoading: boolean;
   handleAuthError: (error: unknown) => void;
 };
@@ -31,7 +25,6 @@ const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   login: async () => {},
   logout: () => {},
-  updateUserSettings: () => {},
   isLoading: true,
   handleAuthError: () => {},
 });
@@ -76,7 +69,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const login = async (email: string, password?: string, country?: "CZ" | "SK", showCrossCountryListings?: boolean, currency?: "CZK" | "EUR") => {
+  const login = async (email: string, password?: string) => {
     setIsLoading(true);
     
     try {
@@ -86,10 +79,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
           name: "Jan Novák",
           email: email,
           phone: "+420 123 456 789",
-          location: "Praha",
-          country: country || "CZ",
-          showCrossCountryListings: showCrossCountryListings !== undefined ? showCrossCountryListings : true,
-          currency: currency || (country === "SK" ? "EUR" : "CZK")
         };
         
         if (isClient) {
@@ -109,8 +98,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         name: email.split('@')[0], // Temporary name from email
         email: email,
         phone: "",
-        country: country || "CZ",
-        showCrossCountryListings: showCrossCountryListings !== undefined ? showCrossCountryListings : true,
       };
       
       if (isClient) {
@@ -154,35 +141,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const updateUserSettings = (settings: { 
-    country?: "CZ" | "SK", 
-    showCrossCountryListings?: boolean
-  }) => {
-    if (!user) return;
-
-    try {
-      if (isClient) {
-        const updatedUser = {
-          ...user,
-          ...settings
-        };
-        
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        
-        setUser(updatedUser);
-      }
-    } catch (error) {
-      console.error('Error updating user settings:', error);
-      handleAuthError(error);
-    }
-  };
-
   const value = {
     user,
     isAuthenticated: !!user,
     login,
     logout,
-    updateUserSettings,
     isLoading,
     handleAuthError,
   };

@@ -18,7 +18,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 public class LocationServiceIT extends PostgisTest {
 
-	private static final String REFINE = "country_code:\"SK\"";
+	private static final String REFINE = "country_code:\"CZ\"";
 	private static final List<PostalCodeDto> CLIENT_RESPONSE = readResource("/json/postal_codes.json",
 			new TypeReference<>() {});
 
