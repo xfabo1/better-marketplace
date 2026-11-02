@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { formatDate } from "@/utils/CommonUtils";
+import { formatDate } from "@/lib/format";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const mockUserData = {

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { categories } from "@/data/categories";
+import { categories } from "@/constants/categories";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Sidebar() {
@@ -68,7 +68,7 @@ export default function Sidebar() {
                       subcategory && (
                         <Link
                           key={subcategory.id || `subcategory-${Math.random()}`}
-                          href={subcategory.href || '#'}
+                          href={subcategory.href}
                           className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
                         >
                           {t(subcategory.id)}
