@@ -1,4 +1,3 @@
-// Czech translations
 export const csTranslations = {
   // Header
   "browse": "Procházet",
@@ -200,14 +199,9 @@ export const csTranslations = {
   "current_password": "Současné heslo",
   "new_password": "Nové heslo",
   "confirm_password": "Potvrdit nové heslo",
-  "save_changes": "Uložit změny",
-  "profile_updated": "Profil byl úspěšně aktualizován!",
   "password_changed": "Heslo bylo úspěšně změněno!",
   "email_cannot_change": "Email nelze změnit",
   "phone_cannot_change": "Telefonní číslo nelze změnit",
-  "location_restricted": "Můžete vybrat pouze Českou republiku nebo Slovensko",
-  "czech_republic": "Česká republika",
-  "slovakia": "Slovensko",
   
   // My Listings page
   "new_listing": "Nový inzerát",
@@ -264,6 +258,12 @@ export const csTranslations = {
   "delivery_options": "Možnosti doručení",
   "payment_options": "Možnosti platby",
   "similar_items": "Podobné položky",
+  "show_contact": "Zobrazit kontakt",
+  "hide_contact": "Skrýt kontakt",
+  "loading_listing": "Načítání inzerátu...",
+  "listing_not_found": "Inzerát nenalezen",
+  "listing_error": "Inzerát se nepodařilo načíst. Zkuste to prosím později.",
+  "back_to_listings": "Zpět na inzeráty",
   "report_item": "Nahlásit inzerát",
   "share": "Sdílet",
   "favorite": "Přidat do oblíbených",
@@ -283,17 +283,8 @@ export const csTranslations = {
   "logging_in": "Přihlašování...",
   "registering": "Registrace...",
   "or_continue_with": "Nebo pokračovat s",
-  "country": "Země",
-  "show_czech_listings": "Zobrazovat inzeráty z České republiky",
-  "show_slovak_listings": "Zobrazovat inzeráty ze Slovenska",
-  "cross_country_listings_info": "Toto nastavení můžete kdykoliv změnit v profilu. Ovlivňuje, zda uvidíte inzeráty z druhé země.",
-  "yes": "Ano",
-  "no": "Ne",
   "preferred_currency": "Preferovaná měna",
-  "currency": "Měna",
   "currency_info": "Tato měna bude použita při vytváření vašich inzerátů.",
-  "czech_koruna": "Česká koruna (Kč)",
-  "euro": "Euro (€)",
   
   // Authentication errors
   "invalid_credentials": "Nesprávné přihlašovací údaje",
@@ -301,6 +292,10 @@ export const csTranslations = {
   "email_already_used": "Tento email je již používán",
   "username_already_used": "Toto uživatelské jméno je již používáno",
   "registration_error": "Chyba při registraci",
+  "invalid_username_error": "Jméno musí mít 3 až 50 znaků",
+  "invalid_email_error": "Zadejte platnou e-mailovou adresu",
+  "invalid_password_error": "Heslo musí mít 8 až 72 znaků",
+  "registration_success": "Registrace byla dokončena. Nyní se můžete přihlásit.",
   "network_error": "Chyba připojení k serveru",
   "server_error": "Chyba serveru",
   "login_error": "Chyba při přihlášení",

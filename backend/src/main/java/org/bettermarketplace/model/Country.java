@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum Country {
-	SK, CZ;
+	CZ;
 
 	@JsonCreator
 	public static Optional<Country> fromString(String value) {

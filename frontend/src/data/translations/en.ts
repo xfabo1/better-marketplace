@@ -1,4 +1,3 @@
-// English translations
 export const enTranslations = {
   // Header
   "browse": "Browse",
@@ -200,14 +199,9 @@ export const enTranslations = {
   "current_password": "Current password",
   "new_password": "New password",
   "confirm_password": "Confirm new password",
-  "save_changes": "Save changes",
-  "profile_updated": "Profile was successfully updated!",
   "password_changed": "Password was successfully changed!",
   "email_cannot_change": "Email cannot be changed",
   "phone_cannot_change": "Phone number cannot be changed",
-  "location_restricted": "You can only select Czech Republic or Slovakia",
-  "czech_republic": "Czech Republic",
-  "slovakia": "Slovakia",
   
   // My Listings page
   "new_listing": "New Listing",
@@ -264,6 +258,12 @@ export const enTranslations = {
   "delivery_options": "Delivery Options",
   "payment_options": "Payment Options",
   "similar_items": "Similar Items",
+  "show_contact": "Show contact",
+  "hide_contact": "Hide contact",
+  "loading_listing": "Loading listing...",
+  "listing_not_found": "Listing not found",
+  "listing_error": "The listing could not be loaded. Please try again later.",
+  "back_to_listings": "Back to listings",
   "report_item": "Report Item",
   "share": "Share",
   "favorite": "Add to Favorites",
@@ -283,17 +283,8 @@ export const enTranslations = {
   "logging_in": "Logging in...",
   "registering": "Registering...",
   "or_continue_with": "Or continue with",
-  "country": "Country",
-  "show_czech_listings": "Show listings from Czech Republic",
-  "show_slovak_listings": "Show listings from Slovakia",
-  "cross_country_listings_info": "This setting can be changed anytime in your profile. It affects whether you see listings from the other country.",
-  "yes": "Yes",
-  "no": "No",
   "preferred_currency": "Preferred Currency",
-  "currency": "Currency",
   "currency_info": "This currency will be used when creating your listings.",
-  "czech_koruna": "Czech Koruna (Kč)",
-  "euro": "Euro (€)",
   
   // Authentication errors
   "invalid_credentials": "Invalid credentials",
@@ -301,6 +292,10 @@ export const enTranslations = {
   "email_already_used": "This email is already in use",
   "username_already_used": "This username is already in use",
   "registration_error": "Registration error",
+  "invalid_username_error": "Name must be 3 to 50 characters long",
+  "invalid_email_error": "Enter a valid e-mail address",
+  "invalid_password_error": "Password must be 8 to 72 characters long",
+  "registration_success": "Registration completed. You can now log in.",
   "network_error": "Network connection error",
   "server_error": "Server error",
   "login_error": "Login error",

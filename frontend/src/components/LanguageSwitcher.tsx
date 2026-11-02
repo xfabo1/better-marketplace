@@ -17,11 +17,6 @@ const languages: LanguageOption[] = [
     flag: 'CS'
   },
   {
-    code: 'sk',
-    name: 'Slovenčina',
-    flag: 'SK'
-  },
-  {
     code: 'en',
     name: 'English',
     flag: 'EN'
@@ -33,12 +28,10 @@ export default function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Set mounted to true when component mounts on the client
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Default to first language for server rendering
   const defaultLanguage = languages[0];
   
   // Only use the actual language state on the client to avoid hydration errors

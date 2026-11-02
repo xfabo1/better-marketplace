@@ -2,13 +2,11 @@
 
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categories } from "@/data/categories";
-import { formatDate } from "@/utils/CommonUtils";
+import { formatDate, formatPrice } from "@/lib/format";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-// Mock data for user's listings
 const mockListings = [
   {
     id: "1",
@@ -17,7 +15,7 @@ const mockListings = [
     category: "electronics",
     location: "Praha",
     postalCode: "110 00",
-    imageUrl: "https://placehold.co/600x400/3b82f6/ffffff?text=iPhone+12",
+    imageUrl: "https://placehold.co/600x400/3b82f6/ffffff/png?text=iPhone+12",
     createdAt: "2023-10-15",
     status: "active",
     condition: "Použité - jako nové",
@@ -30,7 +28,7 @@ const mockListings = [
     category: "furniture",
     location: "Brno",
     postalCode: "602 00",
-    imageUrl: "https://placehold.co/600x400/22c55e/ffffff?text=Sedačka",
+    imageUrl: "https://placehold.co/600x400/22c55e/ffffff/png?text=Sedačka",
     createdAt: "2023-09-28",
     status: "active",
     condition: "Použité - dobrý stav",
@@ -43,7 +41,7 @@ const mockListings = [
     category: "sport_hobby",
     location: "Ostrava",
     postalCode: "702 00",
-    imageUrl: "https://placehold.co/600x400/f59e0b/ffffff?text=Kolo",
+    imageUrl: "https://placehold.co/600x400/f59e0b/ffffff/png?text=Kolo",
     createdAt: "2023-08-10",
     status: "sold",
     condition: "Použité - velmi dobrý stav",
@@ -59,52 +57,6 @@ export default function MyListingsPage() {
     activeTab === 'active' ? listing.status === 'active' : listing.status === 'sold'
   );
   
-  // Add this helper function to map category slugs to proper translation keys
-  const getCategoryTranslationKey = (category: string): string => {
-    // Check if it's a main category
-    const mainCategory = categories.find(cat => cat.id === category);
-    if (mainCategory) {
-      return category;
-    }
-    
-    // Check if it's a subcategory
-    for (const cat of categories) {
-      if (cat.subcategories) {
-        const subcategory = cat.subcategories.find(subcat => subcat.id === category);
-        if (subcategory) {
-          return category;
-        }
-      }
-    }
-    
-    // Check if it's a slug that needs to be converted to id
-    const slugCategory = categories.find(cat => {
-      const slugPart = cat.href.split('/').pop();
-      return slugPart === category;
-    });
-    
-    if (slugCategory) {
-      return slugCategory.id;
-    }
-    
-    // Check if it's a subcategory slug
-    for (const cat of categories) {
-      if (cat.subcategories) {
-        const slugSubcategory = cat.subcategories.find(subcat => {
-          const slugPart = subcat.href.split('/').pop();
-          return slugPart === category;
-        });
-        
-        if (slugSubcategory) {
-          return slugSubcategory.id;
-        }
-      }
-    }
-    
-    // If not found, return the original category
-    return category;
-  };
-
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Header />
@@ -172,11 +124,11 @@ export default function MyListingsPage() {
                         {listing.title}
                       </h3>
                       <span className="text-lg font-medium text-primary">
-                        {listing.price.toLocaleString()} Kč
+                        {formatPrice(listing.price, "Kč")}
                       </span>
                     </div>
                     <div className="mt-2 flex items-center text-sm text-gray-500">
-                      <span>{t(getCategoryTranslationKey(listing.category))}</span>
+                      <span>{t(listing.category)}</span>
                       <span className="mx-2">•</span>
                       <span>{listing.location}, {listing.postalCode}</span>
                     </div>

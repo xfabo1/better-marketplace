@@ -3,15 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { conditions } from "@/data/conditions";
-
-// Date filter options
-const dateFilterOptions = [
-  { label: "all_dates", value: "all" },
-  { label: "today", value: "today" },
-  { label: "this_week", value: "week" },
-  { label: "this_month", value: "month" },
-];
+import { conditions } from "@/constants/conditions";
+import { dateFilterOptions } from "@/constants/dateFilterOptions";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
@@ -31,7 +24,6 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Build the query parameters
     const params = new URLSearchParams();
     
     if (searchQuery) params.append("q", searchQuery);
@@ -41,7 +33,6 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     if (minPrice) params.append("minPrice", minPrice);
     if (maxPrice) params.append("maxPrice", maxPrice);
     
-    // Redirect to the listings page with the filters
     const queryString = params.toString();
     router.push(`/listings${queryString ? `?${queryString}` : ''}`);
     

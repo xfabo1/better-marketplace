@@ -4,41 +4,43 @@ import { getItems } from "@/api/itemApi";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { categories } from "@/data/categories";
-import { conditions } from "@/data/conditions";
-import { dateFilterOptions } from "@/data/dateFilterOptions";
-import { sortOptions } from "@/data/sortOptions";
+import { NO_IMAGE_URL } from "@/constants/images";
+import { conditions } from "@/constants/conditions";
+import { dateFilterOptions } from "@/constants/dateFilterOptions";
+import { sortOptions } from "@/constants/sortOptions";
+import { formatDate, formatPrice } from "@/lib/format";
+import type { PreviewItem } from "@/types/item";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-// Items per page
 const ITEMS_PER_PAGE = 9;
+const MAX_FETCHED_ITEMS = 100;
 
-// Interface for Item from backend
-interface Item {
-  id: number;
-  name: string;
-  price: number;
-  currency: string;
-  description: string;
-  imageUrl: string;
-  locationId: number;
-  creatorId: number;
-  // Frontend specific fields that we'll add after fetching
+// A search result plus the fields the card shows that we'll add after fetching
+interface Listing extends PreviewItem {
   location?: string;
   postalCode?: string;
   conditionId?: string;
-  createdAt?: string;
   title?: string;
 }
 
+// useSearchParams() needs a Suspense boundary, otherwise the production build fails to prerender this page
 export default function ListingsPage() {
+  return (
+    <Suspense fallback={null}>
+      <ListingsContent />
+    </Suspense>
+  );
+}
+
+function ListingsContent() {
   const searchParams = useSearchParams();
+  const category = searchParams.get("category") ?? undefined;
+  const subcategory = searchParams.get("subcategory") ?? undefined;
   const { t } = useLanguage();
 
-  // Initialize state from URL parameters
   const [locationQuery, setLocationQuery] = useState("");
   const [selectedCondition, setSelectedCondition] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
@@ -48,11 +50,8 @@ export default function ListingsPage() {
   const [dateFilter, setDateFilter] = useState("all");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [listings, setListings] = useState<Item[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [listings, setListings] = useState<Listing[]>([]);
 
-  // Apply URL parameters on component mount
   useEffect(() => {
     if (searchParams) {
       const q = searchParams.get("q");
@@ -71,41 +70,48 @@ export default function ListingsPage() {
     }
   }, [searchParams]);
 
-  // Fetch items from backend
   useEffect(() => {
+    // Ignores responses that arrive after the filters have changed again, so an older, slower request cannot
+    // overwrite the results of a newer one
+    let isCurrent = true;
+
     const fetchItems = async () => {
       try {
-        setIsLoading(true);
-        setError(null);
+        const items = await getItems({
+          q: searchQuery,
+          minPrice,
+          maxPrice,
+          condition: selectedCondition === "all" ? undefined : selectedCondition,
+          category,
+          subcategory,
+          sort: sortBy,
+          pageSize: MAX_FETCHED_ITEMS,
+        });
+        if (!isCurrent) return;
 
-        const items = await getItems();
-
-        // Transform backend items to match frontend listing structure
-        const transformedItems = items.map((item: Item) => ({
+        const transformedItems = items.map(item => ({
           ...item,
           title: item.name,
-          // For now, use placeholder values for fields not available in the backend
-          location: "Unknown", // This should come from locationId
+          conditionId: item.condition,
+          // TODO: the list endpoint does not return the location yet
+          location: "Unknown",
           postalCode: "000 00",
-          conditionId: "used", // Default condition
-          createdAt: new Date().toISOString(), // Default to current date
         }));
 
         setListings(transformedItems);
       } catch (error) {
-        console.error("Error fetching items:", error);
-        setError("Failed to load listings. Please try again later.");
-      } finally {
-        setIsLoading(false);
+        if (isCurrent) console.error("Error fetching items:", error);
       }
     };
 
     fetchItems();
-  }, []);
+    return () => {
+      isCurrent = false;
+    };
+  }, [searchQuery, minPrice, maxPrice, selectedCondition, category, subcategory, sortBy]);
 
-  // Filter listings based on selected filters
+  // Search, condition, price and sorting are done by the backend; location and date are still filtered here
   const filteredListings = listings.filter(listing => {
-    // Filter by location (city name or postal code)
     if (locationQuery && listing.location) {
       const locationMatches = listing.location.toLowerCase().includes(locationQuery.toLowerCase());
       const postalCodeMatches = listing.postalCode?.includes(locationQuery) || false;
@@ -114,26 +120,6 @@ export default function ListingsPage() {
       }
     }
 
-    // Filter by condition
-    if (selectedCondition !== "all" && listing.conditionId !== selectedCondition) {
-      return false;
-    }
-
-    // Filter by search query
-    if (searchQuery && !listing.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
-    }
-
-    // Filter by price range
-    if (minPrice && listing.price < parseInt(minPrice)) {
-      return false;
-    }
-
-    if (maxPrice && listing.price > parseInt(maxPrice)) {
-      return false;
-    }
-
-    // Filter by date
     if (dateFilter !== "all" && listing.createdAt) {
       const today = new Date();
       const listingDate = new Date(listing.createdAt);
@@ -164,25 +150,8 @@ export default function ListingsPage() {
     return true;
   });
 
-  // Sort listings based on selected sort option
-  const sortedListings = [...filteredListings].sort((a, b) => {
-    switch (sortBy) {
-      case "newest":
-        return new Date(b.createdAt || "").getTime() - new Date(a.createdAt || "").getTime();
-      case "oldest":
-        return new Date(a.createdAt || "").getTime() - new Date(b.createdAt || "").getTime();
-      case "price_asc":
-        return a.price - b.price;
-      case "price_desc":
-        return b.price - a.price;
-      default:
-        return 0;
-    }
-  });
-
-  // Calculate pagination
-  const totalPages = Math.ceil(sortedListings.length / ITEMS_PER_PAGE);
-  const paginatedListings = sortedListings.slice(
+  const totalPages = Math.ceil(filteredListings.length / ITEMS_PER_PAGE);
+  const paginatedListings = filteredListings.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -208,71 +177,11 @@ export default function ListingsPage() {
     setCurrentPage(1);
   };
 
-  // Handle condition change
   const handleConditionChange = (condition: string) => {
     setSelectedCondition(condition);
     setCurrentPage(1);
   };
 
-  // Format date function
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date
-      .toLocaleDateString("cs-CZ", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
-      .replace(/\s/g, "");
-  };
-
-  // Add this helper function to map category slugs to proper translation keys
-  const getCategoryTranslationKey = (category: string): string => {
-    // Check if it's a main category
-    const mainCategory = categories.find(cat => cat.id === category);
-    if (mainCategory) {
-      return category;
-    }
-
-    // Check if it's a subcategory
-    for (const cat of categories) {
-      if (cat.subcategories) {
-        const subcategory = cat.subcategories.find(subcat => subcat.id === category);
-        if (subcategory) {
-          return category;
-        }
-      }
-    }
-
-    // Check if it's a slug that needs to be converted to id
-    const slugCategory = categories.find(cat => {
-      const slugPart = cat.href.split("/").pop();
-      return slugPart === category;
-    });
-
-    if (slugCategory) {
-      return slugCategory.id;
-    }
-
-    // Check if it's a subcategory slug
-    for (const cat of categories) {
-      if (cat.subcategories) {
-        const slugSubcategory = cat.subcategories.find(subcat => {
-          const slugPart = subcat.href.split("/").pop();
-          return slugPart === category;
-        });
-
-        if (slugSubcategory) {
-          return slugSubcategory.id;
-        }
-      }
-    }
-
-    // If not found, return the original category
-    return category;
-  };
-
-  // Custom SearchBar with added sort button
   const CustomSearchBar = () => {
     const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
@@ -506,7 +415,9 @@ export default function ListingsPage() {
 
         <main className="flex-grow p-4 md:p-8">
           <div className="mb-6">
-            <h1 className="text-2xl font-medium text-gray-900 mb-4">{t("browse_listings")}</h1>
+            <h1 className="text-2xl font-medium text-gray-900 mb-4">
+              {t(subcategory ?? category ?? "browse_listings")}
+            </h1>
 
             <div className="mb-6">
               <CustomSearchBar />
@@ -549,7 +460,7 @@ export default function ListingsPage() {
                     <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
                       <div className="relative h-32 w-full">
                         <Image
-                          src={listing.imageUrl}
+                          src={listing.imageUrl || NO_IMAGE_URL}
                           alt={listing.title || "Listing"}
                           fill
                           sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
@@ -559,7 +470,7 @@ export default function ListingsPage() {
                       <div className="p-2 flex-grow flex flex-col">
                         <div className="flex justify-between items-center mb-1">
                           <div className="text-xs text-primary font-medium truncate max-w-[70%]">
-                            {t(getCategoryTranslationKey(listing.name))}
+                            {t(listing.name)}
                           </div>
                           <div className="text-xs text-gray-500 hidden sm:block">
                             {formatDate(listing.createdAt || "")}
@@ -573,7 +484,7 @@ export default function ListingsPage() {
                         </div>
                         <div className="mt-auto flex justify-between items-center">
                           <span className="text-sm font-bold text-gray-900">
-                            {listing.price.toLocaleString()} {listing.currency}
+                            {formatPrice(listing.price, listing.currency)}
                           </span>
                           <span className="text-xs text-gray-500 truncate max-w-[40%]">
                             {listing.location}
@@ -585,7 +496,6 @@ export default function ListingsPage() {
                 ))}
               </div>
 
-              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex justify-center mt-10">
                   <nav className="flex items-center">

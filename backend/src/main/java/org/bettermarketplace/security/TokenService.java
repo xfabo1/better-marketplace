@@ -1,6 +1,7 @@
 package org.bettermarketplace.security;
 
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
@@ -22,6 +23,10 @@ public class TokenService {
 
 	@Value("${app.security.token.refresh-before-minutes:30}")
 	private int refreshBeforeMinutes = 30;
+
+	public Duration getTokenTtl() {
+		return Duration.ofHours(tokenExpirationHours);
+	}
 
 	public UserAuthDetails getUserDetails(String token) {
 		return tokenToUserDetails.get(token);

@@ -4,17 +4,14 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { countries } from "@/data/countries";
 import { useAuth } from "@/contexts/AuthContext";
 
-// Component that uses useSearchParams
 function SettingsContent() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<"profile" | "security">("profile");
   const { t } = useLanguage();
-  const { user, updateUserSettings } = useAuth();
+  const { user } = useAuth();
 
-  // Set active tab based on URL parameter if present
   useEffect(() => {
     const tab = searchParams.get("tab");
     if (tab === "security") {
@@ -24,44 +21,24 @@ function SettingsContent() {
     }
   }, [searchParams]);
 
-  // Mock user data
   const [userData, setUserData] = useState({
     email: "jan.novak@example.com",
     phone: "+420 123 456 789",
-    country: "CZ", // Default to Czech Republic
-    showCrossCountryListings: true, // Default to showing cross-country listings
-    currency: "CZK", // Default to Czech Koruna
   });
 
-  const handleProfileSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Update user settings using the AuthContext function
-    updateUserSettings({
-      country: userData.country as "CZ" | "SK",
-      showCrossCountryListings: userData.showCrossCountryListings,
-    });
-    alert(t("profile_updated"));
-  };
-
-  // Load user data from auth context on component mount
   useEffect(() => {
     if (user) {
       setUserData(prevState => ({
         ...prevState,
         email: user.email || prevState.email,
         phone: user.phone || prevState.phone,
-        country: user.country || prevState.country,
-        showCrossCountryListings:
-          user.showCrossCountryListings !== undefined
-            ? user.showCrossCountryListings
-            : prevState.showCrossCountryListings,
       }));
     }
   }, [user]);
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would call your API to update the password
+    // TODO: not implemented, there is no password-change endpoint in the backend yet
     alert(t("password_changed"));
   };
 
@@ -100,7 +77,7 @@ function SettingsContent() {
             {activeTab === "profile" && (
               <div>
                 <h2 className="text-xl font-medium text-gray-900 mb-6">{t("personal_info")}</h2>
-                <form onSubmit={handleProfileSubmit} className="space-y-6 max-w-2xl">
+                <div className="space-y-6 max-w-2xl">
                   <div className="mb-4">
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                       {t("email")}
@@ -130,62 +107,7 @@ function SettingsContent() {
                     />
                     <p className="mt-1 text-xs text-gray-500">{t("phone_cannot_change")}</p>
                   </div>
-
-                  <div className="mb-4">
-                    <label
-                      htmlFor="country"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      {t("country")}
-                    </label>
-                    <select
-                      id="country"
-                      className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm text-gray-900 focus:border-primary focus:outline-none sm:text-sm"
-                      value={userData.country}
-                      onChange={e => setUserData({ ...userData, country: e.target.value })}
-                    >
-                      {countries.map(country => (
-                        <option key={country.value} value={country.value}>
-                          {t(country.label)}
-                        </option>
-                      ))}
-                    </select>
-                    <p className="mt-1 text-xs text-gray-500">{t("location_restricted")}</p>
-                  </div>
-
-                  <div className="mb-4">
-                    <div className="flex items-start">
-                      <div className="flex items-center h-5">
-                        <input
-                          id="showCrossCountryListings"
-                          name="showCrossCountryListings"
-                          type="checkbox"
-                          className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          checked={userData.showCrossCountryListings}
-                          onChange={e =>
-                            setUserData({ ...userData, showCrossCountryListings: e.target.checked })
-                          }
-                        />
-                      </div>
-                      <div className="ml-3">
-                        <label htmlFor="showCrossCountryListings" className="text-sm text-gray-700">
-                          {userData.country === "cz"
-                            ? t("show_slovak_listings")
-                            : t("show_czech_listings")}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-4">
-                    <button
-                      type="submit"
-                      className="w-full sm:w-auto inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
-                    >
-                      {t("save_changes")}
-                    </button>
-                  </div>
-                </form>
+                </div>
               </div>
             )}
 
@@ -253,7 +175,6 @@ function SettingsContent() {
   );
 }
 
-// Loading fallback for Suspense
 function SettingsContentFallback() {
   return (
     <main className="flex-grow py-8">
@@ -281,7 +202,6 @@ function SettingsContentFallback() {
   );
 }
 
-// Main component that uses Suspense
 export default function SettingsPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
