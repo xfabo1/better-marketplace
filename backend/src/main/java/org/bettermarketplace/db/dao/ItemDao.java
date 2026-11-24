@@ -57,10 +57,10 @@ public interface ItemDao {
 		var sorting = query.sorting() == null ? Sorting.NEWEST : query.sorting();
 
 		return switch (sorting) {
-			case PRICE_ASC -> searchItems(query, query.lastPrice(), null, "price ASC", ">=");
-			case PRICE_DESC -> searchItems(query, query.lastPrice(), null, "price DESC", "<=");
-			case OLDEST -> searchItems(query, null, query.lastUpdated(), "updated_at ASC", ">=");
-			case NEWEST -> searchItems(query, null, query.lastUpdated(), "updated_at DESC", "<=");
+			case PRICE_ASC -> searchItems(query, query.lastPrice(), null, "price ASC, id ASC", ">=");
+			case PRICE_DESC -> searchItems(query, query.lastPrice(), null, "price DESC, id DESC", "<=");
+			case OLDEST -> searchItems(query, null, query.lastUpdated(), "updated_at ASC, id ASC", ">=");
+			case NEWEST -> searchItems(query, null, query.lastUpdated(), "updated_at DESC, id DESC", "<=");
 		};
 	}
 
