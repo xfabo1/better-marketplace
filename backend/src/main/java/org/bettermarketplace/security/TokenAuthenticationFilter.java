@@ -48,6 +48,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     authCookie.setMaxAge((int) tokenService.getTokenTtl().toSeconds());
                     response.addCookie(authCookie);
 
+                    // The request still carries the revoked token, so later reads of the cookie must see the new one
+                    request.setAttribute(CookieUtil.REFRESHED_TOKEN_ATTRIBUTE, newToken);
+
                     token = newToken;
                     userDetails = tokenService.validateToken(token);
                 }
