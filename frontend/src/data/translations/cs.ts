@@ -165,6 +165,8 @@ export const csTranslations = {
   "previous": "Předchozí",
   "next": "Další",
   "no_listings": "Žádné inzeráty",
+  "listings_load_failed": "Nepodařilo se načíst inzeráty",
+  "listings_load_failed_hint": "Zkuste to prosím znovu později.",
   "no_listings_found": "Pro vaše vyhledávání nebyly nalezeny žádné inzeráty.",
   "no_listings_in_category": "V této kategorii zatím nejsou žádné inzeráty.",
   "reset_filters": "Resetovat filtry",

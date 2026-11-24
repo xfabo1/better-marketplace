@@ -165,6 +165,8 @@ export const enTranslations = {
   "previous": "Previous",
   "next": "Next",
   "no_listings": "No Listings",
+  "listings_load_failed": "Could not load listings",
+  "listings_load_failed_hint": "Please try again later.",
   "no_listings_found": "No listings were found for your search.",
   "no_listings_in_category": "No listings found in this category.",
   "reset_filters": "Reset Filters",
